@@ -78,11 +78,11 @@ function DesignPreviewCard({ design, compact }) {
         <svg viewBox="0 0 24 24" width="14" height="14" stroke="var(--fi-accent-strong)" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round">
           <rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/>
         </svg>
-        <div style={{ flex: 1, font: "500 14px/20px Inter", color: "var(--fi-accent-strong)" }}>
+        <div style={{ flex: 1, font: "500 14px/20px var(--font-sans)", color: "var(--fi-accent-strong)" }}>
           {design.name}
         </div>
         <a className="agent-link" href="#" onClick={e => e.preventDefault()}
-          style={{ font: "500 12px/16px Inter" }}>
+          style={{ font: "500 12px/16px var(--font-sans)" }}>
           Open design →
         </a>
       </div>
@@ -102,7 +102,7 @@ function DesignPreviewCard({ design, compact }) {
 function DesignChip({ label, on }) {
   return (
     <span style={{
-      font: "500 12px/16px Inter",
+      font: "500 12px/16px var(--font-sans)",
       color: on ? "var(--fi-green)" : "var(--lyra-slate-600)",
       background: on ? "rgba(28,94,37,0.08)" : "rgba(0,0,0,0.04)",
       padding: "3px var(--space-2)", borderRadius: 4,
@@ -179,6 +179,91 @@ function FilterChip({ label, value, options, onSelect, onClear }) {
   );
 }
 
+function RowActions({ campaign, statusOf, onActivate, onDeactivate, onDelete, onEdit }) {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef(null);
+  const closeTimer = React.useRef(null);
+  const s = statusOf(campaign);
+
+  const scheduleClose = () => {
+    closeTimer.current = setTimeout(() => setOpen(false), 120);
+  };
+  const cancelClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  };
+
+  React.useEffect(() => {
+    if (!open) return;
+    function onDocClick(e) {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [open]);
+
+  return (
+    <div ref={ref} style={{ position: "relative", display: "inline-flex" }}
+      onClick={e => e.stopPropagation()}
+      onMouseEnter={() => { cancelClose(); setOpen(true); }}
+      onMouseLeave={scheduleClose}
+    >
+      <button
+        className="row-action-btn"
+        onClick={() => setOpen(o => !o)}
+      >
+        Actions
+        <svg viewBox="0 0 16 16" width="12" height="12" stroke="currentColor" fill="none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: 4 }}>
+          <polyline points="4 6 8 10 12 6"/>
+        </svg>
+      </button>
+      {open && (
+        <div className="row-action-menu"
+          onMouseEnter={cancelClose}
+          onMouseLeave={scheduleClose}
+        >
+          <button className="row-action-item" onClick={() => { onEdit(campaign); setOpen(false); }}>
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+            </svg>
+            Edit
+          </button>
+          {s !== "active" && s !== "ended" && (
+            <button className="row-action-item" onClick={() => { onActivate(campaign.id); setOpen(false); }}>
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Activate
+            </button>
+          )}
+          {s === "active" && (
+            <button className="row-action-item" onClick={() => { onDeactivate(campaign.id); setOpen(false); }}>
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>
+              </svg>
+              Deactivate
+            </button>
+          )}
+          {s === "paused" && (
+            <button className="row-action-item" onClick={() => { onActivate(campaign.id); setOpen(false); }}>
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              Resume
+            </button>
+          )}
+          <div className="row-action-divider"/>
+          <button className="row-action-item danger" onClick={() => { onDelete(campaign.id); setOpen(false); }}>
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/>
+            </svg>
+            Delete
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SurveyCampaignsGrid({ onCreate, onOpen }) {
   const [search, setSearch] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState(null);   // null = no filter (show all)
@@ -220,6 +305,15 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
       return next;
     });
     clearSelection();
+  };
+
+  const rowActivate = (id) => setStatusOverride(prev => ({ ...prev, [id]: "active" }));
+  const rowDeactivate = (id) => setStatusOverride(prev => ({ ...prev, [id]: "paused" }));
+  const rowDelete = (id) => {
+    const c = CAMPAIGNS.find(x => x.id === id);
+    if (!window.confirm(`Delete "${c?.name}"? This cannot be undone.`)) return;
+    setDeletedIds(prev => { const next = new Set(prev); next.add(id); return next; });
+    setSelectedIds(prev => { const next = new Set(prev); next.delete(id); return next; });
   };
 
   // Routing-active = active + paused. Draft/Ended don't participate in priority.
@@ -290,7 +384,7 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
         )}
         <span style={{ flex: 1 }}/>
         {selCount > 0 && (
-          <span style={{ font: "500 12px/16px Inter", color: "var(--fi-accent-strong)", marginRight: 4 }}>
+          <span style={{ font: "500 12px/16px var(--font-sans)", color: "var(--fi-accent-strong)", marginRight: 4 }}>
             {selCount} selected
             <span style={{ color: "var(--lyra-slate-400)", marginLeft: 8, cursor: "pointer", textDecoration: "underline" }} onClick={clearSelection}>Clear</span>
           </span>
@@ -351,6 +445,7 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
               <th>Sampling</th>
               <th>Owner</th>
               <th>Last updated</th>
+              <th style={{ width: 48 }}></th>
             </tr>
           </thead>
           <tbody>
@@ -414,19 +509,19 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                         minWidth: 28, height: 24, padding: "0 var(--space-2)", borderRadius: 6,
                         background: "var(--color-bg-active-moderate)",   /* Lyra: #d3e6fd */
                         color: "var(--color-fg-active-strong)",          /* Lyra: brand-700 */
-                        font: "600 14px/20px Inter", letterSpacing: 0,   /* Lyra Heading-sm bold */
+                        font: "600 14px/20px var(--font-sans)", letterSpacing: 0,   /* Lyra Heading-sm bold */
                       }}>
                         {priorityMap[c.id]}
                       </div>
                     ) : (
-                      <span style={{ color: "var(--lyra-slate-400)", font: "600 14px/20px Inter" }}>—</span>
+                      <span style={{ color: "var(--lyra-slate-400)", font: "600 14px/20px var(--font-sans)" }}>—</span>
                     )}
                   </td>
                   <td>
                     <a className="agent-link" href="#" onClick={e => { e.preventDefault(); onOpen && onOpen(c); }}>
                       {c.name}
                     </a>
-                    <div style={{ font: "400 12px/16px Inter", color: "var(--color-fg-secondary)", marginTop: 4 }}>
+                    <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 4 }}>
                       Created {c.created}
                     </div>
                   </td>
@@ -444,6 +539,16 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                   <td>{c.sampling}%</td>
                   <td>{c.owner}</td>
                   <td>{c.updated}</td>
+                  <td style={{ textAlign: "right", paddingRight: "var(--space-3)" }}>
+                    <RowActions
+                      campaign={c}
+                      statusOf={statusOf}
+                      onActivate={rowActivate}
+                      onDeactivate={rowDeactivate}
+                      onDelete={rowDelete}
+                      onEdit={onOpen}
+                    />
+                  </td>
                 </tr>
               );
             })}
@@ -959,7 +1064,7 @@ function CreateCampaign({ onCancel, onSave }) {
           ) : null}
 
           <div className="form-foot">
-            <span className="muted" style={{ font: "400 12px/16px Inter" }}>
+            <span className="muted" style={{ font: "400 12px/16px var(--font-sans)" }}>
               All changes auto-saved as draft · Last edited just now
             </span>
             <span className="grow"/>
@@ -997,7 +1102,7 @@ function MiniBar({ data, max, color = "var(--fi-accent)", labels }) {
             minHeight: 2,
             opacity: 0.85,
           }}/>
-          <div style={{ font: "400 12px/16px Inter", color: "var(--lyra-slate-500)" }}>{labels?.[i]}</div>
+          <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--lyra-slate-500)" }}>{labels?.[i]}</div>
         </div>
       ))}
     </div>
@@ -1021,8 +1126,8 @@ function DonutRing({ value, max = 100, color = "var(--fi-accent)", size = 96, la
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
       }}>
-        <div style={{ font: "700 20px/24px Inter", color: "var(--lyra-slate-900)", letterSpacing: "-0.02em" }}>{label}</div>
-        {sub ? <div style={{ font: "500 12px/16px Inter", color: "var(--lyra-slate-500)" }}>{sub}</div> : null}
+        <div style={{ font: "700 20px/24px var(--font-sans)", color: "var(--lyra-slate-900)", letterSpacing: "-0.02em" }}>{label}</div>
+        {sub ? <div style={{ font: "500 12px/16px var(--font-sans)", color: "var(--lyra-slate-500)" }}>{sub}</div> : null}
       </div>
     </div>
   );
@@ -1047,7 +1152,7 @@ const TOP_TOPICS = [
 
 function Stars({ n, size = 14 }) {
   return (
-    <span style={{ display: "inline-flex", gap: 1, color: "#efb840" }}>
+    <span style={{ display: "inline-flex", gap: 1, color: "var(--color-rating-star)" }}>
       {[1,2,3,4,5].map(i => (
         <svg key={i} viewBox="0 0 24 24" width={size} height={size}
           fill={i <= n ? "currentColor" : "var(--lyra-slate-200)"}>
@@ -1393,4 +1498,382 @@ function ConfigurationView({ campaign }) {
   );
 }
 
-Object.assign(window, { SurveyCampaignsGrid, CreateCampaign, CampaignDetail, ChannelChip, StatusPill, Sparkline, CAMPAIGNS, WorkingCopyChip, FilterChip });
+/* ======================= Campaign Template Picker ========================= */
+
+const CAMPAIGN_TEMPLATES = [
+  {
+    id: "t-csat-chat",
+    name: "Post-Chat CSAT",
+    tagline: "Measure satisfaction right after a digital conversation ends.",
+    icon: "chat",
+    category: "Customer Satisfaction",
+    bestFor: ["Chat & messaging", "Tier 1 support", "High-volume digital"],
+    topics: ["Resolution quality", "Agent friendliness", "Response time"],
+    channels: ["digital"],
+    suggestedSampling: 50,
+    avgCompletion: "28–34%",
+    popularity: 92,
+    effort: "Low",
+    effortDetail: "Ready in minutes — just name it and pick your team.",
+    why: "The single most deployed survey type. Catches satisfaction signals while the interaction is fresh.",
+  },
+  {
+    id: "t-sentiment",
+    name: "Negative Sentiment Catcher",
+    tagline: "Auto-target interactions where the AI detected frustration or dissatisfaction.",
+    icon: "sentiment",
+    category: "Sentiment Recovery",
+    bestFor: ["All digital channels", "Escalation-prone queues", "Retention teams"],
+    topics: ["Complaint handling", "Escalation rate", "Brand perception"],
+    channels: ["digital"],
+    suggestedSampling: 100,
+    avgCompletion: "26–30%",
+    popularity: 78,
+    effort: "Low",
+    effortDetail: "Plug in your sentiment threshold and go.",
+    why: "Surfaces at-risk customers before they churn. Pairs well with a recovery workflow.",
+  },
+  {
+    id: "t-resolution",
+    name: "Email Resolution Quality",
+    tagline: "Evaluate whether email interactions actually solved the customer's problem.",
+    icon: "email",
+    category: "Quality Assurance",
+    bestFor: ["Email support", "Back-office queues", "Complex case resolution"],
+    topics: ["First-contact resolution", "Accuracy of response", "Follow-up needed"],
+    channels: ["digital"],
+    suggestedSampling: 25,
+    avgCompletion: "20–26%",
+    popularity: 65,
+    effort: "Medium",
+    effortDetail: "Needs a survey design with FCR question — 10 min setup.",
+    why: "Email has the lowest natural survey response rate. A focused short survey beats a generic CSAT.",
+  },
+  {
+    id: "t-bot",
+    name: "Bot Handoff Audit",
+    tagline: "Track how well your AI agent hands off to a human — and what customers think of the transition.",
+    icon: "bot",
+    category: "AI Quality",
+    bestFor: ["Bot-to-human handoffs", "Cognigy / virtual agent flows", "Self-service improvement"],
+    topics: ["Bot containment", "Handoff smoothness", "Issue understood by agent"],
+    channels: ["digital"],
+    suggestedSampling: 80,
+    avgCompletion: "18–24%",
+    popularity: 71,
+    effort: "Medium",
+    effortDetail: "Works best when you tag bot-originating interactions in your routing.",
+    why: "Reveals where your virtual agent is losing confidence. Essential for teams investing in AI-first CX.",
+  },
+  {
+    id: "t-brand",
+    name: "Brand Health Pulse",
+    tagline: "Lightweight periodic check-in on brand perception and loyalty across social DMs.",
+    icon: "brand",
+    category: "Brand & Loyalty",
+    bestFor: ["Social media DMs", "Long-term customers", "Marketing-aligned support"],
+    topics: ["Net Promoter Score", "Brand sentiment", "Likelihood to recommend"],
+    channels: ["digital"],
+    suggestedSampling: 100,
+    avgCompletion: "14–20%",
+    popularity: 54,
+    effort: "Low",
+    effortDetail: "Short NPS-style survey — minimal config needed.",
+    why: "Social DM customers tend to be highly engaged. Their opinions carry outsized brand weight.",
+  },
+  {
+    id: "t-vip",
+    name: "VIP Escalation Follow-Up",
+    tagline: "A personalised follow-up survey for high-value customers after an escalation is resolved.",
+    icon: "vip",
+    category: "Retention",
+    bestFor: ["VIP / high-value accounts", "Post-escalation", "Executive-level complaints"],
+    topics: ["Satisfaction with resolution", "Relationship recovery", "Likelihood to stay"],
+    channels: ["digital"],
+    suggestedSampling: 100,
+    avgCompletion: "35–45%",
+    popularity: 60,
+    effort: "High",
+    effortDetail: "Requires VIP tagging in your contact centre platform.",
+    why: "VIP customers have the highest churn risk and highest revenue impact. A personal touch after an escalation converts detractors.",
+  },
+];
+
+const TEMPLATE_ICONS = {
+  chat: (
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 6h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2v4l-5-4H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/>
+      <circle cx="10" cy="13" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="14" cy="13" r="1" fill="currentColor" stroke="none"/>
+      <circle cx="18" cy="13" r="1" fill="currentColor" stroke="none"/>
+    </svg>
+  ),
+  sentiment: (
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="16" cy="16" r="11"/>
+      <path d="M11 20s1.5-2 5-2 5 2 5 2"/>
+      <circle cx="12" cy="13" r="1.2" fill="currentColor" stroke="none"/>
+      <circle cx="20" cy="13" r="1.2" fill="currentColor" stroke="none"/>
+    </svg>
+  ),
+  email: (
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="4" y="8" width="24" height="17" rx="2"/>
+      <path d="M4 10l12 8 12-8"/>
+    </svg>
+  ),
+  bot: (
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="7" y="11" width="18" height="14" rx="3"/>
+      <circle cx="12" cy="18" r="1.5" fill="currentColor" stroke="none"/>
+      <circle cx="20" cy="18" r="1.5" fill="currentColor" stroke="none"/>
+      <path d="M13 22h6"/>
+      <path d="M16 11V7"/>
+      <circle cx="16" cy="6" r="1.5"/>
+      <path d="M3 17h4M25 17h4"/>
+    </svg>
+  ),
+  brand: (
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 4l3 7h7l-5.5 4.5 2 7L16 19l-6.5 3.5 2-7L6 11h7z"/>
+    </svg>
+  ),
+  vip: (
+    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 5 20 14 29 15.5 22 22l2 9-8-4.5L8 31l2-9-7-6.5L12 14z"/>
+    </svg>
+  ),
+};
+
+const EFFORT_COLOR = {
+  Low:    { bg: "var(--lyra-green-50)",    fg: "var(--lyra-green-700)" },
+  Medium: { bg: "rgba(236,112,0,0.08)",    fg: "var(--lyra-orange-700)" },
+  High:   { bg: "var(--lyra-red-50)",      fg: "var(--lyra-red-600)" },
+};
+
+const CATEGORY_COLOR = {
+  "Customer Satisfaction": { bg: "var(--color-bg-active-subtle)", fg: "var(--color-fg-active-strong)" },
+  "Sentiment Recovery":    { bg: "rgba(120,86,186,0.08)",         fg: "var(--lyra-purple-700)" },
+  "Quality Assurance":     { bg: "rgba(0,104,137,0.08)",          fg: "var(--lyra-teal-500)" },
+  "AI Quality":            { bg: "rgba(120,86,186,0.08)",         fg: "var(--lyra-purple-700)" },
+  "Brand & Loyalty":       { bg: "rgba(248,161,10,0.10)",         fg: "var(--lyra-yellow-700)" },
+  "Retention":             { bg: "var(--lyra-green-50)",          fg: "var(--lyra-green-700)" },
+};
+
+function PopularityBar({ value }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+      <div style={{
+        flex: 1, height: 4, borderRadius: 99,
+        background: "var(--lyra-slate-200)", overflow: "hidden",
+      }}>
+        <div style={{
+          height: "100%", width: `${value}%`,
+          background: "var(--fi-accent, var(--lyra-brand-500))",
+          borderRadius: 99,
+          transition: "width 0.4s ease",
+        }}/>
+      </div>
+      <span style={{ font: "500 11px/16px var(--font-sans)", color: "var(--lyra-slate-500)", minWidth: 28, textAlign: "right" }}>
+        {value}%
+      </span>
+    </div>
+  );
+}
+
+function TemplateCard({ template, onUse }) {
+  const [expanded, setExpanded] = React.useState(false);
+  const iconColor = CATEGORY_COLOR[template.category] || CATEGORY_COLOR["Customer Satisfaction"];
+  const effortColor = EFFORT_COLOR[template.effort];
+
+  return (
+    <div className={`tmpl-card ${expanded ? "expanded" : ""}`}>
+      {/* Card header */}
+      <div className="tmpl-card-top">
+        <div className="tmpl-icon" style={{ background: iconColor.bg, color: iconColor.fg }}>
+          {TEMPLATE_ICONS[template.icon]}
+        </div>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div className="tmpl-category" style={{ color: iconColor.fg }}>
+            {template.category}
+          </div>
+          <div className="tmpl-name">{template.name}</div>
+        </div>
+      </div>
+
+      {/* Tagline */}
+      <p className="tmpl-tagline">{template.tagline}</p>
+
+      {/* Why this campaign — the key suggestion */}
+      <div className="tmpl-why">
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }}>
+          <circle cx="8" cy="8" r="6"/><path d="M8 5v3.5"/><circle cx="8" cy="11" r=".6" fill="currentColor" stroke="none"/>
+        </svg>
+        <span>{template.why}</span>
+      </div>
+
+      {/* Interaction & topic tags */}
+      <div className="tmpl-tags-section">
+        <div className="tmpl-tags-label">Best for</div>
+        <div className="tmpl-tags">
+          {template.bestFor.map(t => (
+            <span key={t} className="tmpl-tag interaction">{t}</span>
+          ))}
+        </div>
+      </div>
+      <div className="tmpl-tags-section" style={{ marginTop: 8 }}>
+        <div className="tmpl-tags-label">Topics covered</div>
+        <div className="tmpl-tags">
+          {template.topics.map(t => (
+            <span key={t} className="tmpl-tag topic">{t}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* Metrics row */}
+      <div className="tmpl-metrics">
+        <div className="tmpl-metric">
+          <span className="tmpl-metric-label">Avg completion</span>
+          <span className="tmpl-metric-value">{template.avgCompletion}</span>
+        </div>
+        <div className="tmpl-metric">
+          <span className="tmpl-metric-label">Suggested sampling</span>
+          <span className="tmpl-metric-value">{template.suggestedSampling}%</span>
+        </div>
+        <div className="tmpl-metric" style={{ flex: 2 }}>
+          <span className="tmpl-metric-label">Popularity</span>
+          <PopularityBar value={template.popularity}/>
+        </div>
+      </div>
+
+      {/* Expandable detail */}
+      {expanded && (
+        <div className="tmpl-detail">
+          <div className="tmpl-detail-row">
+            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M8 2v4M8 10v4M2 8h4M10 8h4"/>
+            </svg>
+            <span>
+              <strong>Setup effort:</strong>{" "}
+              <span style={{ color: effortColor.fg, fontWeight: 500 }}>{template.effort}</span>
+              {" — "}{template.effortDetail}
+            </span>
+          </div>
+          <div className="tmpl-detail-row">
+            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M7 4H4a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V9"/>
+              <path d="M9 2l3 3-5 5H4V7l5-5z"/>
+            </svg>
+            <span>
+              <strong>Channels:</strong>{" "}
+              {template.channels.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(", ")}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Card footer */}
+      <div className="tmpl-card-foot">
+        <button className="tmpl-expand-btn" onClick={() => setExpanded(e => !e)}>
+          {expanded ? "Show less" : "More details"}
+          <svg viewBox="0 0 16 16" width="11" height="11" stroke="currentColor" fill="none" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"
+            style={{ transform: expanded ? "rotate(180deg)" : "none", transition: "transform 0.15s" }}>
+            <polyline points="4 6 8 10 12 6"/>
+          </svg>
+        </button>
+        <button className="tmpl-use-btn" onClick={() => onUse(template)}>
+          Use this template
+          <svg viewBox="0 0 16 16" width="12" height="12" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function CampaignTemplatePicker({ onSelect, onSkip }) {
+  const [search, setSearch] = React.useState("");
+  const [categoryFilter, setCategoryFilter] = React.useState(null);
+
+  const categories = Array.from(new Set(CAMPAIGN_TEMPLATES.map(t => t.category)));
+
+  const filtered = CAMPAIGN_TEMPLATES.filter(t => {
+    if (categoryFilter && t.category !== categoryFilter) return false;
+    if (search) {
+      const q = search.toLowerCase();
+      return (
+        t.name.toLowerCase().includes(q) ||
+        t.tagline.toLowerCase().includes(q) ||
+        t.bestFor.some(b => b.toLowerCase().includes(q)) ||
+        t.topics.some(tp => tp.toLowerCase().includes(q))
+      );
+    }
+    return true;
+  });
+
+  return (
+    <div className="pane" style={{ background: "var(--lyra-slate-100)", overflow: "auto" }}>
+      {/* Page header */}
+      <div className="pane-head" style={{ background: "var(--lyra-white)", borderBottom: "1px solid var(--color-border-subtle)", padding: "var(--space-5) var(--space-8)" }}>
+        <div style={{ flex: 1 }}>
+          <h1 style={{ margin: 0 }}>Choose a Campaign Template</h1>
+          <p style={{ margin: "var(--space-1) 0 0", font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-secondary)" }}>
+            Start from a template — we'll pre-fill the settings. You can customise everything before activating.
+          </p>
+        </div>
+        <div className="head-actions">
+          <button className="btn" onClick={onSkip}>
+            Start from scratch
+          </button>
+        </div>
+      </div>
+
+      {/* Filter bar */}
+      <div style={{
+        display: "flex", alignItems: "center", gap: "var(--space-2)", flexWrap: "wrap",
+        padding: "var(--space-4) var(--space-8)",
+        background: "var(--lyra-white)",
+        borderBottom: "1px solid var(--color-border-subtle)",
+      }}>
+        <div className="search" style={{ maxWidth: 280 }}>
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input placeholder="Search templates…" value={search} onChange={e => setSearch(e.target.value)}/>
+        </div>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          <button
+            className={`tmpl-filter-pill ${!categoryFilter ? "on" : ""}`}
+            onClick={() => setCategoryFilter(null)}>
+            All
+          </button>
+          {categories.map(cat => (
+            <button
+              key={cat}
+              className={`tmpl-filter-pill ${categoryFilter === cat ? "on" : ""}`}
+              onClick={() => setCategoryFilter(c => c === cat ? null : cat)}>
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Card grid */}
+      <div style={{ padding: "var(--space-6) var(--space-8)" }}>
+        {filtered.length === 0 ? (
+          <div style={{ textAlign: "center", padding: "var(--space-12) 0", color: "var(--lyra-slate-500)", font: "400 14px/20px var(--font-sans)" }}>
+            No templates match your search.{" "}
+            <button className="clear-link" onClick={() => { setSearch(""); setCategoryFilter(null); }}>Clear filters</button>
+          </div>
+        ) : (
+          <div className="tmpl-grid">
+            {filtered.map(t => (
+              <TemplateCard key={t.id} template={t} onUse={onSelect}/>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { SurveyCampaignsGrid, CreateCampaign, CampaignDetail, ChannelChip, StatusPill, Sparkline, CAMPAIGNS, WorkingCopyChip, FilterChip, CampaignTemplatePicker });

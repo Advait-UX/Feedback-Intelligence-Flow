@@ -1,14 +1,14 @@
 /* Feedback Intelligence — additions over shell.css */
 
 /* ─── Lyra Info banner — used for inline help text above tables ──────────────
-   Uses bg/active/subtle (#f1f7fe) + brand-700 left accent for an "informational"
+   Uses bg/active/subtle (var(--color-bg-active-subtle)) + brand-700 left accent for an "informational"
    tone. Body MD (Lyra) typography. Positioned within the pane padding. */
 .info-banner{
   display: flex; align-items: flex-start;
   gap: var(--space-2);                                 /* 8px between icon and text */
   margin: var(--space-3) var(--space-8) var(--space-4); /* 12px / 32px / 16px — matches Lyra pane horiz padding */
   padding: var(--space-3) var(--space-4);              /* 12px vertical, 16px horizontal */
-  background: var(--color-bg-active-subtle);           /* Lyra: bg/active/subtle = #f1f7fe */
+  background: var(--color-bg-active-subtle);           /* Lyra: bg/active/subtle = var(--color-bg-active-subtle) */
   border: 1px solid rgba(24,91,164,0.20);              /* Subtle brand border (border/active @ 20%) */
   border-radius: var(--radius-md);                     /* Lyra: radius/md = 8px */
   /* Lyra Body MD: Inter Regular 14/20, letter-spacing 0 */
@@ -30,20 +30,8 @@
 .info-banner > span{ flex: 1; min-width: 0; }
 
 /* Feedback Intelligence brand accent: a teal/cyan that complements brand-blue
-   but reads distinct from WFM screens. Pulled from Lyra "info" range. */
-:root {
-  --fi-accent: var(--fi-accent);
-  --fi-accent-strong: var(--fi-accent-strong);
-  --fi-accent-bg: var(--fi-accent-bg);
-  --fi-purple: var(--lyra-purple-500);
-  --fi-purple-bg: var(--fi-purple-bg);
-  --fi-amber: var(--lyra-orange-700);
-  --fi-amber-bg: var(--fi-amber-bg);
-  --fi-red: var(--lyra-red-600);
-  --fi-red-bg: var(--fi-red-bg);
-  --fi-green: var(--lyra-green-700);
-  --fi-green-bg: var(--fi-green-bg);
-}
+   but reads distinct from WFM screens. All --fi-* and opacity tokens are now
+   declared in colors_and_type.css :root — no local override needed. */
 
 /* ─── Lyra App Menu (Figma node 20360:75452) ───────────────────────────────── */
 .app-menu-scrim {
@@ -278,7 +266,7 @@
 }
 .field-label .req {
   /* Required asterisk — inline, immediately right of label text */
-  color: #b62c2c;                                      /* Lyra: status/critical-strong */
+  color: var(--color-status-error);                                      /* Lyra: status/critical-strong */
   margin-left: 2px;
 }
 .field-label .hint {
@@ -364,7 +352,7 @@ textarea.fi-input {
 .fi-input.error,
 .fi-input[aria-invalid="true"] {
   background: #fff0f0;                                 /* Lyra: status/critical-subtle */
-  border-color: #b62c2c;                               /* Lyra: status/critical-strong */
+  border-color: var(--color-status-error);                               /* Lyra: status/critical-strong */
 }
 .fi-input.error:focus,
 .fi-input[aria-invalid="true"]:focus {
@@ -372,7 +360,7 @@ textarea.fi-input {
 }
 
 /* Lyra required-field asterisk — matches the Label component */
-.field-label .req { color: #b62c2c; margin-left: 2px; }
+.field-label .req { color: var(--color-status-error); margin-left: 2px; }
 
 /* Lyra validation message — shown below the input on error */
 .field-control .error-msg {
@@ -384,7 +372,7 @@ textarea.fi-input {
   font-weight: 400;
   line-height: 16px;
   letter-spacing: 0.2px;
-  color: #b62c2c;                                      /* Lyra: status/critical-strong */
+  color: var(--color-status-error);                                      /* Lyra: status/critical-strong */
 }
 .field-control .error-msg svg{ width: 12px; height: 12px; flex-shrink: 0; }
 
@@ -513,7 +501,7 @@ select.fi-input {
 .seg button {
   background: transparent; border: 0; cursor: pointer;
   padding: 5px var(--space-3);
-  font: 500 14px/20px Inter; color: var(--lyra-slate-600);
+  font: var(--text-h-sm); color: var(--lyra-slate-600);
   border-radius: var(--radius-xs);
   letter-spacing: 0;
 }
@@ -543,7 +531,7 @@ select.fi-input {
 }
 .switch input:checked + .slider { background: var(--fi-accent) }
 .switch input:checked + .slider::before { transform: translateX(16px) }
-.switch-row { display: inline-flex; align-items: center; gap: 10px; font: 500 14px/20px Inter; color: var(--lyra-slate-900) }
+.switch-row { display: inline-flex; align-items: center; gap: 10px; font: var(--text-h-sm); color: var(--lyra-slate-900) }
 
 /* Slider */
 .slider-row {
@@ -555,7 +543,7 @@ select.fi-input {
 }
 .slider-row .val {
   min-width: 56px; text-align: right;
-  font: 500 14px/20px Inter; color: var(--lyra-slate-900);
+  font: var(--text-h-sm); color: var(--lyra-slate-900);
   letter-spacing: -0.01em;
 }
 
@@ -571,7 +559,7 @@ select.fi-input {
 }
 .chip-well input {
   flex: 1; min-width: 100px; border: 0; outline: 0;
-  font: 400 14px/20px Inter; color: var(--lyra-slate-900);
+  font: var(--text-body-md); color: var(--lyra-slate-900);
   background: transparent;
 }
 .chip {
@@ -579,7 +567,7 @@ select.fi-input {
   background: var(--lyra-slate-200); color: var(--lyra-slate-900);
   padding: 3px var(--space-1) 3px 10px;
   border-radius: var(--radius-xs);
-  font: 500 12px/16px Inter; letter-spacing: 0;
+  font: var(--text-h-xs); letter-spacing: 0;
 }
 .chip .x {
   width: 16px; height: 16px; border-radius: 3px;
@@ -598,16 +586,16 @@ select.fi-input {
 .sup-row:first-child { border-top: 0 }
 .sup-row .meta { flex: 1 }
 .sup-row .meta .title {
-  font: 500 14px/20px Inter; color: var(--lyra-slate-900); letter-spacing: 0;
+  font: var(--text-h-sm); color: var(--lyra-slate-900); letter-spacing: 0;
   display: flex; align-items: center; gap: var(--space-2);
 }
 .sup-row .meta .ex {
-  font: 400 12px/18px Inter; color: var(--lyra-slate-500);
+  font: var(--text-body-sm); color: var(--lyra-slate-500);
   margin-top: 3px;
 }
 .sup-row .meta .locked {
   display: inline-flex; align-items: center; gap: var(--space-1);
-  font: 500 12px/16px Inter; color: var(--lyra-slate-600);
+  font: var(--text-h-xs); color: var(--lyra-slate-600);
   background: var(--lyra-slate-200); padding: 1px 6px 1px var(--space-1); border-radius: 3px;
 }
 .sup-row .meta .locked svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 1.8 }
@@ -718,14 +706,14 @@ select.fi-input {
   border-radius: 10px;
   padding: 14px;
 }
-.preview-card .stars { display: inline-flex; gap: 2px; color: #efb840 }
+.preview-card .stars { display: inline-flex; gap: 2px; color: var(--color-rating-star) }
 .preview-card .stars svg { width: 14px; height: 14px; fill: currentColor }
 .preview-card .q {
-  font: 500 14px/20px Inter; color: var(--lyra-slate-900);
+  font: var(--text-h-sm); color: var(--lyra-slate-900);
   margin-top: var(--space-2);
 }
 .preview-card .ai-q {
-  font: 400 12px/18px Inter; color: var(--lyra-slate-500);
+  font: var(--text-body-sm); color: var(--lyra-slate-500);
   margin-top: var(--space-1); font-style: italic;
 }
 
@@ -736,7 +724,7 @@ select.fi-input {
   border: 1px solid rgba(166,79,0,0.15);
   border-radius: var(--radius-md);
   padding: 10px 14px;
-  font: 500 14px/20px Inter; margin-top: 14px;
+  font: var(--text-h-sm); margin-top: 14px;
 }
 
 /* Topbar is always var(--color-bg-surface-container) in both WFM and FI modes */
@@ -770,7 +758,7 @@ select.fi-input {
   background: linear-gradient(135deg, var(--fi-purple-bg) 0%, #e6f0fb 100%);
   border: 1px solid rgba(120,86,186,0.20);
   border-radius: var(--radius-sm);
-  font: 500 12px/16px Inter; color: var(--fi-purple);
+  font: var(--text-h-xs); color: var(--fi-purple);
   padding: var(--space-1) 10px;
   cursor: pointer;
   letter-spacing: 0;
@@ -783,20 +771,20 @@ select.fi-input {
 .app-title.fi .fi-chip {
   display: inline-flex; align-items: center; gap: var(--space-1);
   background: var(--fi-accent-bg); color: var(--fi-accent-strong);
-  font: 600 12px/16px Inter; letter-spacing: 0.04em;
+  font: 600 12px/16px var(--font-sans); letter-spacing: 0.04em;
   padding: 3px 6px; border-radius: 3px; text-transform: uppercase;
 }
 
 
 /* === VU Score Model (Ontology page) === */
 .ont-table { width: 100%; border-collapse: collapse; }
-.ont-table th { text-align: left; font: 500 12px/16px Inter; letter-spacing: 0.04em; text-transform: uppercase;
+.ont-table th { text-align: left; font: var(--text-h-xs); letter-spacing: 0.04em; text-transform: uppercase;
   color: var(--lyra-slate-500); padding: var(--space-2) 10px; border-bottom: 1px solid rgba(0,0,0,0.08); }
 .ont-table td { padding: 10px; border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: middle;
-  font: 400 14px/20px Inter; color: var(--lyra-slate-900); }
+  font: var(--text-body-md); color: var(--lyra-slate-900); }
 .ont-table tr:last-child td { border-bottom: none; }
 .ont-input { width: 100%; border: 1px solid transparent; background: transparent;
-  font: 500 14px/20px Inter; color: var(--lyra-slate-900); padding: 6px var(--space-2); border-radius: var(--radius-xs);
+  font: var(--text-h-sm); color: var(--lyra-slate-900); padding: 6px var(--space-2); border-radius: var(--radius-xs);
   outline: none; box-sizing: border-box; }
 .ont-input:hover { background: rgba(0,0,0,0.025); }
 .ont-input:focus { background: var(--lyra-white); border-color: var(--fi-accent-strong);
@@ -811,11 +799,11 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   stroke-linecap: round; stroke-linejoin: round; }
 .ont-addbtn { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
   background: transparent; border: 1px dashed rgba(0,0,0,0.18); border-radius: var(--radius-sm);
-  padding: 6px var(--space-3); font: 500 14px/20px Inter; color: var(--lyra-slate-600); cursor: pointer; }
+  padding: 6px var(--space-3); font: var(--text-h-sm); color: var(--lyra-slate-600); cursor: pointer; }
 .ont-addbtn:hover { background: var(--fi-accent-bg); border-color: var(--fi-accent-strong);
   color: var(--fi-accent-strong); }
 .ont-addbtn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; }
-.cat-chip { display: inline-block; font: 500 12px/16px Inter; padding: 2px var(--space-2);
+.cat-chip { display: inline-block; font: var(--text-h-xs); padding: 2px var(--space-2);
   border: 1px solid; border-radius: 10px; letter-spacing: 0.01em; }
 .sent-table input[type="range"] { accent-color: var(--fi-accent-strong); }
 
@@ -845,11 +833,11 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 .working-banner-body { flex: 1; min-width: 0 }
 .working-banner-title {
-  font: 500 14px/20px Inter; color: var(--fi-purple);
+  font: var(--text-h-sm); color: var(--fi-purple);
   letter-spacing: 0;
 }
 .working-banner-sub {
-  font: 400 12px/18px Inter; color: var(--lyra-slate-900);
+  font: var(--text-body-sm); color: var(--lyra-slate-900);
   margin-top: 2px;
 }
 .working-banner-actions {
@@ -922,20 +910,267 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   min-width: 0;
 }
 .welcome-mode-option .title {
-  font: 500 14px/20px Inter;
+  font: var(--text-h-sm);
   color: var(--lyra-slate-900);
   letter-spacing: 0;
 }
 .welcome-mode-option .desc {
-  font: 400 12px/16px Inter;
+  font: var(--text-body-sm);
   color: var(--lyra-slate-500);
 }
 .welcome-mode-option.on .title { color: var(--fi-accent-strong); }
 
 /* Kicker label inside invitation block */
 .kicker {
-  font: 600 12px/16px Inter;
+  font: 600 12px/16px var(--font-sans);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--lyra-slate-600);
+}
+
+/* ─── Row-level action button + dropdown menu ─────────────────────────────── */
+.row-action-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 28px; padding: 0 10px;
+  background: var(--lyra-white);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-sm);
+  font: 500 13px/20px var(--font-sans);
+  color: var(--lyra-slate-700);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.row-action-btn:hover {
+  background: var(--color-bg-active-subtle);
+  border-color: var(--fi-accent);
+  color: var(--fi-accent-strong);
+}
+.row-action-menu {
+  position: absolute; right: 0; top: calc(100% + 4px); z-index: 200;
+  min-width: 168px;
+  background: var(--lyra-white);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  padding: var(--space-1) 0;
+  overflow: hidden;
+}
+.row-action-item {
+  display: flex; align-items: center; gap: var(--space-2);
+  width: 100%; padding: var(--space-2) var(--space-3);
+  background: none; border: none;
+  font: 400 13px/20px var(--font-sans); color: var(--lyra-slate-700);
+  cursor: pointer; text-align: left;
+  transition: background 0.1s;
+}
+.row-action-item:hover { background: var(--color-bg-active-subtle); }
+.row-action-item.danger { color: var(--fi-red); }
+.row-action-item.danger:hover { background: rgba(200,40,40,0.06); }
+.row-action-divider {
+  height: 1px; background: var(--color-border-subtle);
+  margin: var(--space-1) 0;
+}
+
+/* ─── Campaign Template Picker ───────────────────────────────────────────── */
+
+.tmpl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: var(--space-4);
+}
+
+.tmpl-card {
+  background: var(--lyra-white);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+.tmpl-card:hover {
+  border-color: var(--color-border-soft);
+  box-shadow: var(--shadow-md);
+}
+
+.tmpl-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.tmpl-icon {
+  width: 44px; height: 44px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.tmpl-icon svg { width: 22px; height: 22px; }
+
+.tmpl-category {
+  font: 500 11px/16px var(--font-sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.tmpl-name {
+  font: 600 15px/20px var(--font-sans);
+  color: var(--color-fg-default);
+  letter-spacing: -0.01em;
+}
+
+.tmpl-tagline {
+  font: 400 13px/18px var(--font-sans);
+  color: var(--color-fg-secondary);
+  margin: 0;
+}
+
+.tmpl-why {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  background: var(--color-bg-active-subtle);
+  border-left: 2px solid var(--lyra-brand-400);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: var(--space-2) var(--space-3);
+  font: 400 12px/17px var(--font-sans);
+  color: var(--color-fg-default);
+}
+.tmpl-why svg { color: var(--lyra-brand-600); margin-top: 1px; }
+
+.tmpl-tags-section { display: flex; flex-direction: column; gap: 6px; }
+
+.tmpl-tags-label {
+  font: 500 11px/16px var(--font-sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--lyra-slate-500);
+}
+
+.tmpl-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.tmpl-tag {
+  font: var(--text-body-sm);
+  padding: 3px 8px;
+  border-radius: var(--radius-round);
+}
+.tmpl-tag.interaction {
+  background: var(--lyra-slate-100);
+  color: var(--lyra-slate-700);
+  border: 1px solid var(--lyra-slate-200);
+}
+.tmpl-tag.topic {
+  background: rgba(120,86,186,0.07);
+  color: var(--lyra-purple-700);
+  border: 1px solid rgba(120,86,186,0.15);
+}
+
+.tmpl-metrics {
+  display: flex;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--color-border-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
+  flex-wrap: wrap;
+}
+
+.tmpl-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 80px;
+}
+
+.tmpl-metric-label {
+  font: 400 11px/14px var(--font-sans);
+  letter-spacing: 0.03em;
+  color: var(--lyra-slate-500);
+  text-transform: uppercase;
+}
+
+.tmpl-metric-value {
+  font: 600 14px/18px var(--font-sans);
+  color: var(--color-fg-default);
+  letter-spacing: -0.01em;
+}
+
+.tmpl-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--lyra-slate-100);
+  border-radius: var(--radius-md);
+}
+
+.tmpl-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font: 400 12px/17px var(--font-sans);
+  color: var(--color-fg-secondary);
+}
+.tmpl-detail-row svg { color: var(--lyra-slate-500); flex-shrink: 0; margin-top: 2px; }
+.tmpl-detail-row strong { color: var(--color-fg-default); font-weight: 500; }
+
+.tmpl-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: var(--space-1);
+}
+
+.tmpl-expand-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: none; border: none; padding: 0;
+  font: var(--text-body-sm);
+  color: var(--lyra-slate-500);
+  cursor: pointer;
+  transition: color 0.12s;
+}
+.tmpl-expand-btn:hover { color: var(--lyra-slate-700); }
+
+.tmpl-use-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 var(--space-4);
+  background: var(--color-bg-primary);
+  color: var(--lyra-white);
+  border: none; border-radius: var(--radius-sm);
+  font: 500 13px/20px var(--font-sans);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.tmpl-use-btn:hover { background: var(--color-bg-primary-hover); }
+
+.tmpl-filter-pill {
+  height: 30px; padding: 0 var(--space-3);
+  background: var(--lyra-white);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-round);
+  font: 400 13px/20px var(--font-sans);
+  color: var(--lyra-slate-600);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.tmpl-filter-pill:hover {
+  background: var(--color-bg-active-subtle);
+  border-color: var(--lyra-brand-400);
+  color: var(--color-fg-active-strong);
+}
+.tmpl-filter-pill.on {
+  background: var(--color-bg-active-moderate);
+  border-color: var(--lyra-brand-500);
+  color: var(--color-fg-active-strong);
+  font-weight: 500;
 }
