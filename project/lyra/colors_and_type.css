@@ -219,6 +219,47 @@
   --focus-ring: 0 0 0 2px var(--color-bg-surface-base), 0 0 0 4px var(--color-border-focus-default);
 
   /* ============================================================
+     STATUS / ACCENT TOKENS (Feedback Intelligence product tokens)
+     ============================================================ */
+
+  /* FI accent — Lyra teal-500 for primary UI accents in FI product */
+  --fi-accent:       var(--lyra-teal-500);          /* #006889 */
+  --fi-accent-strong: #005570;                       /* teal pressed / focus ring */
+  --fi-accent-bg:    rgba(0,104,137,0.08);           /* teal wash */
+
+  /* Status semantic shorthands used across FI styles */
+  --fi-red:          var(--lyra-red-600);            /* #bf2323 */
+  --fi-red-bg:       var(--lyra-red-50);             /* #ffecec */
+  --fi-green:        var(--lyra-green-700);          /* #1c5e25 */
+  --fi-green-bg:     var(--lyra-green-50);           /* #e6f7e8 */
+  --fi-purple:       var(--lyra-purple-500);         /* #7856ba */
+  --fi-purple-bg:    rgba(120,86,186,0.08);          /* purple wash */
+  --fi-amber:        var(--lyra-orange-700);         /* #a64f00 */
+  --fi-amber-bg:     var(--lyra-orange-50);          /* #fff2e2 */
+
+  /* Additional alias for the active/strong fg (convenience) */
+  --color-fg-active-strong: var(--lyra-brand-700);  /* = #185ba4 — also declared above in fg section */
+
+  /* Custom status token (exact value differs slightly from lyra-red-600 #bf2323) */
+  --color-status-error: #b62c2c;                     /* Lyra: status/critical-strong */
+
+  /* Star-rating color */
+  --color-rating-star: #efb840;
+
+  /* ============================================================
+     OPACITY TOKENS
+     ============================================================ */
+  --opacity-hover:          0.04;
+  --opacity-pressed:        0.08;
+  --opacity-disabled:       0.36;
+  --opacity-border-subtle:  0.10;
+  --opacity-border-soft:    0.16;
+  --opacity-border-strong:  0.28;
+
+  /* Font-feature-settings for Inter */
+  --font-features: "ss01", "cv11";
+
+  /* ============================================================
      TYPOGRAPHY
      Family: Inter for everything, including the LYRA wordmark.
      The Lyra Typography table prescribes:

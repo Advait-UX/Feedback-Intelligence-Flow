@@ -74,8 +74,13 @@ function App() {
       return { ...n, active: n.key === route.section };
     });
     if (route.section === "campaigns") {
-      if (route.view === "create") {
+      if (route.view === "pick-template") {
+        content = <CampaignTemplatePicker
+          onSelect={(tpl) => setRoute({ ...route, view: "create", template: tpl })}
+          onSkip={() => setRoute({ ...route, view: "create", template: null })}/>;
+      } else if (route.view === "create") {
         content = <CreateCampaign
+          template={route.template || null}
           onCancel={() => setRoute({ ...route, view: "list" })}
           onSave={(c) => {
             setToast({ icon: "check", msg: `Campaign "${c.name}" saved as ${c.status}.` });
@@ -88,7 +93,7 @@ function App() {
           onEdit={() => setRoute({ ...route, view: "create" })}/>;
       } else {
         content = <SurveyCampaignsGrid
-          onCreate={() => setRoute({ ...route, view: "create" })}
+          onCreate={() => setRoute({ ...route, view: "pick-template" })}
           onOpen={(c) => setRoute({ ...route, view: "detail", campaign: c })}/>;
       }
     } else if (route.section === "ontology") {
