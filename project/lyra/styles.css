@@ -1,5 +1,25 @@
 /* Feedback Intelligence — additions over shell.css */
 
+/* ─── Global scrollbar — Lyra slate palette, thin & subtle ──────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--lyra-slate-300, #d2d8db) transparent;
+}
+*::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--lyra-slate-300, #d2d8db);
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--lyra-slate-400, #a8b3bb);
+}
+
 /* ─── Lyra Info banner — used for inline help text above tables ──────────────
    Uses bg/active/subtle (var(--color-bg-active-subtle)) + brand-700 left accent for an "informational"
    tone. Body MD (Lyra) typography. Positioned within the pane padding. */
@@ -178,7 +198,6 @@
   background: var(--lyra-white);                       /* Lyra: bg/surface/base */
   border: 1px solid var(--color-border-subtle);        /* Lyra: border/subtle */
   border-radius: var(--radius-lg);                     /* Lyra: radius/lg = 12px */
-  box-shadow: 0px 2px 6px 0px rgba(0,0,0,0.04);        /* Lyra: Shadow sm */
   margin-top: var(--space-4);                          /* 16px */
   overflow: hidden;
 }
@@ -188,6 +207,9 @@
   border-bottom: 1px solid var(--color-border-subtle); /* Lyra: border/subtle */
   cursor: pointer;
   user-select: none;
+}
+.form-section-head.no-border {
+  border-bottom: none;
 }
 .form-section-head .step-num {
   width: 28px; height: 28px; border-radius: 50%;
@@ -203,7 +225,8 @@
   flex-shrink: 0;
 }
 .form-section-head.complete .step-num {
-  background: var(--fi-green-bg); color: var(--fi-green);
+  background: var(--color-bg-active-moderate);
+  color: var(--color-fg-active-strong);
 }
 .form-section-head h3 {
   margin: 0;
@@ -269,20 +292,9 @@
   color: var(--color-status-error);                                      /* Lyra: status/critical-strong */
   margin-left: 2px;
 }
-.field-label .hint {
-  /* Lyra Body SM: Inter Regular 12/16, letter-spacing 0.01rem.
-     Hint sits on its OWN line below the label/asterisk row. */
-  display: block;                                      /* force to new line */
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 16px;
-  letter-spacing: 0.01rem;
-  color: var(--color-fg-secondary);
-  margin-top: var(--space-1);
-}
 .field-control { display: flex; flex-direction: column; gap: var(--space-2); }
-.field-control .help {
+.field-control .help,
+.field-control .hint {
   /* Lyra Body SM: helper text below inputs */
   font-family: var(--font-sans);
   font-size: 12px;
@@ -295,6 +307,7 @@
 /* ─── Lyra Input (node 16926:23017) — match the rendered Default state ─────
    The Lyra Default Input visually uses border/soft (rgba(0,0,0,0.16)) — a
    thin, subtle border. Hover/active states deepen the border. */
+input.fi-input,
 input[type="text"].fi-input,
 input[type="date"].fi-input,
 input[type="number"].fi-input,
@@ -403,6 +416,9 @@ select.fi-input {
 .field-grid-2 + .field-grid-2 {
   border-top: 1px solid var(--color-border-subtle);
 }
+.section-heading + .field-grid-2 {
+  border-top: none;
+}
 .field-grid-2 .field-cell {
   display: flex; flex-direction: column; gap: var(--space-2);
   min-width: 0;
@@ -490,7 +506,7 @@ select.fi-input {
   gap: var(--space-4) var(--space-6);                  /* 16px row, 24px column */
 }
 
-/* Segmented control */
+/* Segmented control — Lyra Toggle Group */
 .seg {
   display: inline-flex;
   background: var(--lyra-slate-200);
@@ -499,14 +515,24 @@ select.fi-input {
   gap: 2px;
 }
 .seg button {
-  background: transparent; border: 0; cursor: pointer;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
   padding: 5px var(--space-3);
-  font: var(--text-h-sm); color: var(--lyra-slate-600);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--lyra-slate-600);
   border-radius: var(--radius-xs);
   letter-spacing: 0;
+  transition: background 0.1s, color 0.1s;
+  white-space: nowrap;
 }
 .seg button.on {
-  background: var(--lyra-white); color: var(--lyra-slate-900);
+  background: var(--lyra-white);
+  color: var(--lyra-slate-900);
+  font-weight: 500;
   box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 }
 
@@ -641,9 +667,9 @@ select.fi-input {
   background: var(--color-bg-active-subtle);           /* Lyra: bg/active/subtle */
 }
 .form-toc .toc-item .num {
-  width: 24px; height: 24px; border-radius: 50%;       /* slightly bigger for readability */
-  background: var(--lyra-slate-200); color: var(--color-fg-secondary);
-  /* Lyra Heading XS: Medium 12/16 */
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--color-bg-active-moderate);         /* same light blue as active accordion step */
+  color: var(--color-fg-active-strong);                /* brand-700 */
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 500;
@@ -652,10 +678,10 @@ select.fi-input {
   flex-shrink: 0;
 }
 .form-toc .toc-item.on .num {
-  background: var(--color-fg-active-strong);           /* Lyra brand-700 */
+  background: var(--color-fg-active-strong);           /* solid brand-700 when active */
   color: var(--lyra-white);
 }
-.form-toc .toc-item.done .num { background: var(--fi-green-bg); color: var(--fi-green) }
+.form-toc .toc-item.done .num { background: var(--color-bg-active-moderate); color: var(--color-fg-active-strong); }
 
 /* Create Campaign 3-column layout: TOC left, form middle, Campaign Summary right */
 .create-grid {
@@ -670,8 +696,53 @@ select.fi-input {
 .create-grid > .summary-pane {
   position: sticky; top: var(--space-2);
   align-self: start;
+  padding-top: 22px;
   display: flex; flex-direction: column;
   gap: var(--space-3);
+}
+
+/* Campaign Summary card — right rail */
+.summary-card {
+  background: var(--lyra-white);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.summary-card-head {
+  padding: var(--space-3) var(--space-4);
+  font: 500 12px/16px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-fg-secondary);
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: var(--lyra-slate-100);
+}
+.summary-card-rows { display: flex; flex-direction: column; }
+.summary-card-row {
+  display: flex; align-items: flex-start; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.summary-card-row:last-child { border-bottom: none; }
+.summary-card-icon {
+  width: 28px; height: 28px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--lyra-slate-200);
+  color: var(--lyra-slate-600);
+  border-radius: var(--radius-md);
+  margin-top: 1px;
+}
+.summary-card-row-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.summary-card-label {
+  font: 500 11px/16px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-fg-secondary);
+}
+.summary-card-value {
+  font: 400 13px/20px var(--font-sans);
+  color: var(--color-fg-default);
+  word-break: break-word;
 }
 
 /* Preview card (right rail on Create) */
@@ -680,7 +751,6 @@ select.fi-input {
   background: var(--lyra-white);                       /* Lyra: bg/surface/base */
   border: 1px solid var(--color-border-subtle);        /* Lyra: border/subtle */
   border-radius: var(--radius-lg);                     /* Lyra: radius/lg = 12px */
-  box-shadow: 0px 2px 6px 0px rgba(0,0,0,0.04);        /* Lyra: Shadow sm */
   padding: var(--space-5);                             /* 20px */
   display: flex; flex-direction: column; gap: var(--space-4);
 }
@@ -755,16 +825,20 @@ select.fi-input {
 /* AI sparkle button */
 .ai-sparkle-btn {
   display: inline-flex; align-items: center; gap: 6px;
-  background: linear-gradient(135deg, var(--fi-purple-bg) 0%, #e6f0fb 100%);
+  height: 36px;
+  padding: 0 var(--space-4);
+  background: var(--fi-purple-bg);
   border: 1px solid rgba(120,86,186,0.20);
-  border-radius: var(--radius-sm);
-  font: var(--text-h-xs); color: var(--fi-purple);
-  padding: var(--space-1) 10px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 14px; font-weight: 500; line-height: 20px;
+  color: var(--fi-purple);
   cursor: pointer;
   letter-spacing: 0;
+  white-space: nowrap;
 }
-.ai-sparkle-btn:hover { border-color: var(--fi-purple) }
-.ai-sparkle-btn svg { width: 12px; height: 12px }
+.ai-sparkle-btn:hover { background: rgba(120,86,186,0.12); border-color: var(--fi-purple); }
+.ai-sparkle-btn svg { flex-shrink: 0; }
 
 /* Topbar product menu chip for FI accent (subtle) */
 .app-title.fi { color: var(--lyra-slate-900) }
@@ -869,13 +943,13 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   transition: border-color 0.15s, background 0.15s;
 }
 .welcome-mode-option:hover {
-  border-color: rgba(13,138,138,0.40);
-  background: rgba(13,138,138,0.03);
+  border-color: rgba(22,108,202,0.40);
+  background: rgba(22,108,202,0.03);
 }
 .welcome-mode-option.on {
-  border-color: var(--fi-accent-strong);
-  background: var(--fi-accent-bg);
-  box-shadow: 0 0 0 1px var(--fi-accent-strong);
+  border-color: #2d5bb9;
+  background: #f1f7fe;
+  box-shadow: 0 0 0 1px #2d5bb9;
 }
 .welcome-mode-option input[type="radio"] {
   position: absolute;
@@ -894,14 +968,15 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   transition: border-color 0.15s;
 }
 .welcome-mode-option.on .dot {
-  border-color: var(--fi-accent-strong);
+  border-color: #2d5bb9;
+  background: #2d5bb9;
 }
 .welcome-mode-option.on .dot::after {
   content: "";
   position: absolute;
   inset: 3px;
   border-radius: 50%;
-  background: var(--fi-accent-strong);
+  background: var(--lyra-white);
 }
 .welcome-mode-option .body {
   display: flex;
@@ -918,7 +993,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   font: var(--text-body-sm);
   color: var(--lyra-slate-500);
 }
-.welcome-mode-option.on .title { color: var(--fi-accent-strong); }
+.welcome-mode-option.on .title { color: #185ba4; }
 
 /* Kicker label inside invitation block */
 .kicker {
@@ -976,24 +1051,388 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 
 .tmpl-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-4);
+}
+
+.tmpl-grid-compact {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.tmpl-card-compact {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  background: var(--lyra-white);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color 0.12s, box-shadow 0.12s;
+  user-select: none;
+}
+.tmpl-card-compact:hover {
+  border-color: var(--lyra-brand-400);
+}
+.tmpl-card-compact.selected {
+  border-color: var(--lyra-brand-600);
+  background: var(--color-bg-active-subtle);
+}
+.tmpl-icon-sm {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+}
+.tmpl-icon-sm svg { width: 16px; height: 16px; }
+
+/* Template drawer — right-side panel */
+.tmpl-drawer-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.20);
+  z-index: 300;
+  display: flex; justify-content: flex-end;
+}
+.tmpl-drawer {
+  width: 80vw;
+  max-width: 1200px;
+  height: 100%;
+  background: var(--lyra-white);
+  display: flex; flex-direction: column;
+  border-left: 1px solid var(--color-border-subtle);
+  animation: drawerSlideIn 0.2s ease;
+}
+@keyframes drawerSlideIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+.tmpl-drawer-head {
+  display: flex; align-items: flex-start; gap: var(--space-3);
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+}
+.tmpl-drawer-close {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border: none; background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-md);
+  cursor: pointer; color: var(--color-fg-secondary);
+}
+.tmpl-drawer-close:hover { background: var(--color-state-bg-hover); }
+.tmpl-drawer-body {
+  flex: 1; overflow-y: auto;
+  padding: var(--space-5) var(--space-6);
+  display: flex; flex-direction: column;
+}
+.tmpl-drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  flex: 1;
+  margin-bottom: var(--space-5);
+}
+/* Card — zones handle their own spacing, meta footer always at bottom */
+.tmpl-drawer-card {
+  display: flex; flex-direction: column;
+  background: var(--lyra-white);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color 0.15s;
+  user-select: none;
+  overflow: hidden;
+}
+.tmpl-drawer-card:hover { border-color: var(--lyra-brand-300); }
+.tmpl-drawer-card.selected { border-color: var(--lyra-brand-600); }
+
+/* Zone 1 — Identity */
+.tmpl-drawer-card-head {
+  display: flex; align-items: flex-start; gap: var(--space-3);
+  padding: var(--space-4) var(--space-4) var(--space-3);
+}
+.tmpl-drawer-card-name {
+  font: 600 14px/20px var(--font-sans);
+  color: var(--color-fg-default);
+  letter-spacing: -0.01rem;
+}
+.tmpl-drawer-category {
+  font: 400 11px/16px var(--font-sans);
+  color: var(--color-fg-secondary);
+  margin-top: 1px;
+}
+
+/* Shared zone label */
+.tmpl-drawer-zone-label {
+  font: 500 10px/14px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-fg-secondary);
+  margin-bottom: var(--space-1);
+}
+
+/* Zone 2 — Use when */
+.tmpl-drawer-usewhen-block {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}
+.tmpl-drawer-why {
+  margin: 0;
+  font: 400 13px/20px var(--font-sans);
+  color: var(--color-fg-default);
+}
+
+/* Zone 3 — Topics */
+.tmpl-drawer-topics-block {
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+/* Zone 4 — Meta footer: recessed background, always at bottom */
+.tmpl-drawer-meta-footer {
+  margin-top: auto;
+  background: var(--lyra-slate-100);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}
+.tmpl-drawer-meta-row-inner {
+  display: flex; align-items: center; gap: 5px;
+  flex-wrap: wrap;
+}
+.tmpl-drawer-meta-text {
+  font: 400 11px/16px var(--font-sans);
+  color: var(--color-fg-secondary);
+}
+.tmpl-drawer-meta-dot {
+  color: var(--color-border-strong);
+  font-size: 11px; line-height: 16px;
+}
+
+/* AI Model card */
+.model-card {
+  display: flex; flex-direction: column; gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--lyra-white);
+}
+.model-card.selected {
+  border-color: var(--lyra-brand-600);
+  background: var(--color-bg-active-subtle);
+}
+.model-card-head { display: flex; align-items: flex-start; gap: var(--space-3); }
+.model-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--fi-purple-bg); color: var(--lyra-purple-700);
+  border-radius: var(--radius-md);
+}
+.model-card-meta {
+  display: flex; gap: var(--space-5);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
+}
+.model-meta-group { display: flex; flex-direction: column; gap: var(--space-2); }
+.model-meta-label {
+  font: 500 10px/14px var(--font-sans);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--color-fg-secondary);
+}
+
+/* Survey Design cards */
+.survey-design-card {
+  display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-4);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--lyra-white);
+  cursor: pointer;
+  transition: border-color 0.15s;
+  margin-bottom: var(--space-3);
+}
+.survey-design-card:last-child { margin-bottom: 0; }
+.survey-design-card:hover { border-color: var(--lyra-brand-300); }
+.survey-design-card.selected { border-color: var(--lyra-brand-600); background: var(--color-bg-active-subtle); }
+.survey-design-card-head { display: flex; align-items: flex-start; gap: var(--space-3); }
+
+.tmpl-drawer-footer {
+  flex-shrink: 0;
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-border-subtle);
+  text-align: center;
+  background: var(--lyra-white);
+}
+.tmpl-drawer-when {
+  display: flex; flex-direction: column; gap: 3px;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg-active-subtle);
+  border-left: 2px solid var(--lyra-brand-400);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.tmpl-drawer-field-label {
+  font: 500 10px/14px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-fg-secondary);
+}
+.tmpl-drawer-field-text {
+  font: 400 12px/17px var(--font-sans);
+  color: var(--color-fg-default);
+}
+.tmpl-drawer-meta-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-4);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border-subtle);
+}
+.tmpl-drawer-meta-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font: 500 11px/16px var(--font-sans);
+  color: var(--lyra-purple-700);
+  background: rgba(120,86,186,0.08);
+  border: 1px solid rgba(120,86,186,0.15);
+  padding: 2px 7px;
+  border-radius: var(--radius-round);
+  white-space: nowrap;
+}
+
+/* Template picker — clean card grid inside form step */
+.tmpl-simple-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+.tmpl-simple-card {
+  display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--lyra-white);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color 0.12s, box-shadow 0.12s;
+  user-select: none;
+}
+.tmpl-simple-card:hover {
+  border-color: var(--lyra-brand-300);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.tmpl-simple-card.selected {
+  border-color: var(--lyra-brand-600);
+  background: var(--color-bg-active-subtle);
+}
+.tmpl-simple-card-head {
+  display: flex; align-items: center; gap: var(--space-2);
+}
+.tmpl-simple-card-name {
+  font: 500 14px/20px var(--font-sans);
+  color: var(--color-fg-default);
+  flex: 1;
+}
+.tmpl-simple-card-why {
+  margin: 0;
+  font: 400 13px/19px var(--font-sans);
+  color: var(--color-fg-secondary);
+}
+
+/* Template picker — split panel inside form step (legacy, kept for reference) */
+.tmpl-picker {
+  display: flex;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  min-height: 340px;
+  background: var(--lyra-white);
+}
+.tmpl-list {
+  width: 240px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--color-border-subtle);
+  display: flex;
+  flex-direction: column;
+  background: var(--lyra-slate-50);
+}
+.tmpl-list-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-border-subtle);
+  transition: background 0.1s;
+  user-select: none;
+}
+.tmpl-list-item:hover,
+.tmpl-list-item.previewing {
+  background: var(--lyra-white);
+}
+.tmpl-list-item.sel {
+  background: var(--color-bg-active-subtle);
+  box-shadow: inset 2px 0 0 var(--lyra-brand-600);
+}
+.tmpl-list-name {
+  font: 500 13px/18px var(--font-sans);
+  color: var(--color-fg-default);
+  flex: 1; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.tmpl-list-scratch {
+  padding: 10px 14px;
+  margin-top: auto;
+  border-top: 1px solid var(--color-border-subtle);
+}
+.tmpl-detail {
+  flex: 1;
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  overflow-y: auto;
+  background: var(--lyra-white);
+}
+.tmpl-detail-head {
+  display: flex; align-items: flex-start; gap: var(--space-3);
+}
+.tmpl-detail-name {
+  font: 600 16px/24px var(--font-sans);
+  color: var(--color-fg-default);
+  letter-spacing: -0.01rem;
+}
+.tmpl-detail-tags-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+.tmpl-detail-meta {
+  display: flex;
+  gap: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background: var(--lyra-slate-50);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+}
+.tmpl-meta-item {
+  display: flex; flex-direction: column; gap: 3px;
+}
+.tmpl-meta-label {
+  font: 500 10px/14px var(--font-sans);
+  color: var(--color-fg-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.tmpl-meta-value {
+  font: 600 14px/20px var(--font-sans);
+  color: var(--color-fg-default);
 }
 
 .tmpl-card {
   background: var(--lyra-white);
   border: 1px solid var(--color-border-subtle);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-5);
-  transition: box-shadow 0.15s, border-color 0.15s;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  transition: border-color 0.15s;
 }
 .tmpl-card:hover {
-  border-color: var(--color-border-soft);
-  box-shadow: var(--shadow-md);
+  border-color: var(--lyra-brand-300);
 }
 
 .tmpl-card-top {
@@ -1003,12 +1442,12 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 
 .tmpl-icon {
-  width: 44px; height: 44px;
+  width: 40px; height: 40px;
   border-radius: var(--radius-md);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.tmpl-icon svg { width: 22px; height: 22px; }
+.tmpl-icon svg { width: 20px; height: 20px; }
 
 .tmpl-category {
   font: 500 11px/16px var(--font-sans);
@@ -1023,43 +1462,58 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   letter-spacing: -0.01em;
 }
 
-.tmpl-tagline {
-  font: 400 13px/18px var(--font-sans);
-  color: var(--color-fg-secondary);
-  margin: 0;
+.tmpl-effort-badge {
+  flex-shrink: 0;
+  align-self: flex-start;
+  font: 500 11px/16px var(--font-sans);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-round);
+  white-space: nowrap;
 }
 
-.tmpl-why {
+/* "Use when" — primary decision signal */
+.tmpl-use-when {
   display: flex;
-  align-items: flex-start;
-  gap: 6px;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
   background: var(--color-bg-active-subtle);
   border-left: 2px solid var(--lyra-brand-400);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  padding: var(--space-2) var(--space-3);
-  font: 400 12px/17px var(--font-sans);
+}
+.tmpl-use-when-label {
+  font: 600 10px/14px var(--font-sans);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-fg-active-strong);
+}
+.tmpl-use-when-text {
+  font: 400 13px/18px var(--font-sans);
   color: var(--color-fg-default);
 }
-.tmpl-why svg { color: var(--lyra-brand-600); margin-top: 1px; }
 
-.tmpl-tags-section { display: flex; flex-direction: column; gap: 6px; }
+.tmpl-tags-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
 
 .tmpl-tags-label {
-  font: 500 11px/16px var(--font-sans);
-  letter-spacing: 0.04em;
+  font: 500 10px/14px var(--font-sans);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--lyra-slate-500);
+  color: var(--lyra-slate-400);
 }
 
 .tmpl-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 4px;
 }
 
 .tmpl-tag {
   font: var(--text-body-sm);
-  padding: 3px 8px;
+  padding: 2px var(--space-2);
   border-radius: var(--radius-round);
 }
 .tmpl-tag.interaction {
@@ -1068,59 +1522,10 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   border: 1px solid var(--lyra-slate-200);
 }
 .tmpl-tag.topic {
-  background: rgba(120,86,186,0.07);
+  background: var(--fi-purple-bg);
   color: var(--lyra-purple-700);
   border: 1px solid rgba(120,86,186,0.15);
 }
-
-.tmpl-metrics {
-  display: flex;
-  gap: var(--space-4);
-  padding: var(--space-3) 0;
-  border-top: 1px solid var(--color-border-subtle);
-  border-bottom: 1px solid var(--color-border-subtle);
-  flex-wrap: wrap;
-}
-
-.tmpl-metric {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  flex: 1;
-  min-width: 80px;
-}
-
-.tmpl-metric-label {
-  font: 400 11px/14px var(--font-sans);
-  letter-spacing: 0.03em;
-  color: var(--lyra-slate-500);
-  text-transform: uppercase;
-}
-
-.tmpl-metric-value {
-  font: 600 14px/18px var(--font-sans);
-  color: var(--color-fg-default);
-  letter-spacing: -0.01em;
-}
-
-.tmpl-detail {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding: var(--space-3);
-  background: var(--lyra-slate-100);
-  border-radius: var(--radius-md);
-}
-
-.tmpl-detail-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  font: 400 12px/17px var(--font-sans);
-  color: var(--color-fg-secondary);
-}
-.tmpl-detail-row svg { color: var(--lyra-slate-500); flex-shrink: 0; margin-top: 2px; }
-.tmpl-detail-row strong { color: var(--color-fg-default); font-weight: 500; }
 
 .tmpl-card-foot {
   display: flex;
@@ -1128,18 +1533,17 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   justify-content: space-between;
   gap: var(--space-2);
   margin-top: auto;
-  padding-top: var(--space-1);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
-.tmpl-expand-btn {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: none; border: none; padding: 0;
-  font: var(--text-body-sm);
-  color: var(--lyra-slate-500);
-  cursor: pointer;
-  transition: color 0.12s;
+.tmpl-foot-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: 400 12px/16px var(--font-sans);
+  color: var(--lyra-slate-400);
 }
-.tmpl-expand-btn:hover { color: var(--lyra-slate-700); }
 
 .tmpl-use-btn {
   display: inline-flex; align-items: center; gap: 6px;
@@ -1173,4 +1577,305 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   border-color: var(--lyra-brand-500);
   color: var(--color-fg-active-strong);
   font-weight: 500;
+}
+
+/* Readonly checked checkbox — shows check but signals non-editable */
+.lyra-check.disabled input[type="checkbox"]:disabled:checked {
+  background: var(--color-bg-active-moderate);
+  border-color: var(--lyra-brand-400);
+  background-image: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2016%2016%27%20fill%3D%27none%27%3E%3Cpath%20d%3D%27M3.5%208L6.5%2011L12.5%205%27%20stroke%3D%27%23185ba4%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 1;
+  cursor: default;
+}
+
+/* ─── Tooltip ────────────────────────────────────────────────────────────── */
+.tooltip-wrap { display: inline-flex; position: relative; }
+.tooltip-bubble {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%; transform: translateX(-50%);
+  background: var(--color-bg-surface-inverse);
+  color: var(--color-fg-inverse);
+  font: 400 12px/18px var(--font-sans);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  box-shadow: var(--elev-3);
+  white-space: normal;
+  z-index: 500;
+  pointer-events: none;
+}
+.tooltip-bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%; left: 50%; transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--color-bg-surface-inverse);
+}
+.tooltip-wrap:hover .tooltip-bubble { display: block; }
+
+/* ─── Intelligence & Survey combined section sub-sections ───────────────── */
+.intel-sub-section {
+  display: flex; flex-direction: column; gap: var(--space-3);
+}
+.intel-sub-section > .form-section-head {
+  margin-left: calc(-1 * var(--space-6));
+  margin-right: calc(-1 * var(--space-6));
+}
+.intel-sub-section + .intel-sub-section {
+  padding-top: var(--space-4);
+  margin-top: var(--space-4);
+}
+.intel-sub-label {
+  display: flex; align-items: center; gap: var(--space-2);
+  font: 500 13px/20px var(--font-sans);
+  color: var(--color-fg-default);
+  letter-spacing: 0;
+}
+.intel-sub-label svg { flex-shrink: 0; color: var(--color-fg-secondary); }
+
+/* ─── Selected model summary (compact inline card in Section 4) ──────────── */
+.selected-model-summary {
+  border: 1.5px solid var(--lyra-brand-600);
+  border-radius: var(--radius-lg);
+  background: var(--lyra-white);
+  box-shadow: 0px 1px 2px 0px rgba(16,24,40,0.06), 0px 0px 0px 3px var(--color-bg-active-moderate);
+}
+.selected-model-summary-inner {
+  display: flex; align-items: flex-start; gap: var(--space-4);
+  padding: var(--space-5);
+}
+
+/* Model badge (Recommended / New) */
+.model-badge {
+  display: inline-flex; align-items: center;
+  font: 500 10px/14px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--lyra-purple-700);
+  background: var(--fi-purple-bg);
+  border: 1px solid rgba(120,86,186,0.20);
+  padding: 1px 6px;
+  border-radius: var(--radius-round);
+  white-space: nowrap;
+}
+
+/* ─── Model Picker Drawer ─────────────────────────────────────────────────── */
+.model-picker-drawer {
+  width: 680px;
+  height: 100%;
+  background: var(--lyra-white);
+  display: flex; flex-direction: column;
+  border-left: 1px solid var(--color-border-subtle);
+  animation: drawerSlideIn 0.2s ease;
+}
+
+.model-picker-head {
+  display: flex; align-items: flex-start; gap: var(--space-3);
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+}
+
+.model-picker-search-wrap {
+  display: flex; align-items: center; gap: var(--space-2);
+  margin: var(--space-4) var(--space-6) 0;
+  padding: 0 var(--space-3);
+  height: 36px;
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md);
+  background: var(--lyra-white);
+  flex-shrink: 0;
+}
+.model-picker-search-wrap:focus-within {
+  border-color: var(--color-fg-active-strong);
+  box-shadow: 0 0 1px 3px rgba(44,138,242,0.20);
+}
+.model-picker-search {
+  flex: 1; border: none; outline: none; background: transparent;
+  font: 400 14px/20px var(--font-sans); color: var(--color-fg-default);
+}
+.model-picker-search::placeholder { color: var(--color-fg-secondary); }
+.model-picker-search-clear {
+  background: none; border: none; cursor: pointer; padding: 2px;
+  color: var(--color-fg-secondary); border-radius: var(--radius-xs);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.model-picker-search-clear:hover { background: var(--color-bg-control-subtle); color: var(--color-fg-default); }
+
+.model-picker-count {
+  padding: var(--space-2) var(--space-6) var(--space-3);
+  font: 400 12px/16px var(--font-sans);
+  color: var(--color-fg-secondary);
+  flex-shrink: 0;
+}
+
+.model-picker-list {
+  flex: 1; overflow-y: auto;
+  padding: 0 var(--space-6) var(--space-4);
+  display: flex; flex-direction: column; gap: var(--space-2);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-medium) transparent;
+}
+
+.model-picker-row {
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--lyra-white);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.model-picker-row:hover { border-color: var(--lyra-brand-300); background: var(--color-bg-active-subtle); }
+.model-picker-row.selected { border-color: var(--lyra-brand-600); background: var(--color-bg-active-subtle); }
+
+.model-picker-row-head {
+  display: flex; align-items: flex-start; gap: var(--space-3);
+  padding: var(--space-4) var(--space-4);
+}
+
+.model-picker-row-details {
+  padding: var(--space-4) var(--space-4) var(--space-4) 60px; /* left-indent to align under text, past radio+icon */
+  border-top: 1px solid var(--color-border-subtle);
+  background: var(--lyra-slate-50);
+}
+
+.model-details-label {
+  font: 500 10px/14px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-fg-secondary);
+  margin-bottom: var(--space-3);
+}
+
+/* Horizontal grid — one column per category */
+.model-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-3);
+}
+
+.model-details-cell {
+  background: var(--lyra-white);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.model-details-cell-head {
+  padding: var(--space-2) var(--space-3);
+  font: 500 11px/16px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-fg-active-strong);
+  background: var(--color-bg-active-subtle);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.model-details-cell-intents {
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  display: flex; flex-direction: column; gap: 6px;
+}
+
+.model-details-intent-row {
+  display: flex; align-items: center; gap: var(--space-2);
+  font: 400 13px/18px var(--font-sans);
+  color: var(--color-fg-default);
+}
+
+.model-details-intent-dot {
+  width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+  background: var(--lyra-purple-500);
+  opacity: 0.7;
+}
+
+.model-picker-foot {
+  display: flex; align-items: center; justify-content: flex-end; gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+  background: var(--lyra-white);
+}
+
+/* ─── Selectable card (AI Model + Survey Design sections) ─────────────────── */
+.selectable-card {
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--lyra-white);
+  overflow: hidden;
+  transition: border-color 0.15s;
+  cursor: pointer;
+}
+.selectable-card:hover { border-color: var(--lyra-brand-300); }
+.selectable-card.selected {
+  border-color: var(--lyra-brand-600);
+  background: var(--color-bg-active-subtle);
+}
+.selectable-card + .selectable-card { margin-top: var(--space-3); }
+
+.selectable-card-head {
+  display: flex; align-items: flex-start; gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.selectable-card-details {
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+  background: var(--lyra-slate-50);
+  display: flex; flex-direction: column; gap: var(--space-3);
+}
+
+/* Lyra radio button — custom circle indicator */
+.lyra-radio {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,0.30);
+  background: var(--lyra-white);
+  margin-top: 3px;
+  position: relative;
+  transition: border-color 0.15s;
+}
+.lyra-radio.selected {
+  border-color: var(--lyra-brand-600);
+}
+.lyra-radio.selected::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--lyra-brand-600);
+}
+
+/* View details toggle button */
+.view-details-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 28px; padding: 0 var(--space-2);
+  background: transparent; border: none;
+  font: 500 12px/16px var(--font-sans);
+  color: var(--color-fg-action);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.1s;
+}
+.view-details-btn:hover { background: var(--color-bg-active-subtle); }
+
+/* Category + intent rows inside expanded card detail panel */
+.model-category-row {
+  display: flex; flex-direction: column; gap: var(--space-1);
+}
+.model-category-row + .model-category-row {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--color-border-subtle);
+}
+.model-category-label {
+  font: 500 11px/16px var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-fg-secondary);
 }

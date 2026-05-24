@@ -2,7 +2,6 @@
 
 const FI_NAV = [
   { type: "group", icon: "campaigns", label: "Campaign Management", expanded: true, children: [
-    { label: "Campaign Templates", key: "campaign-templates" },
     { label: "Survey Campaigns", key: "campaigns" },
     { label: "Survey Templates", key: "designs", isNew: true },
   ]},
@@ -47,7 +46,7 @@ function WFMPlaceholder({ onOpenSwitcher }) {
 
 function App() {
   // Route: { product: 'wfm' | 'fi', section: 'campaigns' | ..., view: 'list' | 'create' }
-  const [route, setRoute] = React.useState({ product: "fi", section: "campaign-templates", view: "list" });
+  const [route, setRoute] = React.useState({ product: "fi", section: "campaigns", view: "list" });
   const [switcherOpen, setSwitcherOpen] = React.useState(false);
   const [navMinimized, setNavMinimized] = React.useState(false);
   const [toast, setToast] = React.useState(null);
@@ -74,21 +73,13 @@ function App() {
       }
       return { ...n, active: n.key === route.section };
     });
-    if (route.section === "campaign-templates") {
-      content = <CampaignTemplatePicker
-        onSelect={(tpl) => setRoute({ product: "fi", section: "campaigns", view: "create", template: tpl })}
-        onSkip={() => setRoute({ product: "fi", section: "campaigns", view: "create", template: null })}/>;
-    } else if (route.section === "campaigns") {
-      if (route.view === "pick-template") {
-        content = <CampaignTemplatePicker
-          onSelect={(tpl) => setRoute({ ...route, view: "create", template: tpl })}
-          onSkip={() => setRoute({ ...route, view: "create", template: null })}/>;
-      } else if (route.view === "create") {
+    if (route.section === "campaigns") {
+      if (route.view === "create") {
         content = <CreateCampaign
           template={route.template || null}
           onCancel={() => setRoute({ ...route, view: "list" })}
           onSave={(c) => {
-            setToast({ icon: "check", msg: `Campaign "${c.name}" saved as ${c.status}.` });
+            setToast({ icon: "check", msg: c.status === "active" ? `Campaign "${c.name}" is now live.` : `Campaign "${c.name}" saved as draft.` });
             setRoute({ ...route, view: "list" });
           }}/>;
       } else if (route.view === "detail" && route.campaign) {
@@ -98,7 +89,7 @@ function App() {
           onEdit={() => setRoute({ ...route, view: "create" })}/>;
       } else {
         content = <SurveyCampaignsGrid
-          onCreate={() => setRoute({ ...route, view: "pick-template" })}
+          onCreate={() => setRoute({ ...route, view: "create" })}
           onOpen={(c) => setRoute({ ...route, view: "detail", campaign: c })}/>;
       }
     } else if (route.section === "ontology") {

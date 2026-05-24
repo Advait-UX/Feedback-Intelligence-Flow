@@ -177,7 +177,7 @@ const DEFAULT_DESIGN = {
   name: "",
   description: "",
   channel: "Digital",
-  surveyType: "CSAT (1–5 star)",
+  surveyType: "CSAT (1–5 Star)",
   displayStyle: "Quick Reply",
   listPickerLabel: "Rate your experience",
   welcomeMode: "with-optout",
@@ -215,6 +215,43 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
     { n: 3, label: "Delivery",         id: "dsec-3", done: true },
     { n: 4, label: "Linked Campaigns", id: "dsec-4", done: linkedIds.length > 0 },
   ];
+
+  function TemplateFloatingSummary() {
+    const rows = [
+      {
+        icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="1.5" width="10" height="13" rx="1.5"/><line x1="6" y1="5" x2="10" y2="5"/><line x1="6" y1="8" x2="10" y2="8"/><line x1="6" y1="11" x2="8.5" y2="11"/></svg>,
+        label: "Name",
+        value: d.name || <span style={{ color: "var(--color-fg-disabled)", fontStyle: "italic" }}>Not set</span>,
+      },
+      {
+        icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M2 11.5C2 9.5 3.5 8 5.5 8h5C12.5 8 14 9.5 14 11.5"/><circle cx="8" cy="4.5" r="2.5"/></svg>,
+        label: "Channel",
+        value: d.channel || "Digital",
+      },
+      {
+        icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4v4l3 2"/></svg>,
+        label: "Survey type",
+        value: d.surveyType || "—",
+      },
+    ];
+
+    return (
+      <div className="summary-card">
+        <div className="summary-card-head">Template Summary</div>
+        <div className="summary-card-rows">
+          {rows.map((r, i) => (
+            <div className="summary-card-row" key={i}>
+              <div className="summary-card-icon">{r.icon}</div>
+              <div className="summary-card-row-body">
+                <div className="summary-card-label">{r.label}</div>
+                <div className="summary-card-value">{r.value}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pane" style={{ overflow: "hidden" }}>
@@ -258,40 +295,48 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
         <div className="form-pane">
 
         <FormSection num={1} title="Identity"
-          sub="A short name and description help others pick the right template later."
+          sub="Name this template so your team knows when to use it."
           id="dsec-1" complete={!!d.name}>
-          <FieldRow label="Name" req hint="Admin-facing label, e.g. 'Standard CSAT — Quick Reply'">
-            <input className="fi-input" placeholder="e.g. Standard CSAT — Quick Reply"
+          <FieldRow label="Name" req hint="Use a name your team will recognise, e.g. 'Post-Chat CSAT'.">
+            <input className="fi-input" placeholder="Type here"
               value={d.name} onChange={e => set("name", e.target.value)}/>
           </FieldRow>
-          <FieldRow label="Description" hint="What this template is for and which campaigns should use it">
+          <FieldRow label="Description" hint="What this template is for and which campaigns should use it.">
             <textarea className="fi-input"
-              placeholder="What is this template for? Which campaigns should use it?"
+              placeholder="Type here"
               value={d.description} onChange={e => set("description", e.target.value)}/>
           </FieldRow>
         </FormSection>
 
         <FormSection num={2} title="Survey Content"
-          sub="What questions the customer sees, and how."
+          sub="Set the questions customers will see and how they will answer."
           id="dsec-2" complete={!!d.defaultScaleQuestion}>
+
+          {/* Survey Channel */}
           <FieldRow label="Survey channel" req
-            hint="Where this survey will be delivered. Some downstream options depend on this choice.">
+            tooltip="Choose where this survey will be delivered. This affects which display options are available below."
+            hint={
+              d.channel === "Digital" ? "Survey will be delivered on digital channels like: chat, AI sessions, social & email." :
+              d.channel === "IVR"     ? "Survey will be sent after a phone call. Customers respond using their keypad." :
+                                        "Survey will be delivered on both phone and digital channels."
+            }>
             <Segmented options={["Digital", "IVR", "Both"]}
               value={d.channel} onChange={v => set("channel", v)}/>
-            <div className="help">
-              {d.channel === "Digital" && "Digital channels: chat, AI sessions, social, and email."}
-              {d.channel === "IVR" && "IVR: voice-only delivery as a post-call survey."}
-              {d.channel === "Both" && "Survey is delivered across digital and IVR channels."}
-            </div>
           </FieldRow>
-          <FieldRow label="Welcome message" req
-            hint="Plays before the first question. Opt Out lets the customer decline gracefully — recommended unless you have a separate consent surface.">
+
+          {/* Welcome Message */}
+          <FieldRow label={`Welcome Message (the first thing customer ${d.channel === "IVR" ? "hear" : "see"} before the survey starts)`} req
+            tooltip="The opening screen before question 1. Offering an opt-out is recommended — customers who choose to respond give more honest feedback.">
             <div className="welcome-mode-radio">
-              {[
-                { v: "with-optout",    label: "Invitation with Opt Out",    desc: "Customer can decline before starting." },
-                { v: "without-optout", label: "Invitation without Opt Out", desc: "Customer sees the invitation and Start button only." },
-                { v: "none",           label: "None",                       desc: "Open with question 1 directly." },
-              ].map(opt => (
+              {(d.channel === "IVR" ? [
+                { v: "with-optout",    label: "Invitation with Opt Out",    desc: "After hearing the message, the customer can press 1 to decline." },
+                { v: "without-optout", label: "Invitation without Opt Out", desc: "The customer hears the message, then goes to the survey." },
+                { v: "none",           label: "None",                       desc: "Survey starts immediately with no introduction." },
+              ] : [
+                { v: "with-optout",    label: "Invitation with Opt Out",    desc: "Customer can read the invitation & choose to decline it." },
+                { v: "without-optout", label: "Invitation without Opt Out", desc: "Customer see the invitation & start button only." },
+                { v: "none",           label: "None",                       desc: "Survey starts immediately with no introduction." },
+              ]).map(opt => (
                 <label key={opt.v} className={`welcome-mode-option ${d.welcomeMode === opt.v ? "on" : ""}`}>
                   <input type="radio" name="welcomeMode" value={opt.v}
                     checked={d.welcomeMode === opt.v}
@@ -306,198 +351,173 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
             </div>
 
             {d.welcomeMode !== "none" ? (
-              <div style={{ marginTop: 14,
-                padding: 14, borderRadius: 8,
-                background: "var(--lyra-slate-100)", border: "1px solid rgba(0,0,0,0.06)",
-              }}>
-                <div className="kicker">Invitation text</div>
-                <textarea className="fi-input" rows={3} maxLength={240}
-                  style={{ resize: "vertical", minHeight: 64, font: "400 14px/20px Inter", marginTop: 4, background: "var(--lyra-white)" }}
-                  placeholder="{{First Name}}, we'd love to hear about your experience…"
-                  value={d.welcomeMessage}
-                  onChange={e => set("welcomeMessage", e.target.value)}/>
-                <div className="help" style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span>
-                    Use <code style={{ background: "var(--lyra-white)", padding: "1px 5px", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 3, font: "500 12px/16px Inter", color: "var(--fi-accent-strong)" }}>{"{{First Name}}"}</code> to personalise.
-                  </span>
-                  <span style={{ color: (d.welcomeMessage || "").length > 220 ? "var(--fi-amber)" : "var(--lyra-slate-400)" }}>
+              <div style={{ marginTop: 12, padding: 16, borderRadius: 8, background: "var(--lyra-slate-100)", border: "1px solid rgba(0,0,0,0.06)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                  <div className="kicker">Invitation Text</div>
+                  <span style={{ font: "400 12px/16px var(--font-sans)", color: (d.welcomeMessage || "").length > 220 ? "var(--fi-amber)" : "var(--lyra-slate-400)" }}>
                     {(d.welcomeMessage || "").length}/240
                   </span>
                 </div>
+                <textarea className="fi-input" rows={3} maxLength={240}
+                  style={{ resize: "vertical", minHeight: 72, font: "400 14px/20px Inter", background: "var(--lyra-white)" }}
+                  placeholder={`"{{First Name}}", we'd love to hear about your experience today. We have just a few quick questions, just two minutes of your time.`}
+                  value={d.welcomeMessage}
+                  onChange={e => set("welcomeMessage", e.target.value)}/>
+                <div className="help" style={{ marginTop: 6 }}>
+                  Use <code style={{ background: "var(--lyra-white)", padding: "1px 5px", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 3, font: "500 12px/16px Inter", color: "var(--lyra-slate-700)" }}>{"{{First Name}}"}</code> to personalise.
+                </div>
 
+                {/* Button labels — shown for Digital/Both */}
                 {(d.channel === "Digital" || d.channel === "Both") ? (
-                  <div style={{
-                    display: "grid",
-                    gridTemplateColumns: d.welcomeMode === "with-optout" ? "1fr 1fr" : "1fr",
-                    gap: 14, marginTop: 14,
-                  }}>
+                  <div style={{ display: "grid", gridTemplateColumns: d.welcomeMode === "with-optout" ? "1fr 1fr" : "1fr", gap: 12, marginTop: 14 }}>
                     <div>
-                      <div className="kicker">Button to start</div>
+                      <div className="kicker" style={{ marginBottom: 4 }}>Button label to get started with survey</div>
                       <input className="fi-input" disabled readOnly value={d.buttonToStart}
-                        style={{ marginTop: 4, background: "var(--lyra-slate-200)", color: "var(--lyra-slate-600)", cursor: "not-allowed" }}/>
-                      <div className="help">Display only · system-defined label</div>
+                        style={{ background: "var(--lyra-slate-200)", color: "var(--lyra-slate-600)", cursor: "not-allowed" }}/>
                     </div>
                     {d.welcomeMode === "with-optout" ? (
                       <div>
-                        <div className="kicker">Button to opt out</div>
+                        <div className="kicker" style={{ marginBottom: 4 }}>Button label to opt out / decline the survey</div>
                         <input className="fi-input" disabled readOnly value={d.buttonToOptOut}
-                          style={{ marginTop: 4, background: "var(--lyra-slate-200)", color: "var(--lyra-slate-600)", cursor: "not-allowed" }}/>
-                        <div className="help">Display only · system-defined label</div>
+                          style={{ background: "var(--lyra-slate-200)", color: "var(--lyra-slate-600)", cursor: "not-allowed" }}/>
                       </div>
                     ) : null}
                   </div>
                 ) : null}
 
+                {/* IVR note */}
                 {d.channel === "IVR" ? (
-                  <div className="help" style={{ marginTop: 12, padding: "var(--space-2) 10px", borderRadius: 4, background: "rgba(0,0,0,0.03)" }}>
-                    On IVR, the customer hears the invitation and presses 1 to start, or hangs up. No on-screen buttons.
+                  <div className="help" style={{ marginTop: 10, padding: "8px 10px", borderRadius: 4, background: "rgba(0,0,0,0.03)" }}>
+                    On phone surveys, this message is read aloud. The customer presses 1 to start or hangs up to skip.
                   </div>
                 ) : null}
               </div>
             ) : null}
           </FieldRow>
+
+          {/* Survey Type */}
           <FieldRow label="Survey type" req>
-            <Segmented options={["CSAT (1–5 star)", "Like / Dislike", "Both"]}
+            <Segmented options={["CSAT (1–5 Star)", "Like / Dislike", "Both"]}
               value={d.surveyType} onChange={v => set("surveyType", v)}/>
           </FieldRow>
+
+          {/* Digital Display Style — only for Digital/Both */}
           {(d.channel === "Digital" || d.channel === "Both") ? (
             <>
               <FieldRow label="Digital display style" req
-                hint="How the rating scale renders inside the digital chat thread">
+                tooltip="Controls how the rating options appear to the customer in the chat window."
+                hint={
+                  d.displayStyle === "Quick Reply"
+                    ? "Inline tappable bubbles below the question. Fastest to answer, best for ≤ 5 options on mobile."
+                    : "Rating options appear as a list the customer can scroll through. Good for desktop and longer scales."
+                }>
                 <Segmented options={["Quick Reply", "List Picker"]}
                   value={d.displayStyle} onChange={v => set("displayStyle", v)}/>
-                <div className="help">
-                  {d.displayStyle === "Quick Reply"
-                    ? "Inline tappable bubbles below the question — fastest to answer, best for ≤ 5 options on mobile."
-                    : "Opens a dropdown picker with a header label — handles longer scales and reads better on desktop chat."}
-                </div>
               </FieldRow>
               {d.displayStyle === "List Picker" ? (
                 <FieldRow label="List picker label" req
-                  hint="Header shown above the picker options">
+                  hint="Short heading shown above the dropdown, e.g. 'Rate your experience'.">
                   <input className="fi-input" maxLength={48}
                     placeholder="Rate your experience"
                     value={d.listPickerLabel}
                     onChange={e => set("listPickerLabel", e.target.value)}/>
-                  <div className="help">{(d.listPickerLabel || "").length}/48 characters · keep it short.</div>
+                  <div className="help">{(d.listPickerLabel || "").length}/48 characters</div>
                 </FieldRow>
               ) : null}
             </>
           ) : null}
-          <FieldRow label="AI-generated contextual questions"
-            hint="When on, AI generates questions from each interaction's topics. When off, every survey uses the preconfigured default questions only.">
-            <Toggle checked={d.aiQuestions} onChange={v => set("aiQuestions", v)}
-              label={d.aiQuestions ? "On — questions adapt to each interaction's topics" : "Off — send only the preconfigured default questions"}/>
+
+          {/* AI-Generated Contextual Questions */}
+          <FieldRow label="AI-Generated Contextual Questions">
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <label className="switch" style={{ flexShrink: 0 }}>
+                <input type="checkbox" checked={d.aiQuestions} onChange={e => set("aiQuestions", e.target.checked)}/>
+                <span className="slider" style={{ background: d.aiQuestions ? "var(--lyra-brand-600)" : undefined }}/>
+              </label>
+              <span style={{ font: "500 14px/20px var(--font-sans)", color: d.aiQuestions ? "var(--lyra-brand-600)" : "var(--color-fg-secondary)" }}>
+                {d.aiQuestions ? "On - Question Adapts To Each Interaction" : "Off - Same questions for every customer"}
+              </span>
+            </div>
+            <span className="hint">
+              When on, the AI writes questions based on what happened in each call or chat. When off, every customer gets the same fixed questions.
+            </span>
             {d.aiQuestions ? (
-              <>
-                <div style={{ marginTop: 10,
-                  display: "grid", gridTemplateColumns: "1fr", gap: 0,
-                  border: "1px solid rgba(0,0,0,0.08)", borderRadius: 8, overflow: "hidden",
-                  background: "var(--lyra-white)",
-                }}>
-                  {[
-                    { tag: "Configured topic found", desc: "AI generates contextual questions for the matched topic.", vu: true, tagColor: "var(--fi-green)", bg: "rgba(28,94,37,0.06)" },
-                    { tag: "Unmatched topic found", desc: "AI still generates contextual questions; the new topic is flagged for review.", vu: false, tagColor: "var(--fi-purple)", bg: "var(--fi-purple-bg)" },
-                    { tag: "No topic identified", desc: "Falls back to the preconfigured default questions below.", vu: false, tagColor: "var(--lyra-slate-500)", bg: "rgba(0,0,0,0.02)" },
-                  ].map((row, i) => (
-                    <div key={i} style={{
-                      display: "grid", gridTemplateColumns: "180px 1fr 120px", alignItems: "center", gap: 12,
-                      padding: "10px var(--space-3)",
-                      borderTop: i === 0 ? "none" : "1px solid rgba(0,0,0,0.06)",
-                      background: row.bg,
-                    }}>
-                      <span style={{ font: "600 12px/16px Inter", color: row.tagColor }}>● {row.tag}</span>
-                      <span style={{ font: "400 14px/20px Inter", color: "var(--lyra-slate-900)" }}>{row.desc}</span>
-                      <span style={{ font: "500 12px/16px Inter", color: row.vu ? "var(--fi-green)" : "var(--lyra-slate-400)", textAlign: "right" }}>
-                        {row.vu ? "VU score ✓" : "No VU score"}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-                <div className="help" style={{ marginTop: 10 }}>VU scoring requires a configured topic.</div>
-              </>
-            ) : (
-              <div className="help" style={{ marginTop: 10,
-                padding: "10px var(--space-3)", borderRadius: 6,
-                background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.06)", color: "var(--lyra-slate-900)",
-              }}>
-                Every interaction will receive the two preconfigured default questions below — identical for all responses.
+              <div style={{ padding: "12px 14px", borderRadius: 8, background: "var(--lyra-slate-100)", border: "1px solid rgba(0,0,0,0.06)", display: "flex", flexDirection: "column", gap: 8 }}>
+                {[
+                  { dot: "var(--fi-green)",       text: "If configured category is found, then AI writes questions specific to that category." },
+                  { dot: "var(--fi-purple)",       text: "If unmatched category is found, then AI still writes questions, but the new category is flagged for your review." },
+                  { dot: "var(--lyra-slate-400)",  text: "If no category is identified, then it falls back to the default questions you set below." },
+                ].map((item, i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: item.dot, flexShrink: 0, marginTop: 7 }}/>
+                    <span style={{ font: "400 13px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>{item.text}</span>
+                  </div>
+                ))}
               </div>
-            )}
+            ) : null}
           </FieldRow>
-          <FieldRow label={d.aiQuestions ? "Default fallback questions" : "Preconfigured questions"} req
-            hint={d.aiQuestions
-              ? "Used when no topic is identified. One scale question and one comment question."
-              : "Sent on every survey since AI questions are off."}>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+
+          {/* Default Fallback / Preconfigured Questions */}
+          <FieldRow label={d.aiQuestions ? "Default Fallback Questions" : "Preconfigured Questions"} req>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div>
-                <div style={{ font: "500 12px/16px Inter", color: "var(--lyra-slate-600)", marginBottom: 4, display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{
-                    font: "600 12px/16px Inter", letterSpacing: "0.02em", textTransform: "uppercase",
-                    color: "var(--fi-accent-strong)", background: "var(--fi-accent-bg)",
-                    padding: "1px 6px", borderRadius: 3,
-                  }}>Scale</span>
-                  Rating question
-                </div>
+                <div style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginBottom: 6 }}>Scale: Rating Question</div>
                 <input className="fi-input" maxLength={120}
                   placeholder="On a scale of 1 to 5, how would you rate your experience today?"
                   value={d.defaultScaleQuestion}
                   onChange={e => set("defaultScaleQuestion", e.target.value)}/>
               </div>
               <div>
-                <div style={{ font: "500 12px/16px Inter", color: "var(--lyra-slate-600)", marginBottom: 4, display: "flex", alignItems: "center", gap: 6 }}>
-                  <span style={{
-                    font: "600 12px/16px Inter", letterSpacing: "0.02em", textTransform: "uppercase",
-                    color: "var(--lyra-slate-500)", background: "rgba(0,0,0,0.05)",
-                    padding: "1px 6px", borderRadius: 3,
-                  }}>Text</span>
-                  Comment question
-                </div>
+                <div style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginBottom: 6 }}>Text: Comment Question</div>
                 <input className="fi-input" maxLength={120}
                   placeholder="What could we have done better?"
                   value={d.defaultCommentQuestion}
                   onChange={e => set("defaultCommentQuestion", e.target.value)}/>
               </div>
+              <span className="hint">
+                {d.aiQuestions
+                  ? "This is sent when AI can't match the interaction to a topic. Keep these broad so they work for any conversation."
+                  : "Every customer will receive these questions. Update them to reflect what your team wants to learn."}
+              </span>
             </div>
           </FieldRow>
-          <FieldRow label="Max questions"
-            hint="More than 3 significantly drops completion rates. Recommended default: 2.">
-            <div className="slider-row">
-              <input type="range" min="1" max="5" value={d.maxQuestions}
-                onChange={e => set("maxQuestions", parseInt(e.target.value))}/>
-              <span className="val">{d.maxQuestions}</span>
-            </div>
-          </FieldRow>
-          <FieldRow label="Free text"
-            hint="Conditional captures qualitative signal only when something went wrong">
-            <Segmented options={["Always on", "Conditional", "Always off"]}
-              value={d.freeText} onChange={v => set("freeText", v)}/>
-            {d.freeText === "Conditional" ? (
-              <div className="help">Free text only appears when the rating is ≤ 2 stars.</div>
-            ) : null}
+
+          {/* Free Text Comment Box */}
+          <FieldRow label="Free Text Comment Box"
+            hint={
+              d.freeText === "Always On"  ? "Let customers write their own feedback in addition to the rating." :
+              d.freeText === "Conditional" ? "Free text only appears when the rating is ≤ 2 stars." :
+              null
+            }>
+            <Segmented options={["Always On", "Conditional", "Always Off"]}
+              value={d.freeText}
+              onChange={v => set("freeText", v)}/>
           </FieldRow>
         </FormSection>
 
         <FormSection num={3} title="Delivery"
-          sub="When the survey expires and how supervisors are alerted to low ratings."
+          sub="Set how long the survey stays open and who gets notified on a poor score."
           id="dsec-3" complete>
-          <FieldRow label="Survey expiry window"
-            hint="Survey expires after X minutes — prevents stale responses skewing data">
-            <div className="inline-row">
-              <input type="number" className="fi-input" style={{ width: 80 }}
-                value={d.expiryMinutes} onChange={e => set("expiryMinutes", parseInt(e.target.value || 0))}/>
-              <span style={{ color: "var(--lyra-slate-500)", font: "400 14px/20px Inter" }}>minutes</span>
+
+          {/* Real-time Alerting */}
+          <FieldRow label="Real time response alerting"
+            hint="Notify a supervisor straight away when a customer gives 1 or 2 stars.">
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <label className="switch" style={{ flexShrink: 0 }}>
+                <input type="checkbox" checked={d.realtimeAlerts} onChange={e => set("realtimeAlerts", e.target.checked)}/>
+                <span className="slider" style={{ background: d.realtimeAlerts ? "var(--lyra-brand-600)" : undefined }}/>
+              </label>
+              <span style={{ font: "500 14px/20px var(--font-sans)", color: d.realtimeAlerts ? "var(--lyra-brand-600)" : "var(--color-fg-secondary)" }}>
+                {d.realtimeAlerts
+                  ? "On - Alert supervisor immediately on low ratings (1–2 stars)"
+                  : "Off — supervisors are not notified on low ratings"}
+              </span>
             </div>
-          </FieldRow>
-          <FieldRow label="Real-time response alerting"
-            hint="Supervisor gets a push notification on 1- or 2-star responses">
-            <Toggle checked={d.realtimeAlerts} onChange={v => set("realtimeAlerts", v)}
-              label={d.realtimeAlerts ? "Push to supervisor on low-rating responses" : "Off"}/>
           </FieldRow>
         </FormSection>
 
         <FormSection num={4} title="Linked Campaigns"
-          sub="Map the campaigns that should use this survey template. Changes apply to future surveys; in-flight responses keep the template they were sent under."
+          sub="Choose which campaigns use this template. Any edits you make here will automatically apply to all linked campaigns."
           id="dsec-4" complete>
           <LinkedCampaignsTable
             linkedIds={linkedIds}
@@ -506,17 +526,12 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
           />
         </FormSection>
 
-        <div className="form-foot">
-          <span className="muted" style={{ font: "400 12px/16px Inter" }}>
-            All changes auto-saved as draft · Last edited just now
-          </span>
-          <span className="grow"/>
-          <button className="btn" onClick={onCancel}>Cancel</button>
-          <button className="btn primary" disabled={!d.name} onClick={() => onSave(d)}>
-            {isEdit ? "Save changes" : "Save template"}
-          </button>
         </div>
-        </div>
+
+        {/* Right-rail summary */}
+        <aside className="summary-pane">
+          <TemplateFloatingSummary/>
+        </aside>
       </div>
     </div>
   );
