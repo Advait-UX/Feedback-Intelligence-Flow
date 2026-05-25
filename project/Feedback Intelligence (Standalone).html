@@ -3654,6 +3654,33 @@ tbody tr.selected td:first-child::before{
   background: currentColor;
 }
 
+/* Survey State badge — single letter (L / D / W), Lyra radius-xs */
+.ss-badge {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: var(--radius-xs);
+  font-family: var(--font-sans); font-size: 12px; font-weight: 600;
+  line-height: 1; letter-spacing: 0; cursor: default; flex-shrink: 0;
+}
+.ss-badge.live    { background: var(--lyra-green-50, #e6f7e8);  color: var(--lyra-green-700, #1c5e25); }
+.ss-badge.draft   { background: var(--lyra-slate-200, #eef0f2); color: var(--lyra-slate-600, #526b7a); }
+.ss-badge.working { background: var(--color-bg-ai, #f4eefb);    color: var(--lyra-purple-700, #4d3a7a); }
+/* CSS tooltip — Lyra inverse surface */
+.ss-badge::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%; transform: translateX(-50%);
+  background: var(--color-bg-surface-inverse, #1d2630);
+  color: var(--color-fg-inverse, #fff);
+  font-size: 12px; font-weight: 400; line-height: 16px; white-space: nowrap;
+  padding: 4px 8px; border-radius: var(--radius-xs);
+  pointer-events: none; opacity: 0; transition: opacity 0.12s;
+  z-index: 200;
+}
+.ss-badge:hover::after { opacity: 1; }
+
+
 /* Channel chip — larger per Lyra icon standards (was 22px chip / 13px svg) */
 .channel-stack { display: flex; flex-direction: row; flex-wrap: wrap; gap: var(--space-3) var(--space-4); align-items: center; }
 .channel-label-item { display: inline-flex; align-items: center; gap: var(--space-2); }
@@ -5792,31 +5819,31 @@ const CAMPAIGNS = [
     status: "active", channels: ["digital", "voice"], surveyDesignId: "csat-quick",
     hasWorkingCopy: true, workingCopyVersion: 4, publishedVersion: 3, publishedAt: "May 04, 2026", workingCopyEditedBy: "Maria Cohen", workingCopyEditedAt: "May 10, 2026",
     sampling: 50, sent: 12480, completion: 31.2, vu: 76,
-    owner: "Maria Cohen", created: "Mar 14, 2026", updated: "May 02, 2026" },
+    owner: "Maria Cohen", created: "Mar 14, 2026", updated: "May 02, 2026", endDate: null },
   { id: 2, name: "Negative Sentiment Catcher — All Digital",
     status: "active", channels: ["digital"], surveyDesignId: "csat-quick",
     sampling: 100, sent: 4220, completion: 28.6, vu: 41,
-    owner: "Dev Patel", created: "Jan 22, 2026", updated: "May 08, 2026" },
+    owner: "Dev Patel", created: "Jan 22, 2026", updated: "May 08, 2026", endDate: null },
   { id: 3, name: "Email Support — Resolution Quality",
     status: "active", channels: ["digital"], surveyDesignId: "csat-list",
     sampling: 25, sent: 8910, completion: 22.4, vu: 68,
-    owner: "Maria Cohen", created: "Feb 04, 2026", updated: "Apr 28, 2026" },
+    owner: "Maria Cohen", created: "Feb 04, 2026", updated: "Apr 28, 2026", endDate: "Jun 30, 2026" },
   { id: 4, name: "Cognigy AI Session — Bot Handoff Audit",
     status: "active", channels: ["digital", "voice"], surveyDesignId: "bot-simple",
     sampling: 80, sent: 6122, completion: 19.7, vu: 54,
-    owner: "Tomás Reyes", created: "Mar 30, 2026", updated: "May 09, 2026" },
+    owner: "Tomás Reyes", created: "Mar 30, 2026", updated: "May 09, 2026", endDate: null },
   { id: 5, name: "Social DM — Brand Health Pulse",
     status: "paused", channels: ["digital"], surveyDesignId: "brand-pulse",
     sampling: 100, sent: 1840, completion: 14.1, vu: 62,
-    owner: "Aisha Khan", created: "Dec 01, 2025", updated: "Apr 12, 2026" },
+    owner: "Aisha Khan", created: "Dec 01, 2025", updated: "Apr 12, 2026", endDate: "May 31, 2026" },
   { id: 6, name: "VIP Escalation Follow-Up",
     status: "draft", channels: ["digital", "voice"], surveyDesignId: "vip-followup",
     sampling: 100, sent: 0, completion: 0, vu: null,
-    owner: "Maria Cohen", created: "May 06, 2026", updated: "May 06, 2026" },
+    owner: "Maria Cohen", created: "May 06, 2026", updated: "May 06, 2026", endDate: null },
   { id: 7, name: "Holiday Returns — Email",
     status: "ended", channels: ["digital"], surveyDesignId: "csat-quick",
     sampling: 100, sent: 21450, completion: 26.8, vu: 71,
-    owner: "Dev Patel", created: "Nov 12, 2025", updated: "Jan 15, 2026" },
+    owner: "Dev Patel", created: "Nov 12, 2025", updated: "Jan 15, 2026", endDate: "Dec 31, 2025" },
 ];
 
 function ChannelChip({ kind }) {
@@ -6054,7 +6081,6 @@ function RowActions({ campaign, statusOf, onActivate, onDeactivate, onDelete, on
 function SurveyCampaignsGrid({ onCreate, onOpen }) {
   const [search, setSearch] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState(null);   // null = no filter (show all)
-  const [ownerFilter, setOwnerFilter] = React.useState(null);
   const [order, setOrder] = React.useState(() => CAMPAIGNS.map(c => c.id));
   const [selectedIds, setSelectedIds] = React.useState(() => new Set());
   const [priorityModalOpen, setPriorityModalOpen] = React.useState(false);
@@ -6134,14 +6160,12 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
   }
 
   const liveCampaigns = CAMPAIGNS.filter(c => !deletedIds.has(c.id));
-  /* Owner options come from the dataset itself so the menu stays in sync. */
-  const ownerOptions = Array.from(new Set(liveCampaigns.map(c => c.owner))).sort();
   const statusOptions = ["Active", "Paused", "Draft", "Ended"];
-  const hasAnyFilter = !!(search || statusFilter || ownerFilter);
-  const clearAllFilters = () => { setSearch(""); setStatusFilter(null); setOwnerFilter(null); };
+  const hasAnyFilter = !!(search || statusFilter);
+  const clearAllFilters = () => { setSearch(""); setStatusFilter(null); };
 
-  const [sortKey, setSortKey] = React.useState(null);
-  const [sortDir, setSortDir] = React.useState("asc");
+  const [sortKey, setSortKey] = React.useState("updated");
+  const [sortDir, setSortDir] = React.useState("desc");
 
   function toggleSort(key) {
     if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
@@ -6154,24 +6178,19 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
     if (deletedIds.has(c.id)) return false;
     const s = statusOf(c);
     if (statusFilter && s !== statusFilter.toLowerCase()) return false;
-    if (ownerFilter && c.owner !== ownerFilter) return false;
     if (search && !c.name.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
 
-  const rows = sortKey ? [...filteredRows].sort((a, b) => {
+  const rows = [...filteredRows].sort((a, b) => {
     let av, bv;
-    if (sortKey === "name")     { av = a.name.toLowerCase();              bv = b.name.toLowerCase(); }
-    if (sortKey === "status")   { av = STATUS_ORDER[statusOf(a)] ?? 9;    bv = STATUS_ORDER[statusOf(b)] ?? 9; }
-    if (sortKey === "channels") { av = a.channels.join();                 bv = b.channels.join(); }
-    if (sortKey === "sampling") { av = a.sampling;                        bv = b.sampling; }
-    if (sortKey === "owner")    { av = a.owner.toLowerCase();             bv = b.owner.toLowerCase(); }
-    if (sortKey === "updated")  { av = a.updated;                         bv = b.updated; }
-    if (sortKey === "priority") { av = priorityMap[a.id] ?? 999;          bv = priorityMap[b.id] ?? 999; }
+    if (sortKey === "updated")  { av = a.updated;                bv = b.updated; }
+    if (sortKey === "priority") { av = priorityMap[a.id] ?? 999; bv = priorityMap[b.id] ?? 999; }
+    if (av === undefined) return 0;
     if (av < bv) return sortDir === "asc" ? -1 : 1;
     if (av > bv) return sortDir === "asc" ? 1 : -1;
     return 0;
-  }) : filteredRows;
+  });
 
   const allRowsSelected = rows.length > 0 && rows.every(r => selectedIds.has(r.id));
   const someRowsSelected = rows.some(r => selectedIds.has(r.id)) && !allRowsSelected;
@@ -6211,8 +6230,6 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
         </div>
         <FilterChip label="Status" value={statusFilter} options={statusOptions}
           onSelect={setStatusFilter} onClear={() => setStatusFilter(null)}/>
-        <FilterChip label="Owner" value={ownerFilter} options={ownerOptions}
-          onSelect={setOwnerFilter} onClear={() => setOwnerFilter(null)}/>
         {hasAnyFilter && (
           <button className="clear-link" onClick={clearAllFilters}>Clear</button>
         )}
@@ -6225,21 +6242,12 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
               <th style={{ width: 110, cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("priority")}>
                 <span style={{ display: "inline-flex", alignItems: "center" }}>Priority<SortIcon k="priority"/></span>
               </th>
-              <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("name")}>
-                <span style={{ display: "inline-flex", alignItems: "center" }}>Campaign<SortIcon k="name"/></span>
-              </th>
-              <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("status")}>
-                <span style={{ display: "inline-flex", alignItems: "center" }}>Status<SortIcon k="status"/></span>
-              </th>
-              <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("channels")}>
-                <span style={{ display: "inline-flex", alignItems: "center" }}>Channels<SortIcon k="channels"/></span>
-              </th>
-              <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("sampling")}>
-                <span style={{ display: "inline-flex", alignItems: "center" }}>Sampling<SortIcon k="sampling"/></span>
-              </th>
-              <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("owner")}>
-                <span style={{ display: "inline-flex", alignItems: "center" }}>Owner<SortIcon k="owner"/></span>
-              </th>
+              <th style={{ width: 40, paddingRight: "var(--space-2)" }}></th>
+              <th>Campaign</th>
+              <th>Status</th>
+              <th>Channels</th>
+              <th>Sampling</th>
+              <th>End date</th>
               <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("updated")}>
                 <span style={{ display: "inline-flex", alignItems: "center" }}>Last updated<SortIcon k="updated"/></span>
               </th>
@@ -6249,10 +6257,15 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
           <tbody>
             {rows.map((c) => {
               const routing = isRouting(c);
+              const showPriority = routing && statusOf(c) === "active";
+              const s = statusOf(c);
+              const surveyState = c.hasWorkingCopy ? "working" : s === "draft" ? "draft" : "live";
+              const surveyStateLabel = { live: "Live", draft: "Draft", working: "Working Copy" }[surveyState];
+              const surveyStateLetter = { live: "L", draft: "D", working: "W" }[surveyState];
               return (
                 <tr key={c.id}>
                   <td>
-                    {routing ? (
+                    {showPriority ? (
                       /* Priority badge — bold so it's recognizable as main grid text (per Lyra instructions).
                          All priorities use the same style for consistency; the order itself conveys ranking. */
                       <div style={{
@@ -6262,18 +6275,23 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                         color: "var(--color-fg-active-strong)",          /* Lyra: brand-700 */
                         font: "600 14px/20px var(--font-sans)", letterSpacing: 0,   /* Lyra Heading-sm bold */
                       }}>
-                        {priorityMap[c.id]}
+                        P{priorityMap[c.id]}
                       </div>
                     ) : (
                       <span style={{ color: "var(--lyra-slate-400)", font: "600 14px/20px var(--font-sans)" }}>—</span>
                     )}
+                  </td>
+                  <td style={{ paddingRight: "var(--space-2)" }}>
+                    <span className={`ss-badge ${surveyState}`} data-tip={`Survey State: ${surveyStateLabel}`}>
+                      {surveyStateLetter}
+                    </span>
                   </td>
                   <td>
                     <a className="agent-link" href="#" onClick={e => { e.preventDefault(); onOpen && onOpen(c); }}>
                       {c.name}
                     </a>
                     <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 4 }}>
-                      Created {c.created}
+                      Created {c.created}, {c.owner}
                     </div>
                   </td>
                   <td>
@@ -6288,7 +6306,12 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                     </span>
                   </td>
                   <td>{c.sampling}%</td>
-                  <td>{c.owner}</td>
+                  <td>
+                    {c.endDate
+                      ? <span style={{ font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>{c.endDate}</span>
+                      : <span style={{ font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-secondary)" }}>Ongoing</span>
+                    }
+                  </td>
                   <td>
                     <div>{c.updated}</div>
                     <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 4 }}>
@@ -6618,8 +6641,8 @@ const DEFAULT_CAMPAIGN = {
   startDate: "2026-05-12",
   endDate: "",
   channels: ["digital"],
-  queues: ["All queues"],
-  teams: ["All teams"],
+  queues: [],
+  teams: [],
 
   samplingPct: 50,
   minCustomerTurns: 3,
@@ -6729,6 +6752,57 @@ function FormSection({ num, title, sub, defaultOpen = true, complete, children, 
       </header>
       <div className="form-section-body">{children}</div>
     </section>
+  );
+}
+
+function MultiSelectField({ options, value = [], onChange, placeholder = "Select...", error = false }) {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef();
+  React.useEffect(() => {
+    if (!open) return;
+    function onDown(e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+  const toggle = (opt) => onChange(value.includes(opt) ? value.filter(v => v !== opt) : [...value, opt]);
+  const label = value.length === 0 ? <span style={{ color: "var(--color-fg-secondary)" }}>{placeholder}</span>
+    : value.length === 1 ? value[0]
+    : `${value.length} selected`;
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <button type="button"
+        className={`fi-input${error ? " error" : ""}`}
+        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", textAlign: "left", cursor: "pointer", width: "100%", background: "var(--lyra-white)" }}
+        onClick={() => setOpen(o => !o)}>
+        <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{label}</span>
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"
+          style={{ flexShrink: 0, marginLeft: 6, transform: open ? "rotate(180deg)" : "none", transition: "transform 0.15s" }}>
+          <polyline points="4 6 8 10 12 6"/>
+        </svg>
+      </button>
+      {value.length > 0 && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-1)", marginTop: "var(--space-2)" }}>
+          {value.map(v => (
+            <span key={v} style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px var(--space-2)", borderRadius: "var(--radius-round)", background: "var(--color-bg-active-moderate)", color: "var(--color-fg-active-strong)", font: "500 12px/16px var(--font-sans)" }}>
+              {v}
+              <button type="button" onClick={() => toggle(v)} style={{ background: "none", border: "none", cursor: "pointer", padding: 0, lineHeight: 1, color: "inherit", display: "flex", alignItems: "center" }}>
+                <svg viewBox="0 0 12 12" width="10" height="10" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round"><line x1="9" y1="3" x2="3" y2="9"/><line x1="3" y1="3" x2="9" y2="9"/></svg>
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+      {open && (
+        <div style={{ position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, zIndex: 200, background: "var(--lyra-white)", border: "1px solid var(--color-border-soft)", borderRadius: "var(--radius-md)", boxShadow: "0px 4px 8px 0px rgba(0,0,0,0.08)", overflow: "hidden" }}>
+          {options.map(opt => (
+            <label key={opt} style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", padding: "var(--space-2) var(--space-3)", cursor: "pointer", font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)", background: value.includes(opt) ? "var(--color-bg-active-subtle)" : "transparent" }}>
+              <input type="checkbox" checked={value.includes(opt)} onChange={() => toggle(opt)} style={{ accentColor: "var(--lyra-brand-600)", flexShrink: 0 }}/>
+              {opt}
+            </label>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -7082,14 +7156,13 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
                 <div className="field-grid-2" style={{ borderTop: "none", paddingTop: 0, paddingBottom: 0 }}>
                   <div className="field-cell">
                     <label className="field-label">Agent Teams<span className="req">*</span></label>
-                    <select className={`fi-input${teamsErr ? " error" : ""}`} aria-invalid={teamsErr || undefined}
-                      value={c.queues?.[0] || ""} onChange={e => set("queues", e.target.value ? [e.target.value] : [])}>
-                      <option value="">Select Teams</option>
-                      <option value="Tier 1 Billing">Tier 1 Billing</option>
-                      <option value="Tier 2 Support">Tier 2 Support</option>
-                      <option value="Sales">Sales</option>
-                      <option value="Retention">Retention</option>
-                    </select>
+                    <MultiSelectField
+                      options={["Tier 1 Billing", "Tier 2 Support", "Sales", "Retention"]}
+                      value={c.queues || []}
+                      onChange={v => set("queues", v)}
+                      placeholder="Select Teams"
+                      error={teamsErr}
+                    />
                     {teamsErr && <div className="field-control"><span className="error-msg">
                       <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
                       Select an agent team
@@ -7097,13 +7170,13 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
                   </div>
                   <div className="field-cell">
                     <label className="field-label">Agent Group<span className="req">*</span></label>
-                    <select className={`fi-input${groupErr ? " error" : ""}`} aria-invalid={groupErr || undefined}
-                      value={c.teams?.[0] || ""} onChange={e => set("teams", e.target.value ? [e.target.value] : [])}>
-                      <option value="">Select Group</option>
-                      <option value="North America">North America</option>
-                      <option value="EMEA">EMEA</option>
-                      <option value="APAC">APAC</option>
-                    </select>
+                    <MultiSelectField
+                      options={["North America", "EMEA", "APAC"]}
+                      value={c.teams || []}
+                      onChange={v => set("teams", v)}
+                      placeholder="Select Group"
+                      error={groupErr}
+                    />
                     {groupErr && <div className="field-control"><span className="error-msg">
                       <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
                       Select an agent group
@@ -7456,9 +7529,9 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
                         <p className="tmpl-drawer-why">{t.why}</p>
                       </div>
 
-                      {/* Zone 3 — Topics */}
+                      {/* Zone 3 — Category */}
                       <div className="tmpl-drawer-topics-block">
-                        <div className="tmpl-drawer-zone-label">Topics</div>
+                        <div className="tmpl-drawer-zone-label">Category</div>
                         <div className="tmpl-tags" style={{ gap: 4 }}>
                           {t.topics.map(tp => <span key={tp} className="tmpl-tag topic">{tp}</span>)}
                         </div>
