@@ -35,7 +35,7 @@
 .info-banner{
   display: flex; align-items: flex-start;
   gap: var(--space-2);                                 /* 8px between icon and text */
-  margin: var(--space-3) var(--space-8) var(--space-4); /* 12px / 32px / 16px — matches Lyra pane horiz padding */
+  margin: var(--space-6) var(--space-8) var(--space-3); /* 24px top, 32px sides, 12px bottom */
   padding: var(--space-3) var(--space-4);              /* 12px vertical, 16px horizontal */
   background: var(--color-bg-active-subtle);           /* Lyra: bg/active/subtle = var(--color-bg-active-subtle) */
   border: 1px solid rgba(24,91,164,0.20);              /* Subtle brand border (border/active @ 20%) */
@@ -165,24 +165,21 @@
 /* Status badge — Lyra-style, more prominent (per user instruction).
    Beefier padding, 1px tinted border for definition, Body SM-em typography. */
 .fi-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 10px;                                   /* roomier than 2/8 — reads as a real badge */
-  border-radius: var(--radius-round);                  /* pill */
-  /* Lyra Body SM emphasis: Inter Medium 12/16, letter-spacing 0.01rem */
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
-  letter-spacing: 0.01rem;
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 8px;
+  border-radius: var(--radius-round);
+  font-family: var(--font-sans); font-size: 12px; font-weight: 500;
+  line-height: 16px; letter-spacing: 0.01rem;
   border: 1px solid transparent;
+  white-space: nowrap;
 }
-.fi-pill.active   { background: var(--fi-green-bg);    color: var(--fi-green);  border-color: rgba(28,94,37,0.20) }
-.fi-pill.paused   { background: var(--fi-amber-bg);    color: var(--fi-amber);  border-color: rgba(166,79,0,0.20) }
-.fi-pill.draft    { background: var(--lyra-slate-200); color: var(--lyra-slate-700); border-color: rgba(0,0,0,0.10) }
-.fi-pill.ended    { background: var(--lyra-slate-200); color: var(--lyra-slate-600); border-color: rgba(0,0,0,0.10) }
+.fi-pill.active   { background: var(--lyra-green-50);   color: var(--lyra-green-700);   border-color: rgba(28,94,37,0.18); }
+.fi-pill.paused   { background: var(--lyra-orange-50);  color: var(--lyra-orange-700);  border-color: rgba(166,79,0,0.18); }
+.fi-pill.draft    { background: var(--lyra-slate-100);  color: var(--lyra-slate-700);   border-color: rgba(0,0,0,0.10); }
+.fi-pill.ended    { background: var(--lyra-slate-100);  color: var(--lyra-slate-500);   border-color: rgba(0,0,0,0.10); }
 .fi-pill .dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: currentColor;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: currentColor; flex-shrink: 0;
 }
 
 /* Channel chip — larger per Lyra icon standards (was 22px chip / 13px svg) */
@@ -324,7 +321,8 @@ input[type="text"].fi-input,
 input[type="date"].fi-input,
 input[type="number"].fi-input,
 textarea.fi-input,
-select.fi-input {
+select.fi-input,
+button.fi-input {
   background: var(--lyra-white);                       /* Lyra: bg/field */
   border: 1px solid var(--color-border-soft);          /* Lyra: border/soft = rgba(0,0,0,0.16) */
   border-radius: var(--radius-md);                     /* Lyra: radius/md = 8px */
@@ -375,11 +373,13 @@ textarea.fi-input {
 }
 /* Error — soft red fill + red border + space for validation msg below */
 .fi-input.error,
+.fi-input--error,
 .fi-input[aria-invalid="true"] {
   background: #fff0f0;                                 /* Lyra: status/critical-subtle */
   border-color: var(--color-status-error);                               /* Lyra: status/critical-strong */
 }
 .fi-input.error:focus,
+.fi-input--error:focus,
 .fi-input[aria-invalid="true"]:focus {
   box-shadow: 0 0 1px 3px rgba(182,44,44,0.25);        /* Red glow ring on error+focus */
 }
@@ -559,9 +559,9 @@ select.fi-input {
   background: var(--lyra-white);
   border-radius: var(--radius-lg);
   box-shadow: 0px 24px 48px -12px rgba(0,0,0,0.32);
-  width: 640px;
+  width: 860px;
   max-width: 96vw;
-  max-height: 80vh;
+  max-height: 92vh;
   display: flex; flex-direction: column;
   animation: modalFadeIn 0.15s ease;
 }
@@ -612,8 +612,9 @@ select.fi-input {
 }
 .priority-modal-table tbody tr:last-child { border-bottom: none; }
 .priority-modal-table tbody tr:hover { background: var(--color-state-bg-hover); }
+.priority-modal-table tbody tr::after { display: none; }
 .priority-modal-table tbody td {
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-2) var(--space-4);
   vertical-align: middle;
 }
 .priority-modal-table tbody td:first-child { padding: 0; width: 36px; text-align: center; }
@@ -1064,14 +1065,14 @@ select.fi-input {
 
 /* ── Detail page two-column layout ───────────────────────────────────── */
 .detail-layout {
-  flex: 1; overflow: auto;
+  flex: 1;
   display: flex; align-items: flex-start;
   gap: var(--space-5);
   padding: var(--space-5) var(--space-8) var(--space-8);
   background: var(--color-bg-canvas);
 }
 .detail-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-3); }
-.detail-sidebar { flex: 0 0 260px; position: sticky; top: 0; }
+.detail-sidebar { flex: 0 0 260px; }
 
 /* ── Campaign Summary sidebar card ───────────────────────────────────── */
 .detail-summary-card {
@@ -1490,6 +1491,8 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 .row-action-item:hover { background: var(--color-bg-active-subtle); }
 .row-action-item.danger { color: var(--fi-red); }
 .row-action-item.danger:hover { background: rgba(200,40,40,0.06); }
+.row-action-item.danger.disabled,
+.row-action-item.danger:disabled { color: var(--color-fg-disabled); cursor: not-allowed; pointer-events: none; }
 .row-action-divider {
   height: 1px; background: var(--color-border-subtle);
   margin: var(--space-1) 0;
@@ -3120,7 +3123,7 @@ button,input,select,textarea,table,th,td{font-family:inherit;font-size:inherit;f
   display: inline-flex; align-items: center;
   height: 32px;                                        /* Lyra: control-height/md */
   border-radius: var(--radius-md);                     /* Lyra: radius/md = 8px */
-  background: rgba(0,0,0,0.02);                        /* Lyra: bg/control-subtle (default) */
+  background: var(--lyra-white);
   border: 1px solid var(--color-border-soft);          /* Lyra: border/soft (default) */
   /* Lyra Body-md-emphasis: Inter Medium 14/20 */
   font-family: var(--font-sans);
@@ -3263,6 +3266,7 @@ thead th{
   padding: var(--space-5) var(--space-4);                      /* 20px top/bottom, 16px sides */
   background: var(--lyra-white);
   border-bottom: 1px solid var(--color-border-subtle);         /* Lyra: border/subtle */
+  position: relative; z-index: 10;                             /* ensures th stacks above positioned tbody rows */
   /* Lyra Body-md-emphasis: Inter Medium 14/20 */
   font-weight: 500;
   color: var(--color-fg-default);                              /* Lyra: fg/default */
@@ -3316,7 +3320,7 @@ tbody tr.selected td:first-child::before{
 .agent-link{
   color: var(--lyra-brand-700);                                /* Lyra: fg/link = brand-700 */
   text-decoration: none;
-  font-weight: 400;                                            /* Lyra: links are regular weight, not medium */
+  font-weight: 500;
 }
 .agent-link:hover{ text-decoration: underline; }
 .row-warn td:nth-child(2){ background: var(--fi-red-bg) }
@@ -3465,11 +3469,14 @@ tbody tr.selected td:first-child::before{
 
 /* ----- Action menu (dot-dot-dot) ----- */
 .kebab{
-  width:28px;height:28px;border-radius:var(--radius-sm);
-  display:inline-flex;align-items:center;justify-content:center;
-  cursor:pointer; color:var(--lyra-slate-600);
+  width:36px; height:36px; border-radius:var(--radius-md);
+  display:inline-flex; align-items:center; justify-content:center;
+  cursor:pointer; color:var(--lyra-slate-700);
+  background: var(--lyra-white);
+  border: 1px solid var(--color-border-soft);
+  transition: background 80ms, border-color 80ms;
 }
-.kebab:hover{ background:rgba(0,0,0,0.05); color:var(--lyra-slate-900) }
+.kebab:hover{ background: rgba(0,0,0,0.04); border-color: rgba(0,0,0,0.28); color:var(--lyra-slate-900); }
 .kebab svg{ width:16px;height:16px;stroke:currentColor;fill:currentColor }
 
 /* ----- Split-button (with chevron) ----- */
@@ -3504,7 +3511,7 @@ tbody tr.selected td:first-child::before{
 .info-banner{
   display: flex; align-items: flex-start;
   gap: var(--space-2);                                 /* 8px between icon and text */
-  margin: var(--space-3) var(--space-8) var(--space-4); /* 12px / 32px / 16px — matches Lyra pane horiz padding */
+  margin: var(--space-6) var(--space-8) var(--space-3); /* 24px top, 32px sides, 12px bottom */
   padding: var(--space-3) var(--space-4);              /* 12px vertical, 16px horizontal */
   background: var(--color-bg-active-subtle);           /* Lyra: bg/active/subtle = var(--color-bg-active-subtle) */
   border: 1px solid rgba(24,91,164,0.20);              /* Subtle brand border (border/active @ 20%) */
@@ -3631,48 +3638,52 @@ tbody tr.selected td:first-child::before{
 }
 
 /* ---- Survey Campaigns grid ---- */
-/* Status badge — Lyra-style, more prominent (per user instruction).
-   Beefier padding, 1px tinted border for definition, Body SM-em typography. */
+/* ── Lyra badge base ──────────────────────────────────────────────────────────
+   Both Campaign Status and Campaign State use the Lyra bodySm-medium scale:
+   12px / 16px / Inter 500 / 0.01rem letter-spacing.
+   Pill shape (radius-round), 1px tinted border for surface definition.
+   ────────────────────────────────────────────────────────────────────────── */
 .fi-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 4px 10px;                                   /* roomier than 2/8 — reads as a real badge */
-  border-radius: var(--radius-round);                  /* pill */
-  /* Lyra Body SM emphasis: Inter Medium 12/16, letter-spacing 0.01rem */
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
-  letter-spacing: 0.01rem;
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 2px 8px;                  /* Lyra compact badge: 2px vertical, 8px horizontal */
+  border-radius: var(--radius-round);
+  font-family: var(--font-sans); font-size: 12px; font-weight: 500;
+  line-height: 16px; letter-spacing: 0.01rem;
   border: 1px solid transparent;
+  white-space: nowrap;
 }
-.fi-pill.active   { background: var(--fi-green-bg);    color: var(--fi-green);  border-color: rgba(28,94,37,0.20) }
-.fi-pill.paused   { background: var(--fi-amber-bg);    color: var(--fi-amber);  border-color: rgba(166,79,0,0.20) }
-.fi-pill.draft    { background: var(--lyra-slate-200); color: var(--lyra-slate-700); border-color: rgba(0,0,0,0.10) }
-.fi-pill.ended    { background: var(--lyra-slate-200); color: var(--lyra-slate-600); border-color: rgba(0,0,0,0.10) }
+/* Lyra semantic status tokens → primitive mapping from lyra-tokens.json */
+.fi-pill.active   { background: var(--lyra-green-50);   color: var(--lyra-green-700);   border-color: rgba(28,94,37,0.18); }
+.fi-pill.paused   { background: var(--lyra-orange-50);  color: var(--lyra-orange-700);  border-color: rgba(166,79,0,0.18); }
+.fi-pill.draft    { background: var(--lyra-slate-100);  color: var(--lyra-slate-700);   border-color: rgba(0,0,0,0.10); }
+.fi-pill.ended    { background: var(--lyra-slate-100);  color: var(--lyra-slate-500);   border-color: rgba(0,0,0,0.10); }
 .fi-pill .dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: currentColor;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: currentColor; flex-shrink: 0;
 }
 
-/* Survey State badge — single letter (L / D / W), Lyra radius-xs */
+/* Campaign State badge — pill, same Lyra bodySm-medium scale as fi-pill */
 .ss-badge {
   position: relative;
   display: inline-flex; align-items: center; justify-content: center;
-  width: 20px; height: 20px; border-radius: var(--radius-xs);
-  font-family: var(--font-sans); font-size: 12px; font-weight: 600;
-  line-height: 1; letter-spacing: 0; cursor: default; flex-shrink: 0;
+  padding: 2px 8px; border-radius: var(--radius-round);
+  font-family: var(--font-sans); font-size: 12px; font-weight: 500;
+  line-height: 16px; letter-spacing: 0.01rem;
+  border: 1px solid transparent;
+  cursor: default; flex-shrink: 0; white-space: nowrap;
 }
-.ss-badge.live    { background: var(--lyra-green-50, #e6f7e8);  color: var(--lyra-green-700, #1c5e25); }
-.ss-badge.draft   { background: var(--lyra-slate-200, #eef0f2); color: var(--lyra-slate-600, #526b7a); }
-.ss-badge.working { background: var(--color-bg-ai, #f4eefb);    color: var(--lyra-purple-700, #4d3a7a); }
-/* CSS tooltip — Lyra inverse surface */
+/* success-subtle/strong → Live, warning-subtle/strong → Draft (neutral), ai → Working Copy */
+.ss-badge.live    { background: var(--lyra-green-50);  color: var(--lyra-green-700);  border-color: rgba(28,94,37,0.18); }
+.ss-badge.draft   { background: var(--lyra-slate-100); color: var(--lyra-slate-600);  border-color: rgba(0,0,0,0.10); }
+.ss-badge.working { background: var(--color-bg-ai);    color: var(--lyra-purple-700); border-color: rgba(77,58,122,0.18); }
+/* CSS tooltip — Lyra bg-inverse surface */
 .ss-badge::after {
   content: attr(data-tip);
   position: absolute;
   bottom: calc(100% + 6px);
   left: 50%; transform: translateX(-50%);
-  background: var(--color-bg-surface-inverse, #1d2630);
-  color: var(--color-fg-inverse, #fff);
+  background: var(--lyra-slate-900);
+  color: #fff;
   font-size: 12px; font-weight: 400; line-height: 16px; white-space: nowrap;
   padding: 4px 8px; border-radius: var(--radius-xs);
   pointer-events: none; opacity: 0; transition: opacity 0.12s;
@@ -3680,6 +3691,42 @@ tbody tr.selected td:first-child::before{
 }
 .ss-badge:hover::after { opacity: 1; }
 
+/* Info tooltip — rich hover card */
+.info-tooltip-wrap {
+  position: relative; display: inline-flex; align-items: center;
+}
+.info-tooltip-wrap .info-tooltip-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--lyra-slate-400); cursor: default; line-height: 0;
+  border-radius: 50%; padding: 1px;
+}
+.info-tooltip-wrap .info-tooltip-icon:hover { color: var(--lyra-slate-600); }
+.info-tooltip-card {
+  width: 300px;
+  background: var(--lyra-white, #fff);
+  border: 1px solid var(--color-border-subtle, rgba(0,0,0,0.10));
+  border-radius: var(--radius-md);
+  box-shadow: 0px 8px 24px rgba(0,0,0,0.12);
+  padding: var(--space-3) var(--space-4);
+  z-index: 9999;
+  pointer-events: none;
+}
+.info-tooltip-card-title {
+  font-family: var(--font-sans); font-size: 12px; font-weight: 600;
+  line-height: 16px; color: var(--color-fg-default);
+  margin-bottom: var(--space-2);
+}
+.info-tooltip-card-body {
+  font-family: var(--font-sans); font-size: 12px; font-weight: 400;
+  line-height: 18px; color: var(--color-fg-secondary);
+}
+.info-tooltip-card-row {
+  display: flex; gap: var(--space-2); align-items: baseline;
+  margin-top: var(--space-2);
+}
+.info-tooltip-card-row b {
+  font-weight: 600; color: var(--color-fg-default); white-space: nowrap;
+}
 
 /* Channel chip — larger per Lyra icon standards (was 22px chip / 13px svg) */
 .channel-stack { display: flex; flex-direction: row; flex-wrap: wrap; gap: var(--space-3) var(--space-4); align-items: center; }
@@ -3822,7 +3869,8 @@ input[type="text"].fi-input,
 input[type="date"].fi-input,
 input[type="number"].fi-input,
 textarea.fi-input,
-select.fi-input {
+select.fi-input,
+button.fi-input {
   background: var(--lyra-white);                       /* Lyra: bg/field */
   border: 1px solid var(--color-border-soft);          /* Lyra: border/soft = rgba(0,0,0,0.16) */
   border-radius: var(--radius-md);                     /* Lyra: radius/md = 8px */
@@ -3873,11 +3921,13 @@ textarea.fi-input {
 }
 /* Error — soft red fill + red border + space for validation msg below */
 .fi-input.error,
+.fi-input--error,
 .fi-input[aria-invalid="true"] {
   background: #fff0f0;                                 /* Lyra: status/critical-subtle */
   border-color: var(--color-status-error);                               /* Lyra: status/critical-strong */
 }
 .fi-input.error:focus,
+.fi-input--error:focus,
 .fi-input[aria-invalid="true"]:focus {
   box-shadow: 0 0 1px 3px rgba(182,44,44,0.25);        /* Red glow ring on error+focus */
 }
@@ -4552,6 +4602,8 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 .row-action-item:hover { background: var(--color-bg-active-subtle); }
 .row-action-item.danger { color: var(--fi-red); }
 .row-action-item.danger:hover { background: rgba(200,40,40,0.06); }
+.row-action-item.danger.disabled,
+.row-action-item.danger:disabled { color: var(--color-fg-disabled); cursor: not-allowed; pointer-events: none; }
 .row-action-divider {
   height: 1px; background: var(--color-border-subtle);
   margin: var(--space-1) 0;
@@ -5457,9 +5509,6 @@ function Topbar({ product, productAccent, onProductClick, onAppSwitcherClick }) 
           <div className="hdr-icon" title="Help">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
           </div>
-          <div className="hdr-icon" title="App switcher" onClick={onAppSwitcherClick}>
-            <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="6" height="6" rx="1"/><rect x="14.5" y="3.5" width="6" height="6" rx="1"/><rect x="3.5" y="14.5" width="6" height="6" rx="1"/><rect x="14.5" y="14.5" width="6" height="6" rx="1"/></svg>
-          </div>
           <div className="hdr-icon" title="Notifications">
             <svg viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 5 2.5 7 2.5 7H3.5S6 14 6 9z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
             <span className="dot-badge">3</span>
@@ -5844,6 +5893,99 @@ const CAMPAIGNS = [
     status: "ended", channels: ["digital"], surveyDesignId: "csat-quick",
     sampling: 100, sent: 21450, completion: 26.8, vu: 71,
     owner: "Dev Patel", created: "Nov 12, 2025", updated: "Jan 15, 2026", endDate: "Dec 31, 2025" },
+  { id: 8, name: "NPS Quarterly — Enterprise Clients",
+    status: "active", channels: ["voice"], surveyDesignId: "nps-pulse",
+    sampling: 60, sent: 3410, completion: 34.2, vu: 82,
+    owner: "Dev Patel", created: "Feb 10, 2026", updated: "May 07, 2026", endDate: null },
+  { id: 9, name: "FCR Check — Tier 2 Support",
+    status: "active", channels: ["digital"], surveyDesignId: "fcr-check",
+    sampling: 75, sent: 5880, completion: 27.1, vu: 69,
+    owner: "Tomás Reyes", created: "Jan 05, 2026", updated: "May 05, 2026", endDate: null },
+  { id: 10, name: "Agent Empathy — Voice Quality",
+    status: "active", channels: ["voice"], surveyDesignId: "csat-quick",
+    sampling: 40, sent: 2760, completion: 29.4, vu: 74,
+    owner: "Aisha Khan", created: "Mar 01, 2026", updated: "May 03, 2026", endDate: null },
+  { id: 11, name: "Onboarding Feedback — New Users",
+    status: "active", channels: ["digital"], surveyDesignId: "email-quality",
+    sampling: 100, sent: 1920, completion: 42.6, vu: 88,
+    owner: "Maria Cohen", created: "Apr 02, 2026", updated: "Apr 30, 2026", endDate: "Jun 30, 2026" },
+  { id: 12, name: "Escalation Recovery Survey",
+    status: "paused", channels: ["digital", "voice"], surveyDesignId: "vip-followup",
+    sampling: 90, sent: 4100, completion: 18.9, vu: 55,
+    owner: "Dev Patel", created: "Nov 20, 2025", updated: "Apr 25, 2026", endDate: null },
+  { id: 13, name: "Chatbot Deflection — Self Service",
+    status: "active", channels: ["digital"], surveyDesignId: "bot-simple",
+    sampling: 50, sent: 9340, completion: 22.3, vu: 61,
+    owner: "Tomás Reyes", created: "Feb 18, 2026", updated: "Apr 22, 2026", endDate: null },
+  { id: 14, name: "Product Feedback — Beta Testers",
+    status: "draft", channels: ["digital"], surveyDesignId: "brand-pulse",
+    sampling: 100, sent: 0, completion: 0, vu: null,
+    owner: "Aisha Khan", created: "May 10, 2026", updated: "May 10, 2026", endDate: "Aug 31, 2026" },
+  { id: 15, name: "Complaint Resolution Follow-Up",
+    status: "active", channels: ["digital", "voice"], surveyDesignId: "fcr-check",
+    hasWorkingCopy: true, workingCopyVersion: 2, publishedVersion: 1, publishedAt: "Mar 15, 2026", workingCopyEditedBy: "Maria Cohen", workingCopyEditedAt: "Apr 20, 2026",
+    sampling: 85, sent: 6720, completion: 31.8, vu: 72,
+    owner: "Maria Cohen", created: "Mar 12, 2026", updated: "Apr 20, 2026", endDate: null },
+  { id: 16, name: "Seasonal Campaign — Q1 2026",
+    status: "ended", channels: ["digital"], surveyDesignId: "csat-quick",
+    sampling: 100, sent: 18900, completion: 24.5, vu: 65,
+    owner: "Dev Patel", created: "Jan 01, 2026", updated: "Mar 31, 2026", endDate: "Mar 31, 2026" },
+  { id: 17, name: "IVR Experience Survey",
+    status: "active", channels: ["voice"], surveyDesignId: "csat-list",
+    sampling: 30, sent: 7450, completion: 19.2, vu: 58,
+    owner: "Tomás Reyes", created: "Dec 10, 2025", updated: "Apr 18, 2026", endDate: null },
+  { id: 18, name: "Technical Support CSAT",
+    status: "active", channels: ["digital"], surveyDesignId: "csat-quick",
+    sampling: 65, sent: 11200, completion: 26.7, vu: 70,
+    owner: "Aisha Khan", created: "Jan 28, 2026", updated: "Apr 15, 2026", endDate: null },
+  { id: 19, name: "Renewal Intent — Premium Tier",
+    status: "paused", channels: ["digital"], surveyDesignId: "nps-pulse",
+    sampling: 100, sent: 2340, completion: 38.1, vu: 79,
+    owner: "Maria Cohen", created: "Oct 15, 2025", updated: "Apr 10, 2026", endDate: null },
+  { id: 20, name: "Post-Installation Survey",
+    status: "active", channels: ["digital", "voice"], surveyDesignId: "fcr-check",
+    sampling: 70, sent: 4560, completion: 28.9, vu: 67,
+    owner: "Dev Patel", created: "Mar 05, 2026", updated: "Apr 08, 2026", endDate: "Sep 30, 2026" },
+  { id: 21, name: "Social Media Response Quality",
+    status: "draft", channels: ["digital"], surveyDesignId: "email-quality",
+    sampling: 100, sent: 0, completion: 0, vu: null,
+    owner: "Tomás Reyes", created: "May 08, 2026", updated: "May 08, 2026", endDate: null },
+  { id: 22, name: "Long-Term Relationship NPS",
+    status: "active", channels: ["digital"], surveyDesignId: "nps-pulse",
+    sampling: 45, sent: 8900, completion: 32.4, vu: 84,
+    owner: "Aisha Khan", created: "Nov 05, 2025", updated: "Apr 05, 2026", endDate: null },
+  { id: 23, name: "Callback Experience — Voice",
+    status: "active", channels: ["voice"], surveyDesignId: "csat-quick",
+    sampling: 55, sent: 3280, completion: 21.6, vu: 63,
+    owner: "Maria Cohen", created: "Feb 25, 2026", updated: "Apr 02, 2026", endDate: null },
+  { id: 24, name: "Knowledge Base Effectiveness",
+    status: "ended", channels: ["digital"], surveyDesignId: "fcr-check",
+    sampling: 100, sent: 14600, completion: 22.8, vu: 60,
+    owner: "Dev Patel", created: "Sep 01, 2025", updated: "Mar 28, 2026", endDate: "Mar 28, 2026" },
+  { id: 25, name: "Agent Soft Skills Feedback",
+    status: "active", channels: ["digital", "voice"], surveyDesignId: "csat-list",
+    sampling: 35, sent: 6140, completion: 24.3, vu: 71,
+    owner: "Tomás Reyes", created: "Jan 15, 2026", updated: "Mar 25, 2026", endDate: null },
+  { id: 26, name: "Digital Onboarding — Web",
+    status: "active", channels: ["digital"], surveyDesignId: "email-quality",
+    sampling: 80, sent: 5020, completion: 36.8, vu: 85,
+    owner: "Maria Cohen", created: "Feb 05, 2026", updated: "Mar 20, 2026", endDate: "Jul 31, 2026" },
+  { id: 27, name: "After-Hours Support Survey",
+    status: "paused", channels: ["voice"], surveyDesignId: "csat-quick",
+    sampling: 100, sent: 1680, completion: 16.4, vu: 52,
+    owner: "Aisha Khan", created: "Dec 20, 2025", updated: "Mar 15, 2026", endDate: null },
+  { id: 28, name: "Proactive Outreach Feedback",
+    status: "draft", channels: ["digital", "voice"], surveyDesignId: "brand-pulse",
+    sampling: 100, sent: 0, completion: 0, vu: null,
+    owner: "Dev Patel", created: "May 05, 2026", updated: "May 05, 2026", endDate: null },
+  { id: 29, name: "SLA Compliance Feedback",
+    status: "active", channels: ["digital"], surveyDesignId: "fcr-check",
+    sampling: 60, sent: 7830, completion: 29.6, vu: 73,
+    owner: "Maria Cohen", created: "Jan 10, 2026", updated: "Mar 10, 2026", endDate: null },
+  { id: 30, name: "Brand Perception — Loyalty",
+    status: "active", channels: ["digital"], surveyDesignId: "brand-pulse",
+    sampling: 90, sent: 4450, completion: 27.8, vu: 77,
+    owner: "Tomás Reyes", created: "Dec 05, 2025", updated: "Mar 05, 2026", endDate: null },
 ];
 
 function ChannelChip({ kind }) {
@@ -5858,8 +6000,50 @@ function ChannelChip({ kind }) {
   );
 }
 
+function InfoTooltip({ children }) {
+  const [visible, setVisible] = React.useState(false);
+  const [pos, setPos] = React.useState({ top: 0, left: 0 });
+  const iconRef = React.useRef(null);
+
+  function handleMouseEnter() {
+    if (!iconRef.current) return;
+    const rect = iconRef.current.getBoundingClientRect();
+    setPos({ top: rect.bottom + 8, left: rect.left + rect.width / 2 });
+    setVisible(true);
+  }
+
+  return (
+    <span className="info-tooltip-wrap">
+      <span
+        ref={iconRef}
+        className="info-tooltip-icon"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={() => setVisible(false)}
+      >
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="8" cy="8" r="6.5"/>
+          <line x1="8" y1="7" x2="8" y2="11"/>
+          <circle cx="8" cy="5" r="0.5" fill="currentColor" stroke="none"/>
+        </svg>
+      </span>
+      {visible && ReactDOM.createPortal(
+        <div className="info-tooltip-card" style={{
+          position: "fixed",
+          top: pos.top,
+          left: pos.left,
+          transform: "translateX(-50%)",
+          display: "block",
+        }}>
+          {children}
+        </div>,
+        document.body
+      )}
+    </span>
+  );
+}
+
 function StatusPill({ s }) {
-  const label = { active: "Active", paused: "Paused", draft: "Draft", ended: "Ended", working: "Working Copy" }[s] || s;
+  const label = { active: "Active", paused: "Inactive", draft: "Draft", ended: "Ended", working: "Working Copy" }[s] || s;
   return <span className={`fi-pill ${s}`}><span className="dot"/>{label}</span>;
 }
 
@@ -6057,16 +6241,13 @@ function RowActions({ campaign, statusOf, onActivate, onDeactivate, onDelete, on
               Deactivate
             </button>
           )}
-          {s === "paused" && (
-            <button className="row-action-item" onClick={() => { onActivate(campaign.id); setOpen(false); }}>
-              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="5 3 19 12 5 21 5 3"/>
-              </svg>
-              Resume
-            </button>
-          )}
           <div className="row-action-divider"/>
-          <button className="row-action-item danger" onClick={() => { onDelete(campaign.id); setOpen(false); }}>
+          <button
+            className={`row-action-item danger${s === "active" ? " disabled" : ""}`}
+            disabled={s === "active"}
+            title={s === "active" ? "Deactivate the campaign before deleting" : undefined}
+            onClick={() => { if (s !== "active") { onDelete(campaign.id); setOpen(false); } }}
+          >
             <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/>
             </svg>
@@ -6160,7 +6341,7 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
   }
 
   const liveCampaigns = CAMPAIGNS.filter(c => !deletedIds.has(c.id));
-  const statusOptions = ["Active", "Paused", "Draft", "Ended"];
+  const statusOptions = ["Active", "Inactive", "Draft", "Ended"];
   const hasAnyFilter = !!(search || statusFilter);
   const clearAllFilters = () => { setSearch(""); setStatusFilter(null); };
 
@@ -6177,7 +6358,8 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
   const filteredRows = orderedAll.filter(c => {
     if (deletedIds.has(c.id)) return false;
     const s = statusOf(c);
-    if (statusFilter && s !== statusFilter.toLowerCase()) return false;
+    const filterVal = statusFilter === "Inactive" ? "paused" : statusFilter?.toLowerCase();
+    if (filterVal && s !== filterVal) return false;
     if (search && !c.name.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
@@ -6185,7 +6367,12 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
   const rows = [...filteredRows].sort((a, b) => {
     let av, bv;
     if (sortKey === "updated")  { av = a.updated;                bv = b.updated; }
-    if (sortKey === "priority") { av = priorityMap[a.id] ?? 999; bv = priorityMap[b.id] ?? 999; }
+    if (sortKey === "priority") {
+      const activeOnly = c => statusOf(c) === "active";
+      av = activeOnly(a) ? (priorityMap[a.id] ?? 999) : 999;
+      bv = activeOnly(b) ? (priorityMap[b.id] ?? 999) : 999;
+    }
+    if (sortKey === "endDate")  { av = a.endDate ?? "zzz";       bv = b.endDate ?? "zzz"; }
     if (av === undefined) return 0;
     if (av < bv) return sortDir === "asc" ? -1 : 1;
     if (av > bv) return sortDir === "asc" ? 1 : -1;
@@ -6209,10 +6396,19 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
   return (
     <div className="pane">
       <div className="pane-head">
-        <h1>Survey Campaigns</h1>
+        <h1 style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+          Survey Campaigns
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            height: 22, minWidth: 22, padding: "0 var(--space-2)",
+            borderRadius: "var(--radius-round)",
+            background: "var(--lyra-slate-200)", color: "var(--lyra-slate-700)",
+            font: "500 12px/16px var(--font-sans)", letterSpacing: "0.01rem",
+          }}>{rows.length}</span>
+        </h1>
         <div className="head-actions">
           <button className="btn" onClick={openPriorityModal}>
-            Set Priority
+            Set Priority for Campaigns
           </button>
           <button className="btn primary" onClick={onCreate}>
             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -6242,15 +6438,30 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
               <th style={{ width: 110, cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("priority")}>
                 <span style={{ display: "inline-flex", alignItems: "center" }}>Priority<SortIcon k="priority"/></span>
               </th>
-              <th style={{ width: 40, paddingRight: "var(--space-2)" }}></th>
-              <th>Campaign</th>
-              <th>Status</th>
+              <th style={{ paddingRight: "var(--space-2)" }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-1)" }}>
+                  Campaign State
+                  <InfoTooltip>
+                    <div className="info-tooltip-card-title">What is Campaign State?</div>
+                    <div className="info-tooltip-card-body">
+                      It tells you the current condition of the survey attached to this campaign.
+                      <div className="info-tooltip-card-row"><b>Live</b> The survey is published and actively collecting responses.</div>
+                      <div className="info-tooltip-card-row"><b>Draft</b> The survey is still being set up and hasn't gone live yet.</div>
+                      <div className="info-tooltip-card-row"><b>Working Copy</b> The survey is live, but there are unpublished changes waiting to go out.</div>
+                    </div>
+                  </InfoTooltip>
+                </span>
+              </th>
+              <th>Campaign Name / Details</th>
               <th>Channels</th>
               <th>Sampling</th>
-              <th>End date</th>
+              <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("endDate")}>
+                <span style={{ display: "inline-flex", alignItems: "center" }}>End date<SortIcon k="endDate"/></span>
+              </th>
               <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("updated")}>
                 <span style={{ display: "inline-flex", alignItems: "center" }}>Last updated<SortIcon k="updated"/></span>
               </th>
+              <th>Campaign Status</th>
               <th style={{ width: 48 }}></th>
             </tr>
           </thead>
@@ -6261,7 +6472,6 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
               const s = statusOf(c);
               const surveyState = c.hasWorkingCopy ? "working" : s === "draft" ? "draft" : "live";
               const surveyStateLabel = { live: "Live", draft: "Draft", working: "Working Copy" }[surveyState];
-              const surveyStateLetter = { live: "L", draft: "D", working: "W" }[surveyState];
               return (
                 <tr key={c.id}>
                   <td>
@@ -6282,8 +6492,8 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                     )}
                   </td>
                   <td style={{ paddingRight: "var(--space-2)" }}>
-                    <span className={`ss-badge ${surveyState}`} data-tip={`Survey State: ${surveyStateLabel}`}>
-                      {surveyStateLetter}
+                    <span className={`ss-badge ${surveyState}`} data-tip={`Campaign State: ${surveyStateLabel}`}>
+                      {surveyStateLabel}
                     </span>
                   </td>
                   <td>
@@ -6292,12 +6502,6 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                     </a>
                     <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 4 }}>
                       Created {c.created}, {c.owner}
-                    </div>
-                  </td>
-                  <td>
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--space-3)" }}>
-                      <StatusPill s={statusOf(c)}/>
-                      {c.hasWorkingCopy ? <WorkingCopyChip/> : null}
                     </div>
                   </td>
                   <td>
@@ -6317,6 +6521,9 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                     <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 4 }}>
                       by {c.owner}
                     </div>
+                  </td>
+                  <td>
+                    <StatusPill s={statusOf(c)}/>
                   </td>
                   <td style={{ textAlign: "right", paddingRight: "var(--space-6)" }}>
                     <RowActions
@@ -6411,17 +6618,9 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                         </td>
                         <td>
                           <div style={{ font: "500 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>{c.name}</div>
-                          <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 2 }}>Created {c.created}</div>
                         </td>
-                        <td>
-                          <div className="channel-stack">
-                            {c.channels.map(k => (
-                              <span key={k} className="channel-label-item">
-                                <ChannelChip kind={k}/>
-                                <span className="channel-label-text">{k === "voice" ? "Voice" : "Digital"}</span>
-                              </span>
-                            ))}
-                          </div>
+                        <td style={{ whiteSpace: "nowrap", font: "400 13px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>
+                          {c.channels.map(k => k === "voice" ? "Voice" : "Digital").join(", ")}
                         </td>
                       </tr>
                     );
@@ -6447,7 +6646,7 @@ const SURVEY_DESIGNS = [
   {
     id: "csat-quick", name: "Post-Chat CSAT", category: "Customer Satisfaction",
     why: "Best for digital interactions where the conversation just ended. Short surveys (2–3 questions) get the highest response rates.",
-    channels: "Digital · Chat",
+    channels: "Digital",
     intents: [
       { group: "Primary",   tags: ["Resolution quality", "Agent friendliness"] },
       { group: "Secondary", tags: ["Response time", "First-contact resolution"] },
@@ -6456,7 +6655,7 @@ const SURVEY_DESIGNS = [
   {
     id: "bot-simple", name: "Bot Handoff Audit", category: "AI Quality",
     why: "Use after virtual agent transfers to measure where AI confidence dropped and human escalation was needed.",
-    channels: "Digital · AI / Bot",
+    channels: "Digital",
     intents: [
       { group: "Primary",   tags: ["Bot containment", "Handoff smoothness"] },
       { group: "Secondary", tags: ["Escalation trigger", "AI confidence"] },
@@ -6465,7 +6664,7 @@ const SURVEY_DESIGNS = [
   {
     id: "vip-followup", name: "VIP Escalation Follow-Up", category: "Retention",
     why: "Deploy after high-priority escalations. VIP customers churn silently — a personal survey shows the brand cares.",
-    channels: "All channels",
+    channels: "Digital · Voice",
     intents: [
       { group: "Primary",   tags: ["Satisfaction", "Relationship recovery"] },
       { group: "Secondary", tags: ["Churn risk", "Brand perception"] },
@@ -6474,7 +6673,7 @@ const SURVEY_DESIGNS = [
   {
     id: "nps-pulse", name: "NPS Pulse Survey", category: "Net Promoter",
     why: "Captures likelihood to recommend after any significant interaction. Pairs well with open-text follow-up for promoter and detractor classification.",
-    channels: "All channels",
+    channels: "Digital · Voice",
     intents: [
       { group: "Primary",   tags: ["Recommend likelihood", "Promoter signal"] },
       { group: "Secondary", tags: ["Detractor risk", "Passive conversion"] },
@@ -6483,7 +6682,7 @@ const SURVEY_DESIGNS = [
   {
     id: "fcr-check", name: "First Contact Resolution", category: "Resolution Quality",
     why: "One focused question on whether the issue was fully resolved. High correlation with loyalty — ideal for QA teams tracking resolution rates.",
-    channels: "Voice · Digital · Email",
+    channels: "Digital · Voice",
     intents: [
       { group: "Primary",   tags: ["Issue resolved", "Follow-up needed"] },
       { group: "Secondary", tags: ["Root cause", "Knowledge gap flag"] },
@@ -6492,7 +6691,7 @@ const SURVEY_DESIGNS = [
   {
     id: "email-quality", name: "Email Support Quality", category: "Email Channel",
     why: "Optimised for async email threads. Measures clarity, helpfulness and tone — signals often lost in real-time chat surveys.",
-    channels: "Email",
+    channels: "Digital",
     intents: [
       { group: "Primary",   tags: ["Response clarity", "Helpfulness"] },
       { group: "Secondary", tags: ["Tone quality", "Resolution satisfaction"] },
@@ -6806,7 +7005,7 @@ function MultiSelectField({ options, value = [], onChange, placeholder = "Select
   );
 }
 
-function FiDatePicker({ value, onChange, disabled, placeholder = "Select date" }) {
+function FiDatePicker({ value, onChange, disabled, placeholder = "Select date", error }) {
   const ref = React.useRef(null);
   const fmt = (iso) => {
     if (!iso) return "";
@@ -6820,7 +7019,7 @@ function FiDatePicker({ value, onChange, disabled, placeholder = "Select date" }
       <input
         type="text"
         readOnly
-        className="fi-input"
+        className={`fi-input${error ? " fi-input--error" : ""}`}
         placeholder={placeholder}
         disabled={disabled}
         value={fmt(value)}
@@ -6959,9 +7158,9 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
               <SRow label="Description" value={c.description || null}/>
               <SRow label="Start Date" value={c.startDate}/>
               <SRow label="End Date" value={c.ongoing ? "Ongoing" : (c.endDate || null)}/>
-              <SRow label="Channels" value={c.channels.join(", ")}/>
-              <SRow label="Agent Teams" value={(c.queues || []).join(", ")}/>
-              <SRow label="Agent Group" value={(c.teams || []).join(", ")}/>
+              <SRow label="Agent Teams" value={(c.queues || []).join(", ") || "Not set"}/>
+              <SRow label="Agent Groups" value={(c.teams || []).join(", ") || "All groups"}/>
+              <SRow label="Language" value="English (Default)"/>
             </SummarySection>
             <SummarySection title="Volume & Sampling">
               <SRow label="Sampling %" value={`${c.samplingPct}%`}/>
@@ -6990,8 +7189,9 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
     );
   }
 
-  const canDraft    = !!(c.name && c.channels?.length && c.samplingPct);
-  const canActivate = !!(c.name && c.channels?.length && c.queues?.length);
+  const datesValid  = !!(c.startDate && (c.ongoing || c.endDate));
+  const canDraft    = !!(c.name && c.samplingPct && datesValid);
+  const canActivate = !!(c.name && c.queues?.length && datesValid);
 
   return (
     <div className="pane" style={{ display: "flex", flexDirection: "column", overflow: "hidden" }}>
@@ -7008,8 +7208,6 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
             <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42"/></svg>
             AI Campaign Assistant
           </button>
-          <button className="btn" onClick={onCancel}>Cancel</button>
-          <button className="btn" disabled={!canDraft} onClick={() => onSave({ ...c, status: "draft" })}>Save as draft</button>
         </div>
       </div>
 
@@ -7043,11 +7241,11 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
 
           {/* ── Step 0: Template, Identity &amp; Scope ── */}
           {activeStep === 0 && (()=>{
-            const showErr  = visitedSteps.has(0);
-            const nameErr  = showErr && !c.name;
-            const teamsErr = showErr && !c.queues?.[0];
-            const groupErr = showErr && !c.teams?.[0];
-            const chansErr = showErr && c.channels.length === 0;
+            const showErr      = visitedSteps.has(0);
+            const nameErr      = showErr && !c.name;
+            const teamsErr     = showErr && !c.queues?.[0];
+            const startDateErr = showErr && !c.startDate;
+            const endDateErr   = showErr && !c.ongoing && !c.endDate;
             return <div className="wz-step-content">
 
               {/* ── Section A: Choose a Template ── */}
@@ -7122,35 +7320,23 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
                   </div>
                   <div className="field-grid-2" style={{ padding: 0, borderTop: 0 }}>
                     <div className="field-cell">
-                      <label className="field-label" style={{ fontWeight: 400 }}>Start Date</label>
-                      <FiDatePicker value={c.startDate} onChange={v => set("startDate", v)} placeholder="Oct 30, 2025"/>
+                      <label className="field-label" style={{ fontWeight: 400 }}>Start Date<span className="req">*</span></label>
+                      <FiDatePicker value={c.startDate} onChange={v => set("startDate", v)} placeholder="Oct 30, 2025" error={startDateErr}/>
+                      {startDateErr && <span className="error-msg" style={{ marginTop: "var(--space-1)", display: "flex", alignItems: "center", gap: 4 }}>
+                        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                        Start date is required
+                      </span>}
                     </div>
                     <div className="field-cell">
-                      <label className="field-label" style={{ fontWeight: 400, color: c.ongoing ? "var(--color-fg-disabled)" : undefined }}>End Date</label>
-                      <FiDatePicker value={c.endDate} onChange={v => set("endDate", v)} disabled={c.ongoing} placeholder={c.ongoing ? "Ongoing" : "Oct 30, 2025"}/>
+                      <label className="field-label" style={{ fontWeight: 400, color: c.ongoing ? "var(--color-fg-disabled)" : undefined }}>End Date{!c.ongoing && <span className="req">*</span>}</label>
+                      <FiDatePicker value={c.endDate} onChange={v => set("endDate", v)} disabled={c.ongoing} placeholder={c.ongoing ? "Ongoing" : "Oct 30, 2025"} error={endDateErr}/>
+                      {endDateErr && <span className="error-msg" style={{ marginTop: "var(--space-1)", display: "flex", alignItems: "center", gap: 4 }}>
+                        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                        End date is required
+                      </span>}
                     </div>
                   </div>
                 </div>
-
-                <FieldRow label="Channels" req>
-                  <div className={`lyra-check-group${chansErr ? " lyra-check-group--error" : ""}`}>
-                    {[{ k: "digital", l: "Digital", icon: "digital" }, { k: "voice", l: "Voice", icon: "voice" }].map(opt => {
-                      const on = c.channels.includes(opt.k);
-                      return (
-                        <label key={opt.k} className="lyra-check">
-                          <input type="checkbox" checked={on}
-                            onChange={() => set("channels", on ? c.channels.filter(x => x !== opt.k) : [...c.channels, opt.k])}/>
-                          <ChannelChip kind={opt.icon}/>
-                          <span>{opt.l}</span>
-                        </label>
-                      );
-                    })}
-                  </div>
-                  {chansErr && <div className="field-control" style={{ marginTop: "var(--space-1)" }}><span className="error-msg">
-                    <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
-                    Select at least one channel
-                  </span></div>}
-                </FieldRow>
 
                 <div className="section-heading" style={{ paddingTop: "var(--space-6)", paddingBottom: "var(--space-2)" }}>Agents</div>
                 <div className="field-grid-2" style={{ borderTop: "none", paddingTop: 0, paddingBottom: 0 }}>
@@ -7169,18 +7355,13 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
                     </span></div>}
                   </div>
                   <div className="field-cell">
-                    <label className="field-label">Agent Group<span className="req">*</span></label>
+                    <label className="field-label">Agent Group</label>
                     <MultiSelectField
                       options={["North America", "EMEA", "APAC"]}
                       value={c.teams || []}
                       onChange={v => set("teams", v)}
                       placeholder="Select Group"
-                      error={groupErr}
                     />
-                    {groupErr && <div className="field-control"><span className="error-msg">
-                      <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
-                      Select an agent group
-                    </span></div>}
                   </div>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", marginTop: "var(--space-2)", padding: "0 var(--space-3)", height: 36, background: "var(--lyra-white)", border: "1px solid var(--color-border-soft)", borderRadius: "var(--radius-md)", font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>
@@ -7191,8 +7372,7 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
                   <FieldRow label="Language">
                     <label className="lyra-check disabled" style={{ pointerEvents: "none" }}>
                       <input type="checkbox" checked readOnly disabled/>
-                      <span>English</span>
-                      <span style={{ font: "500 11px/16px var(--font-sans)", color: "var(--lyra-slate-400)", textTransform: "uppercase", letterSpacing: "0.05em", marginLeft: 4 }}>Default</span>
+                      <span>English (Default)</span>
                     </label>
                   </FieldRow>
                 </div>
@@ -7396,7 +7576,7 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
                 <div className="sr-row-value">{children || <span style={{ color: "var(--color-fg-secondary)" }}>—</span>}</div>
               </div>
             );
-            const missingRequired = !c.name || !c.channels?.length || !c.queues?.length;
+            const missingRequired = !c.name || !c.queues?.length || !c.startDate || (!c.ongoing && !c.endDate);
             return (
               <div className="wz-step-content">
                 <div style={{ marginBottom: "var(--space-5)" }}>
@@ -7422,18 +7602,13 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
                   <SRRow label="Campaign Name">{c.name || <span style={{ color: "var(--color-status-error)" }}>Required</span>}</SRRow>
                   {c.description && <SRRow label="Description">{c.description}</SRRow>}
                   <SRRow label="Active Date Range">
-                    {c.startDate ? (c.ongoing ? `Ongoing from ${c.startDate}` : c.endDate ? `${c.startDate} — ${c.endDate}` : c.startDate) : "Not set"}
-                  </SRRow>
-                  <SRRow label="Channels">
-                    {c.channels?.length
-                      ? <div style={{ display: "flex", gap: "var(--space-3)", flexWrap: "wrap" }}>
-                          {c.channels.map(ch => <span key={ch} style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><ChannelChip kind={ch}/>{CHANNEL_LABEL[ch] || ch}</span>)}
-                        </div>
+                    {c.startDate
+                      ? (c.ongoing ? `Ongoing from ${c.startDate}` : c.endDate ? `${c.startDate} — ${c.endDate}` : <span style={{ color: "var(--color-status-error)" }}>End date required</span>)
                       : <span style={{ color: "var(--color-status-error)" }}>Required</span>}
                   </SRRow>
                   <SRRow label="Agent Teams">{c.queues?.length ? c.queues.join(", ") : <span style={{ color: "var(--color-status-error)" }}>Required</span>}</SRRow>
                   <SRRow label="Agent Groups">{c.teams?.length ? c.teams.join(", ") : "All groups"}</SRRow>
-                  <SRRow label="Language">English</SRRow>
+                  <SRRow label="Language">English (Default)</SRRow>
                 </SRSection>
 
                 <SRSection title="Suppression Rules" num={2}>
@@ -7464,17 +7639,24 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
 
       {/* ── Back / Next footer — outside scroll area, always visible ── */}
       <div className="wz-footer">
-        {activeStep > 0 && (
-          <button className="btn" onClick={goBack}>← Back</button>
-        )}
+        <button className="btn" onClick={onCancel || (() => {})}>Cancel</button>
         <span style={{ flex: 1 }}/>
         {activeStep < 4 ? (
-          <button className="btn primary" onClick={goNext}>
-            {activeStep === 3 ? "Review →" : "Next →"}
-          </button>
+          <>
+            <button className="btn" disabled={!canDraft} onClick={() => onSave({ ...c, status: "draft" })}>Save as draft</button>
+            <div style={{ width: 1, height: 20, background: "var(--color-border-soft)", margin: "0 var(--space-1)" }}/>
+            {activeStep > 0 && (
+              <button className="btn" onClick={goBack}>← Back</button>
+            )}
+            <button className="btn primary" onClick={goNext}>
+              {activeStep === 3 ? "Review →" : "Next →"}
+            </button>
+          </>
         ) : (
           <>
             <button className="btn" onClick={() => onSave({ ...c, status: "draft" })}>Save as draft</button>
+            <div style={{ width: 1, height: 20, background: "var(--color-border-soft)", margin: "0 var(--space-1)" }}/>
+            <button className="btn" onClick={goBack}>← Back</button>
             <button className="btn primary" disabled={!canActivate}
               onClick={() => onSave({ ...c, status: "active" })}>
               Activate Campaign →
@@ -7627,7 +7809,7 @@ function ModelPickerDrawer({ currentId, onClose, onSelect }) {
           <input
             ref={inputRef}
             className="model-picker-search"
-            placeholder="Search models by name, tags…"
+            placeholder="Search model by name, industry…"
             value={query}
             onChange={e => setQuery(e.target.value)}
           />
@@ -7740,7 +7922,7 @@ function SurveyPickerDrawer({ currentId, onClose, onSelect }) {
           <input
             ref={inputRef}
             className="model-picker-search"
-            placeholder="Search surveys by name or category…"
+            placeholder="Search by name"
             value={query}
             onChange={e => setQuery(e.target.value)}
           />
@@ -7888,17 +8070,12 @@ function Stars({ n, size = 14 }) {
 }
 
 function FloatingMetrics({ campaign: c }) {
-  const CHANNEL_LABEL = { digital: "Digital", voice: "Voice", email: "Email", sms: "SMS" };
-
   const dateRange = c.startDate
     ? (c.ongoing ? `${c.startDate} — Ongoing` : c.endDate ? `${c.startDate} — ${c.endDate}` : `${c.startDate} — No end date`)
     : "Not set";
 
-  const channels = c.channels?.length
-    ? c.channels.map(ch => CHANNEL_LABEL[ch] || ch).join(", ")
-    : "Not set";
-
-  const teams = c.teams?.length ? c.teams.join(", ") : "All teams";
+  const agentTeams = c.queues?.length ? c.queues.join(", ") : "Not set";
+  const agentGroups = c.teams?.length ? c.teams.join(", ") : "All groups";
 
   const interactions = c.samplingPct
     ? `${c.samplingPct}% of interactions`
@@ -7906,8 +8083,8 @@ function FloatingMetrics({ campaign: c }) {
 
   const rows = [
     { icon: "calendar", label: "Active date range",      value: dateRange },
-    { icon: "channel",  label: "Channel",                value: channels },
-    { icon: "agents",   label: "Agent teams",            value: teams },
+    { icon: "agents",   label: "Agent teams",            value: agentTeams },
+    { icon: "agents",   label: "Agent groups",           value: agentGroups },
     { icon: "survey",   label: "Interactions surveyed",  value: interactions },
   ];
 
@@ -7934,9 +8111,63 @@ function FloatingMetrics({ campaign: c }) {
   );
 }
 
+function KebabMenu() {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef(null);
+
+  React.useEffect(() => {
+    if (!open) return;
+    function onDown(e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [open]);
+
+  const actions = [
+    { label: "Action 1", icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="11"/><line x1="5" y1="8" x2="11" y2="8"/></svg> },
+    { label: "Action 2", icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="2" width="12" height="12" rx="2"/><line x1="8" y1="5" x2="8" y2="11"/></svg> },
+    { label: "Action 3", icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M13 11l-5-3-5 3V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1z"/></svg> },
+  ];
+
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <div className="kebab" onClick={() => setOpen(o => !o)}>
+        <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+      </div>
+      {open && (
+        <div style={{
+          position: "absolute", top: "calc(100% + 6px)", right: 0,
+          minWidth: 160,
+          background: "var(--lyra-white)",
+          border: "1px solid var(--color-border-soft)",
+          borderRadius: "var(--radius-md)",
+          boxShadow: "0px 4px 8px 0px rgba(0,0,0,0.08)",
+          zIndex: 300, overflow: "hidden",
+          padding: "var(--space-1) 0",
+        }}>
+          {actions.map((a, i) => (
+            <button key={i} onClick={() => setOpen(false)} style={{
+              display: "flex", alignItems: "center", gap: "var(--space-2)",
+              width: "100%", padding: "var(--space-2) var(--space-3)",
+              background: "none", border: "none", cursor: "pointer",
+              font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)",
+              textAlign: "left",
+            }}
+            onMouseEnter={e => e.currentTarget.style.background = "rgba(0,0,0,0.04)"}
+            onMouseLeave={e => e.currentTarget.style.background = "none"}>
+              <span style={{ color: "var(--color-fg-secondary)" }}>{a.icon}</span>
+              {a.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function CampaignDetail({ campaign, onBack, onEdit }) {
   const [c, setC] = React.useState(campaign);
   const [toast, setToast] = React.useState(null);
+  const [showChanges, setShowChanges] = React.useState(false);
   React.useEffect(() => {
     if (!toast) return;
     const t = setTimeout(() => setToast(null), 2800);
@@ -7967,32 +8198,21 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
         <span className="last">{c.name}</span>
       </div>
 
-      {/* Page header — title + action buttons (no inline badges per design) */}
+      {/* Page header — title + kebab only */}
       <div className="pane-head" style={{ paddingTop: 6 }}>
         <h1 style={{ flex: 1, margin: 0 }}>{c.name}</h1>
         <div className="head-actions">
-          <button className="btn">
-            <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
-            {c.status === "active" ? "Pause" : "Resume"}
-          </button>
-          <button className="btn">
-            <svg viewBox="0 0 24 24"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
-            Duplicate
-          </button>
-          <button className="btn primary" onClick={() => onEdit(c)}>
-            <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
-            Edit Configuration
-          </button>
-          <div className="kebab">
-            <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
-          </div>
+          <KebabMenu/>
         </div>
       </div>
+
+      {/* Scrollable body — meta row + banner + detail layout */}
+      <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
 
       {/* Meta row — info dot-separated on left, status badges on right */}
       <div style={{
         display: "flex", alignItems: "center", gap: "var(--space-3)",
-        padding: "var(--space-3) var(--space-8) var(--space-4)",
+        padding: "var(--space-6) var(--space-8)",
       }}>
         <div style={{
           flex: 1,
@@ -8012,9 +8232,20 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
             </>
           )}
         </div>
-        <div style={{ display: "flex", gap: "var(--space-2)" }}>
-          <StatusPill s={c.status}/>
-          {c.hasWorkingCopy ? <WorkingCopyChip/> : null}
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+            <span style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)" }}>Campaign Status</span>
+            <StatusPill s={c.status}/>
+          </div>
+          {c.hasWorkingCopy && (
+            <>
+              <div style={{ width: 1, height: 20, background: "var(--color-border-soft)", flexShrink: 0 }}/>
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+                <span style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)" }}>Campaign State</span>
+                <WorkingCopyChip/>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -8033,11 +8264,15 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
             </div>
           </div>
           <div className="working-banner-actions">
-            <button className="btn" onClick={discardWorkingCopy}>
+            <button className="btn btn-ghost" style={{ background: "none", border: "none" }} onClick={() => setShowChanges(true)}>
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+              View Changes
+            </button>
+            <button className="btn btn-ghost" style={{ background: "none", border: "none" }} onClick={discardWorkingCopy}>
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
               Discard Changes
             </button>
-            <button className="btn" onClick={publishWorkingCopy}>
+            <button className="btn primary" onClick={publishWorkingCopy}>
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 13 10 19 20 5"/></svg>
               Publish V{c.workingCopyVersion}
             </button>
@@ -8045,7 +8280,60 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
         </div>
       ) : null}
 
-      <div className="detail-layout">
+      {/* View Changes modal */}
+      {showChanges && ReactDOM.createPortal(
+        <div style={{ position: "fixed", inset: 0, zIndex: 800, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.40)" }}
+          onClick={e => { if (e.target === e.currentTarget) setShowChanges(false); }}>
+          <div style={{ width: 640, maxWidth: "92vw", maxHeight: "80vh", background: "var(--lyra-white)", borderRadius: "var(--radius-lg)", boxShadow: "0px 24px 48px -12px rgba(16,24,40,0.32)", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+            {/* Header */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "var(--space-5) var(--space-6)", borderBottom: "1px solid var(--color-border-subtle)" }}>
+              <div>
+                <div style={{ font: "600 16px/24px var(--font-sans)", color: "var(--color-fg-default)", letterSpacing: "-0.01rem" }}>What's changed in v{c.workingCopyVersion}</div>
+                <div style={{ font: "400 13px/18px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 2 }}>
+                  Edited by {c.workingCopyEditedBy} · {c.workingCopyEditedAt} &nbsp;·&nbsp; Comparing v{c.publishedVersion} → v{c.workingCopyVersion}
+                </div>
+              </div>
+              <button onClick={() => setShowChanges(false)} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "var(--color-fg-secondary)", display: "flex", alignItems: "center", borderRadius: "var(--radius-sm)" }}>
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>
+              </button>
+            </div>
+            {/* Change list */}
+            <div style={{ overflowY: "auto", padding: "var(--space-4) var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+              {[
+                { section: "Volume & Sampling", field: "Sampling Rate", from: "50%", to: "65%" },
+                { section: "Suppression Rules", field: "Recency Window", from: "30 days", to: "14 days" },
+                { section: "Topic AI Model & Survey Template", field: "Survey Template", from: "Post-Chat CSAT", to: "NPS Pulse Survey" },
+                { section: "Campaign Identity & Scope", field: "Active Date Range", from: "2026-05-12 — 2026-12-31", to: "2026-05-12 — Ongoing" },
+              ].map((row, i) => (
+                <div key={i} style={{ background: "var(--lyra-slate-50)", border: "1px solid var(--color-border-subtle)", borderRadius: "var(--radius-md)", padding: "var(--space-3) var(--space-4)" }}>
+                  <div style={{ font: "500 11px/14px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--space-2)" }}>{row.section}</div>
+                  <div style={{ font: "500 14px/20px var(--font-sans)", color: "var(--color-fg-default)", marginBottom: "var(--space-2)" }}>{row.field}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexWrap: "wrap" }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-1)", padding: "2px var(--space-2)", background: "#fff0f0", border: "1px solid rgba(191,35,35,0.20)", borderRadius: "var(--radius-xs)", font: "400 13px/18px var(--font-sans)", color: "var(--lyra-red-600, #bf2323)", textDecoration: "line-through" }}>
+                      {row.from}
+                    </span>
+                    <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="var(--color-fg-secondary)" strokeWidth="1.5" strokeLinecap="round"><line x1="2" y1="8" x2="14" y2="8"/><polyline points="10 4 14 8 10 12"/></svg>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-1)", padding: "2px var(--space-2)", background: "var(--lyra-green-50)", border: "1px solid rgba(28,94,37,0.20)", borderRadius: "var(--radius-xs)", font: "400 13px/18px var(--font-sans)", color: "var(--lyra-green-700)" }}>
+                      {row.to}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Footer */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "var(--space-2)", padding: "var(--space-4) var(--space-6)", borderTop: "1px solid var(--color-border-subtle)" }}>
+              <button className="btn" onClick={() => setShowChanges(false)}>Close</button>
+              <button className="btn primary" onClick={() => { setShowChanges(false); publishWorkingCopy(); }}>
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 13 10 19 20 5"/></svg>
+                Publish V{c.workingCopyVersion}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      <div className="detail-layout" style={{ flex: 1 }}>
         <div className="detail-main">
           <ConfigurationView campaign={c}/>
         </div>
@@ -8053,6 +8341,27 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
           <CampaignSummaryCard campaign={c}/>
         </aside>
       </div>
+
+      </div>{/* /scrollable body */}
+
+      {/* Bottom action bar */}
+      <div className="wz-footer">
+        <button className="btn" onClick={onBack}>Cancel</button>
+        <span style={{ flex: 1 }}/>
+        <button className="btn">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+          {c.status === "active" ? "Deactivate" : "Activate"}
+        </button>
+        <button className="btn">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg>
+          Duplicate
+        </button>
+        <button className="btn primary" onClick={() => onEdit(c)}>
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+          Edit Configuration
+        </button>
+      </div>
+
       {toast ? (
         <div className="toast">
           <svg viewBox="0 0 24 24"><polyline points="4 13 10 19 20 5"/></svg>
@@ -8096,9 +8405,8 @@ function CampaignSummaryCard({ campaign: c }) {
   ];
 
   /* ── Config info (draft / ended campaigns) ── */
-  const CHANNEL_LABEL = { digital: "Digital", voice: "Voice", email: "Email", sms: "SMS" };
-  const channels = c.channels?.length ? c.channels.map(ch => CHANNEL_LABEL[ch] || ch).join(", ") : "Not set";
-  const teams = c.queues?.length ? c.queues.join(", ") : "All teams";
+  const agentTeams = c.queues?.length ? c.queues.join(", ") : "Not set";
+  const agentGroups = c.teams?.length ? c.teams.join(", ") : "All groups";
   const dateRange = c.startDate
     ? (c.ongoing ? `Ongoing from ${c.startDate}` : c.endDate ? `${c.startDate} — ${c.endDate}` : `${c.startDate} — No end date`)
     : "Not set";
@@ -8109,12 +8417,12 @@ function CampaignSummaryCard({ campaign: c }) {
       label: "Active Date Range", value: dateRange,
     },
     {
-      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M2 11.5C2 9.5 3.5 8 5.5 8h5C12.5 8 14 9.5 14 11.5"/><circle cx="8" cy="4.5" r="2.5"/></svg>,
-      label: "Channel", value: channels,
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="6" cy="5" r="2"/><path d="M1 13c0-2.2 1.8-4 4-4h2"/><circle cx="11.5" cy="6" r="2"/><path d="M8 13.5c0-1.9 1.6-3.5 3.5-3.5s3.5 1.6 3.5 3.5"/></svg>,
+      label: "Agent Teams", value: agentTeams,
     },
     {
       icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="6" cy="5" r="2"/><path d="M1 13c0-2.2 1.8-4 4-4h2"/><circle cx="11.5" cy="6" r="2"/><path d="M8 13.5c0-1.9 1.6-3.5 3.5-3.5s3.5 1.6 3.5 3.5"/></svg>,
-      label: "Agent Teams", value: teams,
+      label: "Agent Groups", value: agentGroups,
     },
     {
       icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>,
@@ -8177,8 +8485,6 @@ function ConfigGroup({ title, num, children, defaultOpen = true }) {
 }
 
 function ConfigurationView({ campaign: c }) {
-  const CHANNEL_LABEL = { digital: "Digital", voice: "Voice", email: "Email", sms: "SMS" };
-  const channels = c.channels?.length ? c.channels : ["digital", "voice"];
   const dateRange = c.startDate
     ? (c.ongoing ? `Ongoing from ${c.startDate}` : c.endDate ? `${c.startDate} — ${c.endDate}` : `${c.startDate} — No end date`)
     : "Ongoing from " + c.created;
@@ -8193,18 +8499,9 @@ function ConfigurationView({ campaign: c }) {
         <DefRow label="Campaign Name">{c.name}</DefRow>
         {c.description && <DefRow label="Description">{c.description}</DefRow>}
         <DefRow label="Active Date Range">{dateRange}</DefRow>
-        <DefRow label="Channels">
-          <div className="channel-stack" style={{ gap: "var(--space-3)" }}>
-            {channels.map(ch => (
-              <span key={ch} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                <ChannelChip kind={ch}/> {CHANNEL_LABEL[ch] || ch}
-              </span>
-            ))}
-          </div>
-        </DefRow>
-        <DefRow label="Agent Teams">{c.queues?.length ? c.queues.join(", ") : "All teams"}</DefRow>
+        <DefRow label="Agent Teams">{c.queues?.length ? c.queues.join(", ") : <span style={{ color: "var(--color-fg-secondary)" }}>Not set</span>}</DefRow>
         <DefRow label="Agent Groups">{c.teams?.length ? c.teams.join(", ") : "All groups"}</DefRow>
-        <DefRow label="Language">English</DefRow>
+        <DefRow label="Language">English (Default)</DefRow>
       </ConfigGroup>
 
       {/* Step 1 mirror: Suppression Rules */}
@@ -8609,52 +8906,100 @@ const SEED_DESIGNS = [
   { id: "bot-simple",     name: "Bot Handoff — 1 Question",         description: "Minimal one-question survey for AI bot deflection audits. No AI questions, no welcome.", channel: "Digital", surveyType: "Like / Dislike", displayStyle: "Quick Reply", listPickerLabel: "", aiQuestions: false, maxQuestions: 1, freeText: "Always off", welcomeMode: "none", welcomeMessage: "", buttonToStart: "Get started", buttonToOptOut: "Not today", defaultScaleQuestion: "Did the assistant solve your problem?", defaultCommentQuestion: "Anything we should know?", expiryMinutes: 1440, realtimeAlerts: false, usedBy: 1, updated: "Mar 30, 2026", owner: "Tomás Reyes" },
   { id: "vip-followup",   name: "VIP Escalation Follow-Up",         description: "Longer survey for high-value customer escalations. Comment always on, no expiry pressure.", channel: "Both", surveyType: "Both",            displayStyle: "List Picker",  listPickerLabel: "How are we doing?", aiQuestions: true, maxQuestions: 3, freeText: "Always on", welcomeMode: "with-optout", welcomeMessage: "{{First Name}}, thank you for your patience. Your feedback shapes how we serve our VIP customers.", buttonToStart: "Share feedback", buttonToOptOut: "Maybe later", defaultScaleQuestion: "Overall, how would you rate your experience?", defaultCommentQuestion: "Tell us what went well — and what didn't.", expiryMinutes: 4320, realtimeAlerts: true, usedBy: 1, updated: "May 06, 2026", owner: "Maria Cohen" },
   { id: "brand-pulse",    name: "Brand Health Pulse",               description: "Two-question brand-affinity survey for social DMs. Like/dislike + open comment.",       channel: "Digital", surveyType: "Like / Dislike", displayStyle: "Quick Reply", listPickerLabel: "", aiQuestions: false, maxQuestions: 2, freeText: "Always on", welcomeMode: "without-optout", welcomeMessage: "Quick pulse check — how are we doing?", buttonToStart: "Tell us", buttonToOptOut: "Not today", defaultScaleQuestion: "How do you feel about us today?", defaultCommentQuestion: "Tell us why in a few words.", expiryMinutes: 4320, realtimeAlerts: false, usedBy: 1, updated: "Apr 12, 2026", owner: "Aisha Khan" },
+  { id: "ivr-postcall",   name: "Post-Call IVR — CSAT",             description: "Single-question IVR survey triggered immediately after a voice call ends. Keypad input, no agent involvement.", channel: "Voice", surveyType: "CSAT (1–5 star)", displayStyle: "IVR Keypad", listPickerLabel: "", aiQuestions: false, maxQuestions: 1, freeText: "Always off", welcomeMode: "with-optout", welcomeMessage: "Thank you for calling. We'd love your feedback — this will only take 30 seconds.", buttonToStart: "Press 1 to continue", buttonToOptOut: "Press 9 to skip", defaultScaleQuestion: "On a scale of 1 to 5, how would you rate your call today? Press the corresponding number.", defaultCommentQuestion: "", expiryMinutes: 60, realtimeAlerts: true, usedBy: 2, updated: "May 10, 2026", owner: "Tomás Reyes" },
+  { id: "ivr-nps",        name: "NPS — IVR Phone Survey",           description: "10-point NPS survey delivered via IVR after voice interactions. Keypad input, AI categorisation off.", channel: "Voice", surveyType: "NPS (0–10)", displayStyle: "IVR Keypad", listPickerLabel: "", aiQuestions: false, maxQuestions: 2, freeText: "Always off", welcomeMode: "with-optout", welcomeMessage: "Hi {{First Name}}, this is a quick two-question survey about your recent call. Press 1 to start or 9 to skip.", buttonToStart: "Press 1 to start", buttonToOptOut: "Press 9 to skip", defaultScaleQuestion: "On a scale of 0 to 10, how likely are you to recommend us to a friend or colleague? Press the number now.", defaultCommentQuestion: "", expiryMinutes: 120, realtimeAlerts: true, usedBy: 1, updated: "Apr 22, 2026", owner: "Maria Cohen" },
+  { id: "voice-coaching", name: "Agent Coaching — Call Quality",    description: "Post-call quality check for voice interactions. Used by QA team; 3-question rating with optional comment via speech-to-text.", channel: "Voice", surveyType: "CSAT (1–5 star)", displayStyle: "IVR Keypad", listPickerLabel: "", aiQuestions: true, maxQuestions: 3, freeText: "Conditional", welcomeMode: "with-optout", welcomeMessage: "Thank you for speaking with us today. We have three short questions about your call.", buttonToStart: "Press 1 to continue", buttonToOptOut: "Press 9 to opt out", defaultScaleQuestion: "How would you rate the overall quality of your call? Press 1 for poor, 5 for excellent.", defaultCommentQuestion: "If you'd like to leave a comment, please speak after the tone.", expiryMinutes: 240, realtimeAlerts: false, usedBy: 0, updated: "May 14, 2026", owner: "Aisha Khan" },
 ];
 
 function designById(id) {
   return SEED_DESIGNS.find(d => d.id === id) || SEED_DESIGNS[0];
 }
 
+function DesignRowActions({ design, onEdit }) {
+  const [open, setOpen] = React.useState(false);
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    if (!open) return;
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [open]);
+  const actions = [
+    { label: "Edit", icon: <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>, onClick: () => { onEdit(design); setOpen(false); } },
+    { label: "Duplicate", icon: <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>, onClick: () => setOpen(false) },
+    { label: "Delete", icon: <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>, onClick: () => setOpen(false), danger: true },
+  ];
+  return (
+    <div ref={ref} style={{ position: "relative", display: "inline-block" }}>
+      <div className="kebab" onClick={() => setOpen(o => !o)}>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>
+      </div>
+      {open && (
+        <div style={{
+          position: "absolute", top: "calc(100% + 6px)", right: 0, zIndex: 9999,
+          minWidth: 160, background: "var(--lyra-white)",
+          border: "1px solid var(--color-border-soft)",
+          borderRadius: "var(--radius-md)",
+          boxShadow: "0px 4px 8px 0px rgba(0,0,0,0.08)",
+          overflow: "hidden",
+        }}>
+          {actions.map(a => (
+            <button key={a.label} onClick={a.onClick} style={{
+              display: "flex", alignItems: "center", gap: "var(--space-2)",
+              width: "100%", padding: "var(--space-2) var(--space-3)",
+              background: "none", border: "none", cursor: "pointer", textAlign: "left",
+              font: "400 14px/20px var(--font-sans)",
+              color: a.danger ? "var(--color-fg-destructive)" : "var(--color-fg-default)",
+            }}
+              onMouseEnter={e => e.currentTarget.style.background = "var(--color-state-bg-hover)"}
+              onMouseLeave={e => e.currentTarget.style.background = "none"}
+            >
+              {a.icon}{a.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SurveyDesignsGrid({ onCreate, onOpen }) {
   const [search, setSearch] = React.useState("");
   const [channelFilter, setChannelFilter] = React.useState(null);
   const [typeFilter, setTypeFilter] = React.useState(null);
-  const [ownerFilter, setOwnerFilter] = React.useState(null);
-
   /* Filter options derived from the data so they stay in sync. */
   const channelOptions = Array.from(new Set(SEED_DESIGNS.map(d => d.channel))).sort();
   const typeOptions = Array.from(new Set(SEED_DESIGNS.map(d => d.surveyType))).sort();
-  const ownerOptions = Array.from(new Set(SEED_DESIGNS.map(d => d.owner))).sort();
-  const hasAnyFilter = !!(search || channelFilter || typeFilter || ownerFilter);
+  const hasAnyFilter = !!(search || channelFilter || typeFilter);
   const clearAllFilters = () => {
-    setSearch(""); setChannelFilter(null); setTypeFilter(null); setOwnerFilter(null);
+    setSearch(""); setChannelFilter(null); setTypeFilter(null);
   };
 
   const rows = SEED_DESIGNS.filter(d => {
     if (search && !d.name.toLowerCase().includes(search.toLowerCase())) return false;
     if (channelFilter && d.channel !== channelFilter) return false;
     if (typeFilter && d.surveyType !== typeFilter) return false;
-    if (ownerFilter && d.owner !== ownerFilter) return false;
     return true;
   });
 
-  /* Same Lyra badge pattern as StatusPill — soft bg + tinted border + 500 12/16 letter-spacing 0.01rem */
-  const channelBadgeStyle = (channel) => ({
-    display: "inline-flex", alignItems: "center", gap: 6,
-    padding: "4px 10px",
-    borderRadius: 9999,
-    border: "1px solid",
-    fontFamily: "var(--font-sans)",
-    fontSize: 12, fontWeight: 500, lineHeight: "16px", letterSpacing: "0.01rem",
-    background: channel === "IVR" ? "var(--fi-amber-bg)" : channel === "Both" ? "var(--fi-purple-bg)" : "var(--fi-accent-bg)",
-    color: channel === "IVR" ? "var(--fi-amber)" : channel === "Both" ? "var(--fi-purple)" : "var(--fi-accent-strong)",
-    borderColor: channel === "IVR" ? "rgba(166,79,0,0.20)" : channel === "Both" ? "rgba(120,86,186,0.20)" : "rgba(13,138,138,0.20)",
-  });
+  const channelText = (channel) => {
+    if (channel === "Both") return "Digital, Voice";
+    return channel || "Digital";
+  };
 
   return (
     <div className="pane">
       <div className="pane-head">
-        <h1>Survey Templates</h1>
+        <h1 style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+          Survey Templates
+          <span style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            height: 22, minWidth: 22, padding: "0 var(--space-2)",
+            borderRadius: "var(--radius-round)",
+            background: "var(--lyra-slate-200)", color: "var(--lyra-slate-700)",
+            font: "500 12px/16px var(--font-sans)", letterSpacing: "0.01rem",
+          }}>{rows.length}</span>
+        </h1>
         <div className="head-actions">
           <button className="btn primary" onClick={() => onCreate()}>
             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -8667,43 +9012,34 @@ function SurveyDesignsGrid({ onCreate, onOpen }) {
       <div className="toolbar" style={{ paddingTop: 14 }}>
         <div className="search">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input placeholder="Search survey templates"
+          <input placeholder="Search by name"
             value={search} onChange={e => setSearch(e.target.value)}/>
         </div>
         <window.FilterChip label="Channel" value={channelFilter} options={channelOptions}
           onSelect={setChannelFilter} onClear={() => setChannelFilter(null)}/>
         <window.FilterChip label="Type" value={typeFilter} options={typeOptions}
           onSelect={setTypeFilter} onClear={() => setTypeFilter(null)}/>
-        <window.FilterChip label="Owner" value={ownerFilter} options={ownerOptions}
-          onSelect={setOwnerFilter} onClear={() => setOwnerFilter(null)}/>
         {hasAnyFilter && (
           <button className="clear-link" onClick={clearAllFilters}>Clear</button>
         )}
       </div>
 
-      {/* Lyra info banner — placed after filters, just above the table */}
-      <div className="info-banner">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M12 16v-4M12 8h.01"/>
-        </svg>
-        <span>Reusable templates that define a survey's questions, display style, and delivery rules. Map one template to many campaigns — change the template once and every linked campaign picks it up.</span>
-      </div>
-
       <div className="table-wrap">
+        <div className="info-banner">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 16v-4M12 8h.01"/>
+          </svg>
+          <span>Reusable templates that define a survey's questions, display style, and delivery rules. Map one template to many campaigns — change the template once and every linked campaign picks it up.</span>
+        </div>
         <table>
           <thead>
             <tr>
               <th>Survey template</th>
-              <th>Channel</th>
+              <th>Channels</th>
               <th>Type</th>
-              <th>Digital style</th>
               <th>AI questions</th>
-              <th>Max Qs</th>
-              <th>Used by</th>
-              <th>Owner</th>
               <th>Last updated</th>
-              <th style={{ width: 40 }}></th>
             </tr>
           </thead>
           <tbody>
@@ -8724,48 +9060,31 @@ function SurveyDesignsGrid({ onCreate, onOpen }) {
                   </div>
                 </td>
                 <td>
-                  <span style={channelBadgeStyle(d.channel)}>{d.channel || "Digital"}</span>
+                  <span style={{ font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>
+                    {channelText(d.channel)}
+                  </span>
                 </td>
                 <td>{d.surveyType}</td>
                 <td>
-                  {(d.channel === "Digital" || d.channel === "Both") ? (
-                    <>
-                      {d.displayStyle}
-                      {d.displayStyle === "List Picker" && d.listPickerLabel ? (
-                        <div style={{
-                          fontFamily: "var(--font-sans)",
-                          fontSize: 12, fontWeight: 400, lineHeight: "16px", letterSpacing: "0.01rem",
-                          color: "var(--color-fg-secondary)", marginTop: 4,
-                        }}>"{d.listPickerLabel}"</div>
-                      ) : null}
-                    </>
-                  ) : <span style={{ color: "var(--lyra-slate-400)" }}>—</span>}
-                </td>
-                <td>
-                  {/* Lyra-style On/Off badge — matches StatusPill treatment */}
                   <span className={`fi-pill ${d.aiQuestions ? "active" : "ended"}`}>
                     <span className="dot"/>{d.aiQuestions ? "On" : "Off"}
                   </span>
                 </td>
-                <td>{d.maxQuestions}</td>
                 <td>
-                  <span style={{
-                    fontFamily: "var(--font-sans)",
-                    fontSize: 14, fontWeight: 400, lineHeight: "20px", letterSpacing: 0,
-                    color: d.usedBy === 0 ? "var(--lyra-slate-400)" : "var(--color-fg-default)",
-                  }}>
-                    {d.usedBy} {d.usedBy === 1 ? "campaign" : "campaigns"}
-                  </span>
-                </td>
-                <td>{d.owner}</td>
-                <td>{d.updated}</td>
-                <td>
-                  <div className="kebab">
-                    <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>
+                  <div>{d.updated}</div>
+                  <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 4 }}>
+                    by {d.owner}
                   </div>
                 </td>
               </tr>
             ))}
+            {rows.length === 0 ? (
+              <tr>
+                <td colSpan={5} style={{ padding: "var(--space-6)", textAlign: "center", color: "var(--lyra-slate-400)", font: "400 14px/20px Inter" }}>
+                  No templates match the current filter.
+                </td>
+              </tr>
+            ) : null}
           </tbody>
         </table>
       </div>
@@ -9933,9 +10252,9 @@ Object.assign(window, { VUScoreModel });
 const FI_NAV = [
   { type: "group", icon: "campaigns", label: "Campaign Management", expanded: true, children: [
     { label: "Survey Campaigns", key: "campaigns" },
-    { label: "Survey Templates", key: "designs", isNew: true },
+    { label: "Survey Templates", key: "designs" },
   ]},
-  { type: "leaf", icon: "topics", label: "VU Score Model", isNew: true, key: "ontology" },
+  { type: "leaf", icon: "topics", label: "VU Score Model", key: "ontology" },
 ];
 
 const WFM_NAV = [
