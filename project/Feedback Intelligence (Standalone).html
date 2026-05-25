@@ -186,12 +186,15 @@
 }
 
 /* Channel chip — larger per Lyra icon standards (was 22px chip / 13px svg) */
-.channel-stack { display: inline-flex; gap: var(--space-1) }
+.channel-stack { display: flex; flex-direction: row; flex-wrap: wrap; gap: var(--space-3) var(--space-4); align-items: center; }
+.channel-label-item { display: inline-flex; align-items: center; gap: var(--space-2); }
+.channel-label-text { font-family: var(--font-sans); font-size: 13px; font-weight: 400; line-height: 20px; color: var(--color-fg-default); }
 .channel-chip {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px;                           /* +6px each side */
-  border-radius: var(--radius-sm);                     /* 6px — slightly softer than xs */
+  width: 28px; height: 28px;
+  border-radius: var(--radius-sm);
   background: var(--lyra-slate-200); color: var(--lyra-slate-700);
+  flex-shrink: 0;
 }
 .channel-chip svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round }
 
@@ -271,16 +274,15 @@
    matches the design's horizontal separators between Name+Description, the
    warning banner, Active Date Range, Channels, Agents, Routing Priority, etc. */
 .form-section-body > * + * {
-  border-top: 1px solid var(--color-border-subtle);    /* Lyra: border/subtle */
-  padding-top: var(--space-4);                         /* 16px breathing space above each group */
-  margin-top: var(--space-4);                          /* 16px gap from previous block */
+  padding-top: var(--space-5);
+  margin-top: var(--space-5);
 }
 
 /* ─── Form fields — LABEL ON TOP layout (Lyra Input pattern) ───────────────── */
 .field-row {
   display: flex; flex-direction: column;
-  gap: var(--space-2);                                 /* 8px between label and control */
-  padding: var(--space-3) 0;                           /* 12px vertical */
+  gap: var(--space-2);
+  padding: var(--space-6) 0;
   align-items: stretch;
 }
 /* Inter-row divider handled by .form-section-body > * + * (above) — no per-pair rule needed */
@@ -303,7 +305,8 @@
 }
 .field-control { display: flex; flex-direction: column; gap: var(--space-2); }
 .field-control .help,
-.field-control .hint {
+.field-control .hint,
+.help, .hint {
   /* Lyra Body SM: helper text below inputs */
   font-family: var(--font-sans);
   font-size: 12px;
@@ -414,16 +417,19 @@ select.fi-input {
 .inline-row > .fi-input { flex: 1; min-width: 140px }
 
 /* ─── Lyra two-column field grid for Create Campaign form ──────────────────── */
+.field-cell {
+  display: flex; flex-direction: column; gap: var(--space-2);
+}
 .field-grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);                                 /* 16px between columns */
-  padding: var(--space-3) 0;                           /* 12px vertical */
+  gap: var(--space-4);
+  padding: var(--space-6) 0;
 }
 .field-grid-2 + .field-row,
 .field-row + .field-grid-2,
 .field-grid-2 + .field-grid-2 {
-  border-top: 1px solid var(--color-border-subtle);
+  border-top: none;
 }
 .section-heading + .field-grid-2 {
   border-top: none;
@@ -447,16 +453,15 @@ select.fi-input {
   color: var(--color-fg-secondary);
 }
 
-/* Section heading inside a form section (e.g., "Agents") */
+/* Section heading inside a form section (e.g., "Agents", "Active Date Range") —
+   Bold weight signals a new logical group. Related fields sit close below; preceding
+   group sits 24px away via inline paddingTop at each usage site. */
 .section-heading {
-  /* Lyra Heading-sm: Inter Medium 14/20 */
-  font-family: var(--font-sans);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-  letter-spacing: 0;
+  font: var(--text-h-sm);
+  font-weight: 600;
+  letter-spacing: -0.01rem;
   color: var(--color-fg-default);
-  padding: var(--space-3) 0 var(--space-1);
+  padding: var(--space-3) 0 var(--space-2);
 }
 
 /* ─── Lyra Checkbox (node 16926:21017) ─────────────────────────────────────── */
@@ -509,10 +514,137 @@ select.fi-input {
   cursor: not-allowed;
 }
 
+/* ── Summary & Review step (Step 4) ─────────────────────────────────── */
+.sr-section {
+  background: var(--lyra-white);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--space-3);
+}
+.sr-section-head {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--lyra-slate-100);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.sr-section-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--color-bg-active-moderate); color: var(--color-fg-active-strong);
+  font-family: var(--font-sans); font-size: 11px; font-weight: 600; flex-shrink: 0;
+}
+.sr-section-title { font: var(--text-h-sm); font-weight: 500; color: var(--color-fg-default); }
+.sr-section-body { padding: var(--space-1) var(--space-4) var(--space-3); }
+.sr-row { display: flex; align-items: flex-start; gap: var(--space-4); padding: var(--space-2) 0; font-family: var(--font-sans); font-size: 14px; line-height: 20px; }
+.sr-row-label { flex: 0 0 160px; font-weight: 500; color: var(--color-fg-secondary); font-size: 13px; }
+.sr-row-value { flex: 1; color: var(--color-fg-default); }
+
+/* Ghost icon button */
+.btn-ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-fg-secondary);
+}
+.btn-ghost:hover { background: var(--color-state-bg-hover); }
+
+/* ── Campaign Priority Modal ──────────────────────────────────────────── */
+.ly-modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.40);
+  z-index: 400;
+  display: flex; align-items: center; justify-content: center;
+}
+.ly-modal {
+  background: var(--lyra-white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0px 24px 48px -12px rgba(0,0,0,0.32);
+  width: 640px;
+  max-width: 96vw;
+  max-height: 80vh;
+  display: flex; flex-direction: column;
+  animation: modalFadeIn 0.15s ease;
+}
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.ly-modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+}
+.ly-modal-title {
+  font-family: var(--font-sans); font-size: 18px; font-weight: 600;
+  line-height: 24px; letter-spacing: -0.01rem;
+  color: var(--color-fg-default);
+}
+.ly-modal-close {
+  background: none; border: none; cursor: pointer;
+  color: var(--color-fg-secondary); padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+.ly-modal-close:hover { background: var(--color-state-bg-hover); }
+.ly-modal-desc {
+  font-family: var(--font-sans); font-size: 13px; font-weight: 400;
+  line-height: 20px; color: var(--color-fg-secondary);
+  padding: var(--space-4) var(--space-5) var(--space-3);
+}
+.ly-modal-body {
+  flex: 1; overflow-y: auto;
+}
+.priority-modal-table {
+  width: 100%; border-collapse: collapse;
+}
+.priority-modal-table thead th {
+  font-family: var(--font-sans); font-size: 12px; font-weight: 500;
+  line-height: 16px; color: var(--color-fg-secondary);
+  text-align: left; padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: var(--lyra-slate-50);
+}
+.priority-modal-table tbody tr {
+  border-bottom: 1px solid var(--color-border-subtle);
+  user-select: none;
+}
+.priority-modal-table tbody tr:last-child { border-bottom: none; }
+.priority-modal-table tbody tr:hover { background: var(--color-state-bg-hover); }
+.priority-modal-table tbody td {
+  padding: var(--space-3) var(--space-4);
+  vertical-align: middle;
+}
+.priority-modal-table tbody td:first-child { padding: 0; width: 36px; text-align: center; }
+.ly-modal-foot {
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: var(--space-3); padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+}
+
+.btn-icon-only {
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Lyra checkbox group container — horizontal layout of multiple lyra-check */
 .lyra-check-group {
   display: flex; flex-wrap: wrap;
   gap: var(--space-4) var(--space-6);                  /* 16px row, 24px column */
+}
+.lyra-check-group--error .lyra-check {
+  color: var(--color-status-error);
+}
+.lyra-check-group--error .lyra-check input[type="checkbox"] {
+  outline: 2px solid var(--color-status-error);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* Segmented control — Lyra Toggle Group */
@@ -564,7 +696,7 @@ select.fi-input {
   transition: .15s;
   box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
-.switch input:checked + .slider { background: var(--fi-accent) }
+.switch input:checked + .slider { background: var(--color-bg-active-strong) }
 .switch input:checked + .slider::before { transform: translateX(16px) }
 .switch-row { display: inline-flex; align-items: center; gap: 10px; font: var(--text-h-sm); color: var(--lyra-slate-900) }
 
@@ -615,8 +747,7 @@ select.fi-input {
 /* Suppression toggles list */
 .sup-row {
   display: flex; align-items: flex-start; gap: 14px;
-  padding: 14px 0;
-  border-top: 1px solid rgba(0,0,0,0.06);
+  padding: var(--space-5) 0;
 }
 .sup-row:first-child { border-top: 0 }
 .sup-row .meta { flex: 1 }
@@ -631,7 +762,7 @@ select.fi-input {
 .sup-row .meta .locked {
   display: inline-flex; align-items: center; gap: var(--space-1);
   font: var(--text-h-xs); color: var(--lyra-slate-600);
-  background: var(--lyra-slate-200); padding: 1px 6px 1px var(--space-1); border-radius: 3px;
+  background: var(--lyra-slate-200); padding: 1px 6px 1px var(--space-1); border-radius: var(--radius-xs);
 }
 .sup-row .meta .locked svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 1.8 }
 
@@ -641,7 +772,7 @@ select.fi-input {
   background: linear-gradient(to bottom, rgba(255,255,255,0) 0, var(--lyra-white) 12px);
   padding: var(--space-4) var(--space-6) var(--space-4);
   display: flex; align-items: center; gap: var(--space-2);
-  border-top: 1px solid rgba(0,0,0,0.06);
+  border-top: 1px solid var(--color-border-subtle);
   margin-top: var(--space-4);
 }
 .form-foot .grow { flex: 1 }
@@ -710,7 +841,315 @@ select.fi-input {
   gap: var(--space-3);
 }
 
-/* Campaign Summary card — right rail */
+/* ─── Template, Identity &amp; Scope two-section layout ─────────────────────── */
+.setup-section {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 0;
+  background: var(--lyra-white);
+  overflow: hidden;
+}
+.setup-section + .setup-section {
+  margin-top: var(--space-4);
+}
+/* "Choose a Template" panel gets a subtle brand tint — only when it has siblings */
+.setup-section:first-child:not(:last-child) {
+  background: var(--color-bg-active-subtle, #e9f1fc);
+  border-color: rgba(22,108,202,0.18);
+}
+.setup-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: var(--lyra-white);
+}
+/* first-child:not(:last-child) head stays brand-tinted */
+.setup-section:first-child:not(:last-child) .setup-section-head {
+  background: var(--color-bg-active-subtle, #e9f1fc);
+}
+.setup-section-body {
+  padding: var(--space-5) var(--space-6);
+}
+/* Survey wizard sub-groups within a step */
+.sc-group {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border-subtle);
+}
+.sc-group:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+.sc-group-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-fg-secondary);
+  margin-bottom: var(--space-3);
+}
+.setup-section-title {
+  font: var(--text-h-md);
+  font-weight: 600;
+  color: var(--color-fg-default);
+  margin: 0 0 var(--space-1);
+  letter-spacing: -0.01rem;
+}
+.setup-section-sub {
+  font: var(--text-body-sm);
+  letter-spacing: 0.01rem;
+  color: var(--color-fg-secondary);
+  margin: 0;
+}
+.setup-divider {
+  display: none;
+}
+.tmpl-selected-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-active-subtle);
+  border: 1px solid rgba(22,108,202,0.18);
+  border-radius: var(--radius-md);
+}
+
+/* ─── Horizontal Wizard ───────────────────────────────────────────── */
+.wz-bar {
+  display: flex;
+  justify-content: center;
+  padding: 16px 32px 0;
+  flex-shrink: 0;
+  background: var(--lyra-white);
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+.wz-bar-inner {
+  display: flex;
+  align-items: center;
+  width: auto;
+  padding-bottom: 14px;
+}
+.wz-step {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.wz-node {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font: var(--text-h-xs);
+  border: 1.5px solid rgba(0,0,0,0.18);
+  color: rgba(0,0,0,0.40);
+  background: var(--lyra-white);
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+.wz-step.active .wz-node {
+  background: var(--color-bg-active-strong);
+  border-color: var(--color-bg-active-strong);
+  color: var(--color-fg-on-primary);
+}
+.wz-step.done .wz-node {
+  background: var(--lyra-green-500);
+  border-color: var(--lyra-green-500);
+  color: var(--color-fg-on-primary);
+}
+.wz-step.error .wz-node {
+  background: var(--lyra-red-500);
+  border-color: var(--lyra-red-500);
+  color: var(--color-fg-on-primary);
+}
+.wz-label {
+  font: var(--text-body-sm);
+  letter-spacing: 0.01rem;
+  color: rgba(0,0,0,0.40);
+  white-space: nowrap;
+}
+.wz-step.active .wz-label { font-weight: 600; color: var(--color-fg-default); }
+.wz-step.done   .wz-label { color: var(--color-fg-secondary); }
+.wz-step.error  .wz-label { color: var(--color-fg-destructive); font-weight: 500; }
+.wz-line {
+  width: 40px;
+  flex-shrink: 0;
+  height: 1.5px;
+  background: var(--color-border-subtle);
+  border-radius: 1px;
+  align-self: center;
+}
+.wz-line.done   { background: var(--lyra-green-500); }
+.wz-line.active { background: var(--color-bg-active-strong); }
+
+/* wizard body: form (1fr) + summary rail (260px) */
+.wz-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--lyra-slate-300, #d2d8db) transparent;
+}
+.wz-scroll-area::-webkit-scrollbar { width: 4px; }
+.wz-scroll-area::-webkit-scrollbar-track { background: transparent; }
+.wz-scroll-area::-webkit-scrollbar-thumb { background: var(--lyra-slate-300, #d2d8db); border-radius: 9999px; }
+.wz-scroll-area::-webkit-scrollbar-thumb:hover { background: var(--lyra-slate-400, #a8b3bb); }
+.wz-body {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  align-items: start;
+}
+.wz-body > .form-pane {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6) 0;
+  min-width: 0;
+}
+.wz-body > .summary-pane {
+  position: sticky; top: var(--space-2);
+  align-self: start;
+  padding-top: 20px;
+  display: flex; flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* step content area */
+.wz-step-content {
+  flex: 1;
+  padding: 0;
+}
+/* Card wrapper for steps 1-3 content */
+.wz-content-card {
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5) var(--space-6);
+  background: var(--lyra-white);
+}
+.wz-step-head {
+  margin-bottom: var(--space-5);
+  padding-bottom: 0;
+}
+.wz-step-head h2 {
+  font: 600 16px/24px var(--font-sans);
+  color: var(--color-fg-default);
+  margin: 0 0 var(--space-1);
+}
+.wz-step-head p {
+  font: var(--text-body-sm);
+  letter-spacing: 0.01rem;
+  color: var(--color-fg-secondary);
+  margin: 0;
+}
+
+/* wizard nav footer */
+.wz-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  background: var(--lyra-white);
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
+  flex-shrink: 0;
+}
+
+/* ── Detail page two-column layout ───────────────────────────────────── */
+.detail-layout {
+  flex: 1; overflow: auto;
+  display: flex; align-items: flex-start;
+  gap: var(--space-5);
+  padding: var(--space-5) var(--space-8) var(--space-8);
+  background: var(--color-bg-canvas);
+}
+.detail-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.detail-sidebar { flex: 0 0 260px; position: sticky; top: 0; }
+
+/* ── Campaign Summary sidebar card ───────────────────────────────────── */
+.detail-summary-card {
+  background: var(--lyra-white);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.06);
+}
+.detail-summary-head {
+  display: flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  font: var(--text-h-xs); text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--color-fg-secondary); background: var(--lyra-slate-100);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.detail-summary-rows { display: flex; flex-direction: column; }
+.detail-summary-row { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) var(--space-4); }
+.detail-summary-row + .detail-summary-row { border-top: 1px solid var(--color-border-subtle); }
+.detail-summary-row.highlight { background: var(--color-bg-active-subtle); }
+.detail-summary-ico {
+  width: 28px; height: 28px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--lyra-slate-100);
+  border: 1px solid var(--color-border-subtle);
+  color: var(--color-fg-action);
+  border-radius: var(--radius-sm);
+}
+.detail-summary-row.highlight .detail-summary-ico {
+  background: var(--color-bg-active-moderate); border-color: transparent; color: var(--color-fg-active-strong);
+}
+.detail-summary-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.detail-summary-label { font: var(--text-h-xs); text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-fg-secondary); }
+.detail-summary-value { font: var(--text-body-md); font-weight: 500; color: var(--color-fg-default); word-break: break-word; }
+.detail-summary-row.highlight .detail-summary-value { color: var(--color-fg-active-strong); }
+.detail-summary-live-dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--lyra-green-500);
+  margin-left: auto;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px rgba(39,138,51,0.18);
+}
+
+/* ── ConfigGroup accordion card ─────────────────────────────────────── */
+.cfg-group-stack { display: flex; flex-direction: column; gap: var(--space-3); }
+.cfg-group {
+  background: var(--lyra-white);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.04);
+}
+.cfg-group-head {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  cursor: pointer; user-select: none;
+  background: var(--lyra-white); transition: background 0.1s;
+}
+.cfg-group-head:hover { background: var(--color-state-bg-hover); }
+.cfg-group-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--color-bg-active-moderate); color: var(--color-fg-active-strong);
+  font-family: var(--font-sans); font-size: 12px; font-weight: 600; flex-shrink: 0;
+}
+.cfg-group-title { flex: 1; font: var(--text-h-sm); font-weight: 500; color: var(--color-fg-default); letter-spacing: -0.01rem; }
+.cfg-group-chev { width: 16px; height: 16px; color: var(--color-fg-secondary); transition: transform 0.15s; flex-shrink: 0; }
+.cfg-group--closed .cfg-group-chev { transform: rotate(-90deg); }
+.cfg-group-body { padding: var(--space-1) var(--space-5) var(--space-4); }
+
+/* ── DefRow ─────────────────────────────────────────────────────────── */
+.def-row { display: flex; align-items: flex-start; gap: var(--space-4); padding: var(--space-3) 0; font-family: var(--font-sans); font-size: 14px; line-height: 20px; color: var(--color-fg-default); }
+.def-row-label { flex: 0 0 180px; font-weight: 500; color: var(--color-fg-secondary); font-size: 13px; }
+.def-row-value { flex: 1; font-weight: 400; color: var(--color-fg-default); }
+
+/* Campaign Summary card — wizard right rail */
 .summary-card {
   background: var(--lyra-white);
   border: 1px solid var(--color-border-subtle);
@@ -743,13 +1182,13 @@ select.fi-input {
 }
 .summary-card-row-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .summary-card-label {
-  font: 500 11px/16px var(--font-sans);
+  font: var(--text-h-xs);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-fg-secondary);
 }
 .summary-card-value {
-  font: 400 13px/20px var(--font-sans);
+  font: var(--text-body-md);
   color: var(--color-fg-default);
   word-break: break-word;
 }
@@ -956,9 +1395,9 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   background: rgba(22,108,202,0.03);
 }
 .welcome-mode-option.on {
-  border-color: #2d5bb9;
-  background: #f1f7fe;
-  box-shadow: 0 0 0 1px #2d5bb9;
+  border-color: var(--color-border-active);
+  background: var(--color-bg-active-subtle);
+  box-shadow: 0 0 0 1px var(--color-border-active);
 }
 .welcome-mode-option input[type="radio"] {
   position: absolute;
@@ -977,8 +1416,8 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   transition: border-color 0.15s;
 }
 .welcome-mode-option.on .dot {
-  border-color: #2d5bb9;
-  background: #2d5bb9;
+  border-color: var(--color-bg-active-strong);
+  background: var(--color-bg-active-strong);
 }
 .welcome-mode-option.on .dot::after {
   content: "";
@@ -1002,7 +1441,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   font: var(--text-body-sm);
   color: var(--lyra-slate-500);
 }
-.welcome-mode-option.on .title { color: #185ba4; }
+.welcome-mode-option.on .title { color: var(--color-fg-active-strong); }
 
 /* Kicker label inside invitation block */
 .kicker {
@@ -1044,7 +1483,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   display: flex; align-items: center; gap: var(--space-2);
   width: 100%; padding: var(--space-2) var(--space-3);
   background: none; border: none;
-  font: 400 13px/20px var(--font-sans); color: var(--lyra-slate-700);
+  font: var(--text-body-sm); letter-spacing: 0.01rem; color: var(--lyra-slate-700);
   cursor: pointer; text-align: left;
   transition: background 0.1s;
 }
@@ -1171,7 +1610,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 
 /* Shared zone label */
 .tmpl-drawer-zone-label {
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--color-fg-secondary);
@@ -1185,7 +1624,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 .tmpl-drawer-why {
   margin: 0;
-  font: 400 13px/20px var(--font-sans);
+  font: var(--text-body-sm); letter-spacing: 0.01rem;
   color: var(--color-fg-default);
 }
 
@@ -1212,7 +1651,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 .tmpl-drawer-meta-dot {
   color: var(--color-border-strong);
-  font-size: 11px; line-height: 16px;
+  font-size: 12px; line-height: 16px;
 }
 
 /* AI Model card */
@@ -1241,7 +1680,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 .model-meta-group { display: flex; flex-direction: column; gap: var(--space-2); }
 .model-meta-label {
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   text-transform: uppercase; letter-spacing: 0.06em;
   color: var(--color-fg-secondary);
 }
@@ -1277,7 +1716,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 .tmpl-drawer-field-label {
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   color: var(--color-fg-secondary);
@@ -1338,7 +1777,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 .tmpl-simple-card-why {
   margin: 0;
-  font: 400 13px/19px var(--font-sans);
+  font: var(--text-body-sm); letter-spacing: 0.01rem;
   color: var(--color-fg-secondary);
 }
 
@@ -1420,7 +1859,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   display: flex; flex-direction: column; gap: 3px;
 }
 .tmpl-meta-label {
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   color: var(--color-fg-secondary);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -1491,13 +1930,13 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 .tmpl-use-when-label {
-  font: 600 10px/14px var(--font-sans);
+  font: var(--text-h-xs); font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-fg-active-strong);
 }
 .tmpl-use-when-text {
-  font: 400 13px/18px var(--font-sans);
+  font: var(--text-body-sm); letter-spacing: 0.01rem;
   color: var(--color-fg-default);
 }
 
@@ -1508,7 +1947,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 
 .tmpl-tags-label {
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--lyra-slate-400);
@@ -1571,7 +2010,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   background: var(--lyra-white);
   border: 1px solid var(--color-border-soft);
   border-radius: var(--radius-round);
-  font: 400 13px/20px var(--font-sans);
+  font: var(--text-body-sm); letter-spacing: 0.01rem;
   color: var(--lyra-slate-600);
   cursor: pointer;
   transition: background 0.12s, border-color 0.12s, color 0.12s;
@@ -1625,7 +2064,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 .tooltip-wrap:hover .tooltip-bubble { display: block; }
 
-/* ─── Intelligence & Survey combined section sub-sections ───────────────── */
+/* ─── Topic AI Model &amp; Survey Template combined section sub-sections ───────────────── */
 .intel-sub-section {
   display: flex; flex-direction: column; gap: var(--space-3);
 }
@@ -1634,8 +2073,9 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   margin-right: calc(-1 * var(--space-6));
 }
 .intel-sub-section + .intel-sub-section {
-  padding-top: var(--space-4);
-  margin-top: var(--space-4);
+  padding-top: var(--space-5);
+  margin-top: var(--space-5);
+  border-top: 1px solid var(--color-border-subtle);
 }
 .intel-sub-label {
   display: flex; align-items: center; gap: var(--space-2);
@@ -1660,7 +2100,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 /* Model badge (Recommended / New) */
 .model-badge {
   display: inline-flex; align-items: center;
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--lyra-purple-700);
@@ -1752,7 +2192,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 
 .model-details-label {
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   color: var(--color-fg-secondary);
@@ -1790,7 +2230,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 
 .model-details-intent-row {
   display: flex; align-items: center; gap: var(--space-2);
-  font: 400 13px/18px var(--font-sans);
+  font: var(--text-body-sm); letter-spacing: 0.01rem;
   color: var(--color-fg-default);
 }
 
@@ -1888,6 +2328,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   letter-spacing: 0.05em;
   color: var(--color-fg-secondary);
 }
+
 </style>
 <style>
 /* ============================================================
@@ -3199,12 +3640,15 @@ tbody tr.selected td:first-child::before{
 }
 
 /* Channel chip — larger per Lyra icon standards (was 22px chip / 13px svg) */
-.channel-stack { display: inline-flex; gap: var(--space-1) }
+.channel-stack { display: flex; flex-direction: row; flex-wrap: wrap; gap: var(--space-3) var(--space-4); align-items: center; }
+.channel-label-item { display: inline-flex; align-items: center; gap: var(--space-2); }
+.channel-label-text { font-family: var(--font-sans); font-size: 13px; font-weight: 400; line-height: 20px; color: var(--color-fg-default); }
 .channel-chip {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 28px; height: 28px;                           /* +6px each side */
-  border-radius: var(--radius-sm);                     /* 6px — slightly softer than xs */
+  width: 28px; height: 28px;
+  border-radius: var(--radius-sm);
   background: var(--lyra-slate-200); color: var(--lyra-slate-700);
+  flex-shrink: 0;
 }
 .channel-chip svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round }
 
@@ -3317,7 +3761,8 @@ tbody tr.selected td:first-child::before{
 
 .field-control { display: flex; flex-direction: column; gap: var(--space-2); }
 .field-control .help,
-.field-control .hint {
+.field-control .hint,
+.help, .hint {
   /* Lyra Body SM: helper text below inputs */
   font-family: var(--font-sans);
   font-size: 12px;
@@ -3428,6 +3873,9 @@ select.fi-input {
 .inline-row > .fi-input { flex: 1; min-width: 140px }
 
 /* ─── Lyra two-column field grid for Create Campaign form ──────────────────── */
+.field-cell {
+  display: flex; flex-direction: column; gap: var(--space-2);
+}
 .field-grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -3528,6 +3976,14 @@ select.fi-input {
   display: flex; flex-wrap: wrap;
   gap: var(--space-4) var(--space-6);                  /* 16px row, 24px column */
 }
+.lyra-check-group--error .lyra-check {
+  color: var(--color-status-error);
+}
+.lyra-check-group--error .lyra-check input[type="checkbox"] {
+  outline: 2px solid var(--color-status-error);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
 
 /* Segmented control */
 .seg {
@@ -3568,7 +4024,7 @@ select.fi-input {
   transition: .15s;
   box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
-.switch input:checked + .slider { background: var(--fi-accent) }
+.switch input:checked + .slider { background: var(--color-bg-active-strong) }
 .switch input:checked + .slider::before { transform: translateX(16px) }
 .switch-row { display: inline-flex; align-items: center; gap: 10px; font: var(--text-h-sm); color: var(--lyra-slate-900) }
 
@@ -3635,7 +4091,7 @@ select.fi-input {
 .sup-row .meta .locked {
   display: inline-flex; align-items: center; gap: var(--space-1);
   font: var(--text-h-xs); color: var(--lyra-slate-600);
-  background: var(--lyra-slate-200); padding: 1px 6px 1px var(--space-1); border-radius: 3px;
+  background: var(--lyra-slate-200); padding: 1px 6px 1px var(--space-1); border-radius: var(--radius-xs);
 }
 .sup-row .meta .locked svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 1.8 }
 
@@ -3645,7 +4101,7 @@ select.fi-input {
   background: linear-gradient(to bottom, rgba(255,255,255,0) 0, var(--lyra-white) 12px);
   padding: var(--space-4) var(--space-6) var(--space-4);
   display: flex; align-items: center; gap: var(--space-2);
-  border-top: 1px solid rgba(0,0,0,0.06);
+  border-top: 1px solid var(--color-border-subtle);
   margin-top: var(--space-4);
 }
 .form-foot .grow { flex: 1 }
@@ -3747,13 +4203,13 @@ select.fi-input {
 }
 .summary-card-row-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .summary-card-label {
-  font: 500 11px/16px var(--font-sans);
+  font: var(--text-h-xs);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--color-fg-secondary);
 }
 .summary-card-value {
-  font: 400 13px/20px var(--font-sans);
+  font: var(--text-body-md);
   color: var(--color-fg-default);
   word-break: break-word;
 }
@@ -4047,7 +4503,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   display: flex; align-items: center; gap: var(--space-2);
   width: 100%; padding: var(--space-2) var(--space-3);
   background: none; border: none;
-  font: 400 13px/20px var(--font-sans); color: var(--lyra-slate-700);
+  font: var(--text-body-sm); letter-spacing: 0.01rem; color: var(--lyra-slate-700);
   cursor: pointer; text-align: left;
   transition: background 0.1s;
 }
@@ -4174,7 +4630,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 
 /* Shared zone label */
 .tmpl-drawer-zone-label {
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--color-fg-secondary);
@@ -4188,7 +4644,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 .tmpl-drawer-why {
   margin: 0;
-  font: 400 13px/20px var(--font-sans);
+  font: var(--text-body-sm); letter-spacing: 0.01rem;
   color: var(--color-fg-default);
 }
 
@@ -4215,7 +4671,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 .tmpl-drawer-meta-dot {
   color: var(--color-border-strong);
-  font-size: 11px; line-height: 16px;
+  font-size: 12px; line-height: 16px;
 }
 
 /* AI Model card */
@@ -4244,7 +4700,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 .model-meta-group { display: flex; flex-direction: column; gap: var(--space-2); }
 .model-meta-label {
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   text-transform: uppercase; letter-spacing: 0.06em;
   color: var(--color-fg-secondary);
 }
@@ -4280,7 +4736,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 .tmpl-drawer-field-label {
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   color: var(--color-fg-secondary);
@@ -4341,7 +4797,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 .tmpl-simple-card-why {
   margin: 0;
-  font: 400 13px/19px var(--font-sans);
+  font: var(--text-body-sm); letter-spacing: 0.01rem;
   color: var(--color-fg-secondary);
 }
 
@@ -4423,7 +4879,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   display: flex; flex-direction: column; gap: 3px;
 }
 .tmpl-meta-label {
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   color: var(--color-fg-secondary);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -4494,13 +4950,13 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 .tmpl-use-when-label {
-  font: 600 10px/14px var(--font-sans);
+  font: var(--text-h-xs); font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--color-fg-active-strong);
 }
 .tmpl-use-when-text {
-  font: 400 13px/18px var(--font-sans);
+  font: var(--text-body-sm); letter-spacing: 0.01rem;
   color: var(--color-fg-default);
 }
 
@@ -4511,7 +4967,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 
 .tmpl-tags-label {
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--lyra-slate-400);
@@ -4574,7 +5030,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   background: var(--lyra-white);
   border: 1px solid var(--color-border-soft);
   border-radius: var(--radius-round);
-  font: 400 13px/20px var(--font-sans);
+  font: var(--text-body-sm); letter-spacing: 0.01rem;
   color: var(--lyra-slate-600);
   cursor: pointer;
   transition: background 0.12s, border-color 0.12s, color 0.12s;
@@ -4628,7 +5084,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 .tooltip-wrap:hover .tooltip-bubble { display: block; }
 
-/* ─── Intelligence & Survey combined section sub-sections ───────────────── */
+/* ─── Topic AI Model &amp; Survey Template combined section sub-sections ───────────────── */
 .intel-sub-section {
   display: flex; flex-direction: column; gap: var(--space-3);
 }
@@ -4663,7 +5119,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 /* Model badge (Recommended / New) */
 .model-badge {
   display: inline-flex; align-items: center;
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--lyra-purple-700);
@@ -4755,7 +5211,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 }
 
 .model-details-label {
-  font: 500 10px/14px var(--font-sans);
+  font: var(--text-h-xs);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   color: var(--color-fg-secondary);
@@ -4793,7 +5249,7 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 
 .model-details-intent-row {
   display: flex; align-items: center; gap: var(--space-2);
-  font: 400 13px/18px var(--font-sans);
+  font: var(--text-body-sm); letter-spacing: 0.01rem;
   color: var(--color-fg-default);
 }
 
@@ -5318,7 +5774,7 @@ Object.assign(window, { Topbar, LeftNav, AppSwitcher, FIProductIcon, Chev, SMILE
 
 const CAMPAIGNS = [
   { id: 1, name: "Post-Chat CSAT — Tier 1 Billing",
-    status: "active", channels: ["digital"], surveyDesignId: "csat-quick",
+    status: "active", channels: ["digital", "voice"], surveyDesignId: "csat-quick",
     hasWorkingCopy: true, workingCopyVersion: 4, publishedVersion: 3, publishedAt: "May 04, 2026", workingCopyEditedBy: "Maria Cohen", workingCopyEditedAt: "May 10, 2026",
     sampling: 50, sent: 12480, completion: 31.2, vu: 76,
     owner: "Maria Cohen", created: "Mar 14, 2026", updated: "May 02, 2026" },
@@ -5331,7 +5787,7 @@ const CAMPAIGNS = [
     sampling: 25, sent: 8910, completion: 22.4, vu: 68,
     owner: "Maria Cohen", created: "Feb 04, 2026", updated: "Apr 28, 2026" },
   { id: 4, name: "Cognigy AI Session — Bot Handoff Audit",
-    status: "active", channels: ["digital"], surveyDesignId: "bot-simple",
+    status: "active", channels: ["digital", "voice"], surveyDesignId: "bot-simple",
     sampling: 80, sent: 6122, completion: 19.7, vu: 54,
     owner: "Tomás Reyes", created: "Mar 30, 2026", updated: "May 09, 2026" },
   { id: 5, name: "Social DM — Brand Health Pulse",
@@ -5339,7 +5795,7 @@ const CAMPAIGNS = [
     sampling: 100, sent: 1840, completion: 14.1, vu: 62,
     owner: "Aisha Khan", created: "Dec 01, 2025", updated: "Apr 12, 2026" },
   { id: 6, name: "VIP Escalation Follow-Up",
-    status: "draft", channels: ["digital"], surveyDesignId: "vip-followup",
+    status: "draft", channels: ["digital", "voice"], surveyDesignId: "vip-followup",
     sampling: 100, sent: 0, completion: 0, vu: null,
     owner: "Maria Cohen", created: "May 06, 2026", updated: "May 06, 2026" },
   { id: 7, name: "Holiday Returns — Email",
@@ -5585,9 +6041,11 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
   const [statusFilter, setStatusFilter] = React.useState(null);   // null = no filter (show all)
   const [ownerFilter, setOwnerFilter] = React.useState(null);
   const [order, setOrder] = React.useState(() => CAMPAIGNS.map(c => c.id));
-  const [dragId, setDragId] = React.useState(null);
-  const [dropBeforeId, setDropBeforeId] = React.useState(null);
   const [selectedIds, setSelectedIds] = React.useState(() => new Set());
+  const [priorityModalOpen, setPriorityModalOpen] = React.useState(false);
+  const [modalOrder, setModalOrder] = React.useState([]);
+  const [modalDragId, setModalDragId] = React.useState(null);
+  const [modalDropBeforeId, setModalDropBeforeId] = React.useState(null);
   const [statusOverride, setStatusOverride] = React.useState({}); // id -> status
   const [deletedIds, setDeletedIds] = React.useState(() => new Set());
 
@@ -5643,15 +6101,21 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
   let p = 0;
   orderedAll.forEach(c => { if (isRouting(c)) { p++; priorityMap[c.id] = p; } });
 
-  function reorder(srcId, beforeId) {
+  function openPriorityModal() {
+    const routingIds = orderedAll.filter(c => isRouting(c)).map(c => c.id);
+    setModalOrder(routingIds);
+    setPriorityModalOpen(true);
+  }
+  function modalReorder(srcId, beforeId) {
     if (srcId === beforeId) return;
-    const next = order.filter(id => id !== srcId);
+    const next = modalOrder.filter(id => id !== srcId);
     if (beforeId == null) next.push(srcId);
-    else {
-      const i = next.indexOf(beforeId);
-      next.splice(i, 0, srcId);
-    }
-    setOrder(next);
+    else { const i = next.indexOf(beforeId); next.splice(i, 0, srcId); }
+    setModalOrder(next);
+  }
+  function handleSaveModal() {
+    setOrder([...modalOrder, ...order.filter(id => !modalOrder.includes(id))]);
+    setPriorityModalOpen(false);
   }
 
   const liveCampaigns = CAMPAIGNS.filter(c => !deletedIds.has(c.id));
@@ -5677,6 +6141,9 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
       <div className="pane-head">
         <h1>Survey Campaigns</h1>
         <div className="head-actions">
+          <button className="btn" onClick={openPriorityModal}>
+            Set Priority
+          </button>
           <button className="btn primary" onClick={onCreate}>
             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Create Campaign
@@ -5698,36 +6165,6 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
         {hasAnyFilter && (
           <button className="clear-link" onClick={clearAllFilters}>Clear</button>
         )}
-        <span style={{ flex: 1 }}/>
-        {selCount > 0 && (
-          <span style={{ font: "500 12px/16px var(--font-sans)", color: "var(--fi-accent-strong)", marginRight: 4 }}>
-            {selCount} selected
-            <span style={{ color: "var(--lyra-slate-400)", marginLeft: 8, cursor: "pointer", textDecoration: "underline" }} onClick={clearSelection}>Clear</span>
-          </span>
-        )}
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <button className="btn" disabled={!canActivate}
-            style={!canActivate ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
-            title={selCount === 0 ? "Select campaigns to enable" : "Activate selected"}
-            onClick={() => canActivate && bulkSetStatus("active")}>
-            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-            Activate
-          </button>
-          <button className="btn" disabled={!canDeactivate}
-            style={!canDeactivate ? { opacity: 0.5, cursor: "not-allowed" } : undefined}
-            title={selCount === 0 ? "Select campaigns to enable" : "Pause selected"}
-            onClick={() => canDeactivate && bulkSetStatus("paused")}>
-            <svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
-            Deactivate
-          </button>
-          <button className="btn" disabled={!canDelete}
-            style={!canDelete ? { opacity: 0.5, cursor: "not-allowed" } : { color: "var(--fi-red)" }}
-            title={selCount === 0 ? "Select campaigns to enable" : "Delete selected"}
-            onClick={() => canDelete && window.confirm(`Delete ${selCount} campaign${selCount===1?"":"s"}? This cannot be undone.`) && bulkDelete()}>
-            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-            Delete
-          </button>
-        </div>
       </div>
 
       <div className="info-banner">
@@ -5735,29 +6172,18 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
           <circle cx="12" cy="12" r="9"/>
           <path d="M12 16v-4M12 8h.01"/>
         </svg>
-        <span>Drag any row by its grip handle to reorder routing priority. When an interaction matches multiple campaigns, the lower-numbered campaign wins. Draft and ended campaigns don't participate.</span>
+        <span>When an interaction matches multiple campaigns, the lower-numbered campaign wins. Use <strong>Campaign Priority</strong> to reorder. Draft and ended campaigns don't participate.</span>
       </div>
       <div className="table-wrap">
         <table>
           <thead>
             <tr>
-              <th style={{ width: 28, padding: 0 }}></th>
-              <th style={{ width: 36 }}>
-                <input type="checkbox"
-                  checked={allRowsSelected}
-                  ref={el => { if (el) el.indeterminate = someRowsSelected; }}
-                  onChange={e => {
-                    if (e.target.checked) setSelectedIds(new Set(rows.map(r => r.id)));
-                    else clearSelection();
-                  }}/>
-              </th>
-              <th style={{ width: 110 }} title="Drag rows to reorder routing priority">
+              <th style={{ width: 110 }}>
                 Campaign priority
-                <svg viewBox="0 0 24 24" width="11" height="11" style={{ marginLeft: 4, opacity: 0.5, verticalAlign: "-1px" }} stroke="currentColor" fill="none" strokeWidth="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
               </th>
               <th>Campaign</th>
               <th>Status</th>
-              <th>Channels</th>
+              <th style={{ minWidth: 200 }}>Channels</th>
               <th>Sampling</th>
               <th>Owner</th>
               <th>Last updated</th>
@@ -5765,57 +6191,10 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
             </tr>
           </thead>
           <tbody>
-            {rows.map((c, idx) => {
+            {rows.map((c) => {
               const routing = isRouting(c);
-              const isDragging = dragId === c.id;
-              const dropAbove = dropBeforeId === c.id;
-              const isRowSelected = selectedIds.has(c.id);
               return (
-                <tr key={c.id}
-                  className={isRowSelected ? "selected" : ""}
-                  draggable={routing}
-                  onDragStart={e => {
-                    if (!routing) { e.preventDefault(); return; }
-                    setDragId(c.id);
-                    e.dataTransfer.effectAllowed = "move";
-                    e.dataTransfer.setData("text/plain", String(c.id));
-                  }}
-                  onDragOver={e => {
-                    if (dragId == null || !routing) return;
-                    e.preventDefault();
-                    e.dataTransfer.dropEffect = "move";
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    const above = (e.clientY - rect.top) < rect.height / 2;
-                    setDropBeforeId(above ? c.id : (rows[idx+1]?.id ?? null));
-                  }}
-                  onDragLeave={() => { /* no-op */ }}
-                  onDrop={e => {
-                    e.preventDefault();
-                    if (dragId != null) reorder(dragId, dropBeforeId);
-                    setDragId(null);
-                    setDropBeforeId(null);
-                  }}
-                  onDragEnd={() => { setDragId(null); setDropBeforeId(null); }}
-                  style={{
-                    opacity: isDragging ? 0.4 : 1,
-                    boxShadow: dropAbove ? "inset 0 2px 0 var(--fi-accent-strong)" : undefined,
-                    cursor: routing ? "default" : undefined,
-                  }}>
-                  <td style={{ padding: 0, textAlign: "center", color: "var(--lyra-slate-400)",
-                    cursor: routing ? "grab" : "not-allowed",
-                    opacity: routing ? 1 : 0.25 }}
-                    title={routing ? "Drag to reorder" : "Draft/Ended campaigns don't participate in routing"}>
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
-                      <circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/>
-                      <circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/>
-                      <circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/>
-                    </svg>
-                  </td>
-                  <td onClick={e => e.stopPropagation()}>
-                    <input type="checkbox"
-                      checked={selectedIds.has(c.id)}
-                      onChange={() => toggleSelect(c.id)}/>
-                  </td>
+                <tr key={c.id}>
                   <td>
                     {routing ? (
                       /* Priority badge — bold so it's recognizable as main grid text (per Lyra instructions).
@@ -5849,7 +6228,12 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                   </td>
                   <td>
                     <div className="channel-stack">
-                      {c.channels.map(k => <ChannelChip key={k} kind={k}/>)}
+                      {c.channels.map(k => (
+                        <span key={k} className="channel-label-item">
+                          <ChannelChip kind={k}/>
+                          <span className="channel-label-text">{k === "voice" ? "Voice" : "Digital"}</span>
+                        </span>
+                      ))}
                     </div>
                   </td>
                   <td>{c.sampling}%</td>
@@ -5871,6 +6255,109 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
           </tbody>
         </table>
       </div>
+
+      {/* Campaign Priority Modal */}
+      {priorityModalOpen && ReactDOM.createPortal(
+        <div className="ly-modal-backdrop" onClick={() => setPriorityModalOpen(false)}>
+          <div className="ly-modal" onClick={e => e.stopPropagation()}>
+            <div className="ly-modal-head">
+              <div className="ly-modal-title">Prioritise Campaigns</div>
+              <button className="ly-modal-close" onClick={() => setPriorityModalOpen(false)}>
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div className="ly-modal-body">
+              <div className="ly-modal-desc">
+                Drag rows to set routing priority. When an interaction matches multiple campaigns, the lower-numbered campaign wins.
+              </div>
+              <table className="priority-modal-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: 36, padding: 0 }}></th>
+                    <th style={{ width: 130 }}>Campaign priority</th>
+                    <th>Campaign</th>
+                    <th>Channels</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {modalOrder.map((id, idx) => {
+                    const c = CAMPAIGNS.find(x => x.id === id);
+                    if (!c) return null;
+                    const isDragging = modalDragId === id;
+                    const dropAbove = modalDropBeforeId === id;
+                    return (
+                      <tr key={id}
+                        draggable
+                        onDragStart={e => {
+                          setModalDragId(id);
+                          e.dataTransfer.effectAllowed = "move";
+                          e.dataTransfer.setData("text/plain", String(id));
+                        }}
+                        onDragOver={e => {
+                          if (modalDragId == null) return;
+                          e.preventDefault();
+                          e.dataTransfer.dropEffect = "move";
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const above = (e.clientY - rect.top) < rect.height / 2;
+                          setModalDropBeforeId(above ? id : (modalOrder[idx + 1] ?? null));
+                        }}
+                        onDrop={e => {
+                          e.preventDefault();
+                          if (modalDragId != null) modalReorder(modalDragId, modalDropBeforeId);
+                          setModalDragId(null);
+                          setModalDropBeforeId(null);
+                        }}
+                        onDragEnd={() => { setModalDragId(null); setModalDropBeforeId(null); }}
+                        style={{
+                          opacity: isDragging ? 0.35 : 1,
+                          boxShadow: dropAbove ? "inset 0 2px 0 var(--fi-accent-strong)" : undefined,
+                        }}>
+                        <td style={{ padding: 0, textAlign: "center", color: "var(--lyra-slate-400)", cursor: "grab" }}>
+                          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                            <circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/>
+                            <circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/>
+                            <circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/>
+                          </svg>
+                        </td>
+                        <td>
+                          <div style={{
+                            display: "inline-flex", alignItems: "center", justifyContent: "center",
+                            minWidth: 28, height: 24, padding: "0 var(--space-2)", borderRadius: 6,
+                            background: "var(--color-bg-active-moderate)",
+                            color: "var(--color-fg-active-strong)",
+                            font: "600 14px/20px var(--font-sans)",
+                          }}>
+                            {idx + 1}
+                          </div>
+                        </td>
+                        <td>
+                          <div style={{ font: "500 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>{c.name}</div>
+                          <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 2 }}>Created {c.created}</div>
+                        </td>
+                        <td>
+                          <div className="channel-stack">
+                            {c.channels.map(k => (
+                              <span key={k} className="channel-label-item">
+                                <ChannelChip kind={k}/>
+                                <span className="channel-label-text">{k === "voice" ? "Voice" : "Digital"}</span>
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <div className="ly-modal-foot">
+              <button className="btn" onClick={() => setPriorityModalOpen(false)}>Cancel</button>
+              <button className="btn primary" onClick={handleSaveModal}>Save priority</button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
@@ -6245,23 +6732,10 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
       ? { ...DEFAULT_CAMPAIGN, samplingPct: initialTemplate.suggestedSampling, channels: initialTemplate.channels || DEFAULT_CAMPAIGN.channels }
       : DEFAULT_CAMPAIGN
   );
-  const [activeStep, setActiveStep] = React.useState(initialTemplate ? 1 : "tmpl");
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [visitedSteps, setVisitedSteps] = React.useState(new Set());
   const [reviewing, setReviewing] = React.useState(false);
   const set = (k, v) => setC(prev => ({ ...prev, [k]: v }));
-
-  React.useEffect(() => {
-    const ids = ["sec-template", "sec-1", "sec-2", "sec-3", "sec-4"];
-    const keyMap = { "sec-template": "tmpl", "sec-1": 1, "sec-2": 2, "sec-3": 3, "sec-4": 4 };
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible.length > 0) setActiveStep(keyMap[visible[0].target.id]);
-      },
-      { threshold: 0.25 }
-    );
-    ids.forEach(id => { const el = document.getElementById(id); if (el) observer.observe(el); });
-    return () => observer.disconnect();
-  }, [reviewing]);
 
   function pickTemplate(t) {
     setSelectedTemplate(t);
@@ -6269,24 +6743,37 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
     setDrawerOpen(false);
     set("samplingPct", t.suggestedSampling);
     set("channels", t.channels || DEFAULT_CAMPAIGN.channels);
-    setActiveStep(1);
-    setTimeout(() => document.getElementById("sec-1")?.scrollIntoView({ block: "start", behavior: "smooth" }), 60);
   }
 
   function goScratch() {
     setSelectedTemplate(null);
     setSamplingAutofilled(false);
     setDrawerOpen(false);
-    setActiveStep(1);
-    setTimeout(() => document.getElementById("sec-1")?.scrollIntoView({ block: "start", behavior: "smooth" }), 60);
   }
 
-  const STEPS = [
-    { n: 1, label: "Identity & Scope",      id: "sec-1", done: !!c.name },
-    { n: 2, label: "Suppression Rules",     id: "sec-2", done: true },
-    { n: 3, label: "Volume & Sampling",     id: "sec-3", done: c.samplingPct > 0 },
-    { n: 4, label: "Intelligence & Survey", id: "sec-4", done: !!c.aiModelId && !!c.surveyDesignId },
+  const ALL_STEPS = [
+    { n: 0, label: "Template, Identity & Scope",   done: !!c.name },
+    { n: 1, label: "Suppression Rules",     done: true },
+    { n: 2, label: "Volume & Sampling",     done: c.samplingPct > 0 },
+    { n: 3, label: "Topic AI Model & Survey Template", done: !!c.aiModelId && !!c.surveyDesignId },
+    { n: 4, label: "Summary & Review",      done: false },
   ];
+
+  function stepState(s) {
+    if (s.n === activeStep) return "active";
+    if (visitedSteps.has(s.n) && s.done) return "done";
+    if (visitedSteps.has(s.n) && !s.done) return "error";
+    return "default";
+  }
+
+  function goNext() {
+    setVisitedSteps(prev => new Set([...prev, activeStep]));
+    setActiveStep(prev => Math.min(prev + 1, 4));
+  }
+
+  function goBack() {
+    setActiveStep(prev => Math.max(prev - 1, 0));
+  }
 
   if (reviewing) {
     const SummarySection = ({ title, children }) => (
@@ -6373,11 +6860,12 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
     );
   }
 
+  const canDraft    = !!(c.name && c.channels?.length && c.samplingPct);
+  const canActivate = !!(c.name && c.channels?.length && c.queues?.length);
+
   return (
-    <div className="pane" style={{ overflow: "hidden" }}>
+    <div className="pane" style={{ display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <div className="crumbs">
-        <a href="#" onClick={e => { e.preventDefault(); onCancel(); }}>Feedback Intelligence</a>
-        <span className="sep">/</span>
         <a href="#" onClick={e => { e.preventDefault(); onCancel(); }}>Survey Campaigns</a>
         <span className="sep">/</span>
         <span className="last">Create New Survey Campaign</span>
@@ -6390,385 +6878,480 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
             <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42"/></svg>
             AI Campaign Assistant
           </button>
-          {(() => {
-            const canDraft   = !!(c.name && c.channels?.length && c.samplingPct);
-            const canActivate = !!(c.name && c.channels?.length && c.queues?.length);
-            return (<>
-              <button className="btn" onClick={onCancel}>Cancel</button>
-              <button className="btn" disabled={!canDraft} onClick={() => onSave({ ...c, status: "draft" })}
-                title={!canDraft ? "Fill in campaign name, channel and sampling % to save a draft" : ""}>
-                Save as draft
-              </button>
-              <button className="btn primary" disabled={!canActivate} onClick={() => setReviewing(true)}
-                title={!canActivate ? "Fill in name, channel and agent teams to review" : ""}>
-                Review &amp; activate
-              </button>
-            </>);
-          })()}
+          <button className="btn" onClick={onCancel}>Cancel</button>
+          <button className="btn" disabled={!canDraft} onClick={() => onSave({ ...c, status: "draft" })}>Save as draft</button>
         </div>
       </div>
 
-      <div className="create-grid">
-        {/* Side TOC */}
-        <nav className="form-toc">
-          <div
-            className={`toc-item ${activeStep === "tmpl" ? "on" : ""} ${selectedTemplate ? "done" : ""}`}
-            onClick={() => { setActiveStep("tmpl"); setDrawerOpen(true); }}>
-            <span className="num" style={{ display: "flex", fontSize: 0 }}>
-              <svg viewBox="0 0 16 16" width="12" height="12" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="1" width="12" height="14" rx="1.5"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="9" y2="11"/></svg>
-            </span>
-            Template
-          </div>
-          {STEPS.map(s => (
-            <div key={s.n}
-              className={`toc-item ${activeStep === s.n ? "on" : ""} ${s.done ? "done" : ""}`}
-              onClick={() => {
-                setActiveStep(s.n);
-                document.getElementById(s.id)?.scrollIntoView({ block: "start", behavior: "smooth" });
-              }}>
-              <span className="num">{s.n}</span>
-              {s.label}
-            </div>
-          ))}
-        </nav>
-
-        {/* Form pane */}
-        <div className="form-pane">
-          {/* Template step — optional, opens drawer */}
-          <section className="form-section" id="sec-template">
-            <header className={`form-section-head no-border ${selectedTemplate ? "complete" : ""}`} style={{ cursor: "default" }}>
-              <span className="step-num" style={{ display: "flex", fontSize: 0 }}>
-                <svg viewBox="0 0 16 16" width="12" height="12" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="1" width="12" height="14" rx="1.5"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="9" y2="11"/></svg>
-              </span>
-              <div style={{ flex: 1 }}>
-                <h3>Campaign Template <span style={{ font: "400 13px/20px var(--font-sans)", color: "var(--color-fg-secondary)", letterSpacing: 0 }}>(Optional)</span></h3>
-                <div className="sub">
-                  {selectedTemplate
-                    ? <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                        Using: <strong style={{ color: "var(--color-fg-default)" }}>{selectedTemplate.name}</strong>
-                      </span>
-                    : "Start from a preset to pre-fill settings"}
+      {/* ── Horizontal Wizard Bar ── */}
+      <div className="wz-bar">
+        <div className="wz-bar-inner">
+          {ALL_STEPS.map((s, i) => {
+            const st = stepState(s);
+            const prevDone = i > 0 && stepState(ALL_STEPS[i - 1]) === "done";
+            return (
+              <React.Fragment key={s.n}>
+                {i > 0 && <div className={`wz-line ${prevDone ? "done" : ""}`}/>}
+                <div className={`wz-step ${st}`} onClick={() => setActiveStep(s.n)}>
+                  <div className="wz-node">
+                    {st === "done" ? (
+                      <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="2 6 5 9.5 10 2.5"/></svg>
+                    ) : s.n + 1}
+                  </div>
+                  <div className="wz-label">{s.label}</div>
                 </div>
-              </div>
-              <button className={selectedTemplate ? "btn" : "btn primary"} onClick={() => setDrawerOpen(true)}>
-                {selectedTemplate ? "Change template" : "Choose from template →"}
-              </button>
-            </header>
-          </section>
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </div>
 
-          {/* Section 1 — Identity & Scope */}
-          <FormSection num={1} title="Campaign Identity & Scope"
-            sub="Name, scope, channels & agent teams."
-            id="sec-1" complete={!!c.name}>
-            <div className="field-grid-2">
-              <div className="field-cell">
-                <label className="field-label">Campaign Name<span className="req">*</span></label>
-                <input className="fi-input" placeholder="Type"
-                  value={c.name} onChange={e => set("name", e.target.value)}/>
-              </div>
-              <div className="field-cell">
-                <label className="field-label">
-                  Description
-                  <span className="char-counter">{(c.description || "").length}/100</span>
-                </label>
-                <input className="fi-input" maxLength={100} placeholder="Type"
-                  value={c.description} onChange={e => set("description", e.target.value)}/>
-              </div>
-            </div>
+      {/* ── Wizard body: scrollable area + footer ── */}
+      <div className="wz-scroll-area">
+        <div className="wz-body">
+          <div className="form-pane">
 
-            {/* Active Date Range with Ongoing toggle */}
-            <div style={{ padding: "var(--space-3) 0", borderTop: "1px solid var(--color-border-subtle)" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--space-3)" }}>
-                <div className="field-label" style={{ margin: 0 }}>Active Date Range</div>
-                <label style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", font: "400 13px/20px var(--font-sans)", color: "var(--color-fg-secondary)", cursor: "pointer" }}>
-                  <Toggle checked={c.ongoing} onChange={v => set("ongoing", v)}/>
-                  <span>Ongoing</span>
-                </label>
-              </div>
-              <div className="field-grid-2" style={{ padding: 0, borderTop: 0 }}>
-                <div className="field-cell">
-                  <label className="field-label" style={{ fontWeight: 400, color: "var(--color-fg-default)" }}>Start Date</label>
-                  <FiDatePicker value={c.startDate} onChange={v => set("startDate", v)} placeholder="Oct 30, 2025"/>
+          {/* ── Step 0: Template, Identity &amp; Scope ── */}
+          {activeStep === 0 && (()=>{
+            const showErr  = visitedSteps.has(0);
+            const nameErr  = showErr && !c.name;
+            const teamsErr = showErr && !c.queues?.[0];
+            const groupErr = showErr && !c.teams?.[0];
+            const chansErr = showErr && c.channels.length === 0;
+            return <div className="wz-step-content">
+
+              {/* ── Section A: Choose a Template ── */}
+              <div className="setup-section">
+                <div className="setup-section-head">
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+                      <h2 className="setup-section-title">Choose a Template</h2>
+                      <span style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", background: "rgba(0,0,0,0.06)", padding: "2px 8px", borderRadius: "var(--radius-round)" }}>Optional</span>
+                    </div>
+                    <p className="setup-section-sub">Jumpstart your campaign — templates pre-fill channels, sampling rate &amp; survey design.</p>
+                  </div>
+                  <div style={{ display: "flex", gap: "var(--space-2)" }}>
+                    {selectedTemplate && (
+                      <button className="btn btn-ghost btn-icon-only" title="Remove template" onClick={() => { setSelectedTemplate(null); setSamplingAutofilled(false); }} style={{ color: "var(--color-fg-secondary)" }}>
+                        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>
+                      </button>
+                    )}
+                    <button className="btn" onClick={() => setDrawerOpen(true)}>{selectedTemplate ? "Change template" : "Browse templates →"}</button>
+                  </div>
                 </div>
-                <div className="field-cell">
-                  <label className="field-label" style={{ fontWeight: 400, color: c.ongoing ? "var(--color-fg-disabled)" : "var(--color-fg-default)" }}>End Date</label>
-                  <FiDatePicker value={c.endDate} onChange={v => set("endDate", v)} disabled={c.ongoing} placeholder={c.ongoing ? "Ongoing" : "Oct 30, 2025"}/>
-                </div>
+                {selectedTemplate && (
+                  <div className="setup-section-body" style={{ paddingTop: "var(--space-3)", paddingBottom: "var(--space-3)" }}>
+                    <div className="tmpl-selected-banner">
+                      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="var(--lyra-brand-700)" strokeWidth="1.5" strokeLinecap="round" style={{ flexShrink: 0 }}><rect x="2" y="1" width="12" height="14" rx="1.5"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="9" y2="11"/></svg>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ font: "500 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>{selectedTemplate.name}</div>
+                        <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 1 }}>{selectedTemplate.why}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
 
-            {/* Channels — Digital + Voice, both enabled */}
-            <FieldRow label="Channels" req>
-              <div className="lyra-check-group">
-                {[
-                  { k: "digital", l: "Digital",  icon: "digital" },
-                  { k: "voice",   l: "Voice",     icon: "voice"   },
-                ].map(opt => {
-                  const on = c.channels.includes(opt.k);
-                  return (
-                    <label key={opt.k} className="lyra-check">
-                      <input type="checkbox" checked={on}
-                        onChange={() => set("channels", on ? c.channels.filter(x => x !== opt.k) : [...c.channels, opt.k])}/>
-                      <ChannelChip kind={opt.icon}/>
-                      <span>{opt.l}</span>
+              {/* ── Section B: Start from Scratch ── */}
+              <div className="setup-section">
+                <div className="setup-section-head">
+                  <div>
+                    <h2 className="setup-section-title">Start from Scratch</h2>
+                    <p className="setup-section-sub">Configure every detail of your campaign manually.</p>
+                  </div>
+                </div>
+                <div className="setup-section-body">
+                <div className="field-grid-2">
+                  <div className="field-cell">
+                    <label className="field-label">Campaign Name<span className="req">*</span></label>
+                    <input className={`fi-input${nameErr ? " error" : ""}`} placeholder="Type"
+                      aria-invalid={nameErr || undefined}
+                      value={c.name} onChange={e => set("name", e.target.value)}/>
+                    {nameErr && <div className="field-control"><span className="error-msg">
+                      <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                      Campaign name is required
+                    </span></div>}
+                  </div>
+                  <div className="field-cell">
+                    <label className="field-label">
+                      Description
+                      <span className="char-counter">{(c.description || "").length}/100</span>
                     </label>
-                  );
-                })}
-              </div>
-            </FieldRow>
+                    <input className="fi-input" maxLength={100} placeholder="Type"
+                      value={c.description} onChange={e => set("description", e.target.value)}/>
+                  </div>
+                </div>
 
-            {/* Agents */}
-            <div className="section-heading" style={{ paddingBottom: "var(--space-2)" }}>Agents</div>
-            <div className="field-grid-2" style={{ borderTop: "none", paddingTop: 0 }}>
-              <div className="field-cell">
-                <label className="field-label">Agent Teams<span className="req">*</span></label>
-                <select className="fi-input"
-                  value={c.queues?.[0] || ""}
-                  onChange={e => set("queues", e.target.value ? [e.target.value] : [])}>
-                  <option value="">Select Teams</option>
-                  <option value="Tier 1 Billing">Tier 1 Billing</option>
-                  <option value="Tier 2 Support">Tier 2 Support</option>
-                  <option value="Sales">Sales</option>
-                  <option value="Retention">Retention</option>
-                </select>
+                <div style={{ padding: "var(--space-6) 0" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--space-3)" }}>
+                    <div className="section-heading" style={{ padding: 0 }}>Active Date Range</div>
+                    <label style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", font: "400 13px/20px var(--font-sans)", color: "var(--color-fg-secondary)", cursor: "pointer" }}>
+                      <Toggle checked={c.ongoing} onChange={v => set("ongoing", v)}/>
+                      <span>Ongoing</span>
+                    </label>
+                  </div>
+                  <div className="field-grid-2" style={{ padding: 0, borderTop: 0 }}>
+                    <div className="field-cell">
+                      <label className="field-label" style={{ fontWeight: 400 }}>Start Date</label>
+                      <FiDatePicker value={c.startDate} onChange={v => set("startDate", v)} placeholder="Oct 30, 2025"/>
+                    </div>
+                    <div className="field-cell">
+                      <label className="field-label" style={{ fontWeight: 400, color: c.ongoing ? "var(--color-fg-disabled)" : undefined }}>End Date</label>
+                      <FiDatePicker value={c.endDate} onChange={v => set("endDate", v)} disabled={c.ongoing} placeholder={c.ongoing ? "Ongoing" : "Oct 30, 2025"}/>
+                    </div>
+                  </div>
+                </div>
+
+                <FieldRow label="Channels" req>
+                  <div className={`lyra-check-group${chansErr ? " lyra-check-group--error" : ""}`}>
+                    {[{ k: "digital", l: "Digital", icon: "digital" }, { k: "voice", l: "Voice", icon: "voice" }].map(opt => {
+                      const on = c.channels.includes(opt.k);
+                      return (
+                        <label key={opt.k} className="lyra-check">
+                          <input type="checkbox" checked={on}
+                            onChange={() => set("channels", on ? c.channels.filter(x => x !== opt.k) : [...c.channels, opt.k])}/>
+                          <ChannelChip kind={opt.icon}/>
+                          <span>{opt.l}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                  {chansErr && <div className="field-control" style={{ marginTop: "var(--space-1)" }}><span className="error-msg">
+                    <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                    Select at least one channel
+                  </span></div>}
+                </FieldRow>
+
+                <div className="section-heading" style={{ paddingTop: "var(--space-6)", paddingBottom: "var(--space-2)" }}>Agents</div>
+                <div className="field-grid-2" style={{ borderTop: "none", paddingTop: 0, paddingBottom: 0 }}>
+                  <div className="field-cell">
+                    <label className="field-label">Agent Teams<span className="req">*</span></label>
+                    <select className={`fi-input${teamsErr ? " error" : ""}`} aria-invalid={teamsErr || undefined}
+                      value={c.queues?.[0] || ""} onChange={e => set("queues", e.target.value ? [e.target.value] : [])}>
+                      <option value="">Select Teams</option>
+                      <option value="Tier 1 Billing">Tier 1 Billing</option>
+                      <option value="Tier 2 Support">Tier 2 Support</option>
+                      <option value="Sales">Sales</option>
+                      <option value="Retention">Retention</option>
+                    </select>
+                    {teamsErr && <div className="field-control"><span className="error-msg">
+                      <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                      Select an agent team
+                    </span></div>}
+                  </div>
+                  <div className="field-cell">
+                    <label className="field-label">Agent Group<span className="req">*</span></label>
+                    <select className={`fi-input${groupErr ? " error" : ""}`} aria-invalid={groupErr || undefined}
+                      value={c.teams?.[0] || ""} onChange={e => set("teams", e.target.value ? [e.target.value] : [])}>
+                      <option value="">Select Group</option>
+                      <option value="North America">North America</option>
+                      <option value="EMEA">EMEA</option>
+                      <option value="APAC">APAC</option>
+                    </select>
+                    {groupErr && <div className="field-control"><span className="error-msg">
+                      <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                      Select an agent group
+                    </span></div>}
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", marginTop: "var(--space-2)", padding: "0 var(--space-3)", height: 36, background: "var(--lyra-white)", border: "1px solid var(--color-border-soft)", borderRadius: "var(--radius-md)", font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>
+                  Current Total Number Of Agents Selected: <strong style={{ marginLeft: 4 }}>{(c.queues?.length || 0) + (c.teams?.length || 0)}</strong>
+                </div>
+
+                <div style={{ paddingTop: "var(--space-6)" }}>
+                  <FieldRow label="Language">
+                    <label className="lyra-check disabled" style={{ pointerEvents: "none" }}>
+                      <input type="checkbox" checked readOnly disabled/>
+                      <span>English</span>
+                      <span style={{ font: "500 11px/16px var(--font-sans)", color: "var(--lyra-slate-400)", textTransform: "uppercase", letterSpacing: "0.05em", marginLeft: 4 }}>Default</span>
+                    </label>
+                  </FieldRow>
+                </div>
+                </div>{/* /setup-section-body */}
               </div>
-              <div className="field-cell">
-                <label className="field-label">Agent Group<span className="req">*</span></label>
-                <select className="fi-input"
-                  value={c.teams?.[0] || ""}
-                  onChange={e => set("teams", e.target.value ? [e.target.value] : [])}>
-                  <option value="">Select Group</option>
-                  <option value="North America">North America</option>
-                  <option value="EMEA">EMEA</option>
-                  <option value="APAC">APAC</option>
-                </select>
+
+            </div>;
+          })()}
+
+          {/* ── Step 1: Suppression Rules ── */}
+          {activeStep === 1 && (
+            <div className="wz-step-content">
+              <div className="wz-content-card">
+              <div className="wz-step-head">
+                <h2>Suppression Rules</h2>
+                <p>When not to send surveys, even if everything else qualifies.</p>
+              </div>
+              <div className="sup-row">
+                <Toggle checked={c.suppressOptOut} onChange={v => set("suppressOptOut", v)}/>
+                <div className="meta">
+                  <div className="title">
+                    Opt-Out Tag
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ marginLeft: 4, color: "var(--color-fg-secondary)" }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
+                  </div>
+                  <div className="ex">Skip any customer flagged as opted out. Sending anyway destroys trust and risks compliance.</div>
+                </div>
+              </div>
+              <div className="sup-row">
+                <Toggle checked={c.suppressRecent} onChange={v => set("suppressRecent", v)}/>
+                <div className="meta">
+                  <div className="title">
+                    Recency window
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ marginLeft: 4, color: "var(--color-fg-secondary)" }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
+                  </div>
+                  <div className="ex" style={{ marginTop: 6 }}>Don't send if the same customer was surveyed within (X Days)</div>
+                  <div className="inline-row" style={{ marginTop: 8, maxWidth: "50%" }}>
+                    <input type="number" className="fi-input"
+                      value={c.recentDays} onChange={e => set("recentDays", parseInt(e.target.value || 0))}
+                      disabled={!c.suppressRecent}/>
+                    <span style={{ color: "var(--color-fg-secondary)", fontSize: 14, lineHeight: "20px", flexShrink: 0 }}>Days</span>
+                  </div>
+                </div>
+              </div>
+              <div className="sup-row">
+                <Toggle checked={true} onChange={() => {}}/>
+                <div className="meta">
+                  <div className="title">
+                    Internal / test interactions
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ marginLeft: 4, color: "var(--color-fg-secondary)" }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
+                  </div>
+                  <div className="ex">Suppress interactions flagged as internal or test. Hard-coded — QA agents testing IVR flows never generate customer surveys.</div>
+                </div>
+              </div>
               </div>
             </div>
-            <div style={{
-              display: "flex", alignItems: "center",
-              marginTop: "var(--space-3)",
-              padding: "0 var(--space-3)", height: 36,
-              background: "var(--lyra-white)",
-              border: "1px solid var(--color-border-soft)",
-              borderRadius: "var(--radius-md)",
-              font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)",
-            }}>
-              Current Total Number Of Agents Selected: <strong style={{ marginLeft: 4 }}>{(c.queues?.length || 0) + (c.teams?.length || 0)}</strong>
-            </div>
+          )}
 
-            {/* Language — English checked, read-only */}
-            <FieldRow label="Language">
-              <label className="lyra-check disabled" style={{ pointerEvents: "none" }}>
-                <input type="checkbox" checked readOnly disabled/>
-                <span>English</span>
-                <span style={{ font: "500 11px/16px var(--font-sans)", color: "var(--lyra-slate-400)", textTransform: "uppercase", letterSpacing: "0.05em", marginLeft: 4 }}>Default</span>
-              </label>
-            </FieldRow>
-          </FormSection>
-
-          {/* Section 2 — Suppression Rules (moved here per design) */}
-          <FormSection num={2} title="Suppression Rules"
-            sub="When not to send surveys, even if everything else qualifies"
-            id="sec-2" complete>
-            <div className="sup-row">
-              <Toggle checked={c.suppressOptOut} onChange={v => set("suppressOptOut", v)}/>
-              <div className="meta">
-                <div className="title">
-                  Opt-Out Tag
-                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ marginLeft: 4, color: "var(--color-fg-secondary)" }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
+          {/* ── Step 2: Volume & Sampling ── */}
+          {activeStep === 2 && (
+            <div className="wz-step-content">
+              <div className="wz-content-card">
+              <div className="wz-step-head">
+                <h2>Volume & Sampling</h2>
+                <p>How many interactions get a survey, & which ones.</p>
+              </div>
+              <FieldRow label="Sampling %" hint="">
+                <div>
+                  <input type="range" min="10" max="100" step="5" value={c.samplingPct}
+                    style={{ width: "100%", accentColor: "var(--color-fg-active-strong)" }}
+                    onChange={e => { set("samplingPct", parseInt(e.target.value)); setSamplingAutofilled(false); }}/>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, font: "400 11px/16px var(--font-sans)", letterSpacing: "0.2px", color: "var(--color-fg-secondary)" }}>
+                    {[10,20,30,40,50,60,65,70,75,80,85,90,95,100].map(n => <span key={n}>{n}</span>)}
+                  </div>
                 </div>
-                <div className="ex">Skip any customer flagged as opted out. Sending anyway destroys trust and risks compliance.</div>
+              </FieldRow>
+              <div style={{ paddingTop: "var(--space-4)" }}>
+                <div className="section-heading" style={{ marginBottom: "var(--space-4)", display: "flex", alignItems: "center", gap: 4 }}>
+                  Interaction Length Filter
+                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ color: "var(--color-fg-secondary)", flexShrink: 0 }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
+                </div>
+                <div className="field-grid-2" style={{ borderTop: "none", paddingTop: 0 }}>
+                  <div className="field-cell">
+                    <label className="field-label">Customer turns greater than</label>
+                    <input type="number" className="fi-input" min="0"
+                      value={c.minCustomerTurns}
+                      onChange={e => set("minCustomerTurns", parseInt(e.target.value || 0))}/>
+                  </div>
+                  <div className="field-cell">
+                    <label className="field-label">Agent turns greater than</label>
+                    <input type="number" className="fi-input" min="0"
+                      value={c.minAgentTurns}
+                      onChange={e => set("minAgentTurns", parseInt(e.target.value || 0))}/>
+                  </div>
+                </div>
+              </div>
               </div>
             </div>
-            <div className="sup-row">
-              <Toggle checked={c.suppressRecent} onChange={v => set("suppressRecent", v)}/>
-              <div className="meta">
-                <div className="title">
-                  Recency window
-                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ marginLeft: 4, color: "var(--color-fg-secondary)" }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
-                </div>
-                <div className="ex" style={{ marginTop: 6 }}>Don't send if the same customer was surveyed within (X Days)</div>
-                <div className="inline-row" style={{ marginTop: 8, maxWidth: "50%" }}>
-                  <input type="number" className="fi-input"
-                    value={c.recentDays} onChange={e => set("recentDays", parseInt(e.target.value || 0))}
-                    disabled={!c.suppressRecent}/>
-                  <span style={{ color: "var(--color-fg-secondary)", fontSize: 14, lineHeight: "20px", flexShrink: 0 }}>Days</span>
-                </div>
-              </div>
-            </div>
-            <div className="sup-row">
-              <Toggle checked={true} onChange={() => {}}/>
-              <div className="meta">
-                <div className="title">
-                  Internal / test interactions
-                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ marginLeft: 4, color: "var(--color-fg-secondary)" }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
-                </div>
-                <div className="ex">Suppress interactions flagged as internal or test. Hard-coded — QA agents testing IVR flows never generate customer surveys.</div>
-              </div>
-            </div>
-          </FormSection>
+          )}
 
-          {/* Section 3 — Volume & Sampling */}
-          <FormSection num={3} title="Volume & Sampling"
-            sub="How many interactions get a survey, & which ones."
-            id="sec-3" complete={c.samplingPct > 0}>
-            <FieldRow label="Sampling %" hint="">
-              <div>
-                <input type="range" min="10" max="100" step="5" value={c.samplingPct}
-                  style={{ width: "100%", accentColor: "var(--color-fg-active-strong)" }}
-                  onChange={e => { set("samplingPct", parseInt(e.target.value)); setSamplingAutofilled(false); }}/>
-                <div style={{
-                  display: "flex", justifyContent: "space-between",
-                  marginTop: 4,
-                  font: "400 11px/16px var(--font-sans)", letterSpacing: "0.2px", color: "var(--color-fg-secondary)",
-                }}>
-                  {[10,20,30,40,50,60,65,70,75,80,85,90,95,100].map(n => <span key={n}>{n}</span>)}
-                </div>
+          {/* ── Step 3: Topic AI Model &amp; Survey Template ── */}
+          {activeStep === 3 && (
+            <div className="wz-step-content">
+              <div className="wz-content-card">
+              <div className="wz-step-head">
+                <h2>Topic AI Model &amp; Survey Template</h2>
+                <p>Choose the AI model and survey design for this campaign.</p>
               </div>
-            </FieldRow>
-
-            {/* Interaction Length Filter */}
-            <div style={{ paddingTop: "var(--space-4)", borderTop: "1px solid var(--color-border-subtle)" }}>
-              <div className="section-heading" style={{ marginBottom: "var(--space-4)", display: "flex", alignItems: "center", gap: 4 }}>
-                Interaction Length Filter
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ color: "var(--color-fg-secondary)", flexShrink: 0 }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
-              </div>
-              <div className="field-grid-2" style={{ borderTop: "none", paddingTop: 0 }}>
-                <div className="field-cell">
-                  <label className="field-label">Customer turns greater than</label>
-                  <input type="number" className="fi-input" min="0"
-                    value={c.minCustomerTurns}
-                    onChange={e => set("minCustomerTurns", parseInt(e.target.value || 0))}/>
-                  <div style={{ marginTop: 4, font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)" }}>Help text</div>
-                </div>
-                <div className="field-cell">
-                  <label className="field-label">Agent turns greater than</label>
-                  <input type="number" className="fi-input" min="0"
-                    value={c.minAgentTurns}
-                    onChange={e => set("minAgentTurns", parseInt(e.target.value || 0))}/>
-                  <div style={{ marginTop: 4, font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)" }}>Help text</div>
-                </div>
-              </div>
-            </div>
-
-          </FormSection>
-
-          {/* Section 4 — Intelligence & Survey (combined) */}
-          <FormSection num={4} title="Intelligence & Survey"
-            sub="Choose the AI model and survey design for this campaign."
-            id="sec-4" complete={!!c.aiModelId && !!c.surveyDesignId}>
-
-            {/* ── Topic AI Model sub-section ── */}
-            <div className="intel-sub-section">
-              {(() => {
-                const activeModel = AI_MODELS.find(m => m.id === c.aiModelId);
-                if (!activeModel) {
-                  return (
+              <div className="intel-sub-section">
+                {(() => {
+                  const activeModel = AI_MODELS.find(m => m.id === c.aiModelId);
+                  if (!activeModel) return (
                     <header className="form-section-head no-border" style={{ cursor: "default" }}>
                       <span className="step-num" style={{ display: "flex", fontSize: 0 }}>
                         <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42"/></svg>
                       </span>
-                      <div style={{ flex: 1 }}>
-                        <h3>Topic AI Model</h3>
-                        <div className="sub">Select an AI model to power your campaign intelligence</div>
-                      </div>
-                      <button className="btn primary" onClick={() => setModelDrawerOpen(true)}>
-                        Choose model →
-                      </button>
+                      <div style={{ flex: 1 }}><h3>Topic AI Model</h3><div className="sub">Select an AI model to power your campaign intelligence</div></div>
+                      <button className="btn" onClick={() => setModelDrawerOpen(true)}>Choose Topic AI Model →</button>
                     </header>
                   );
-                }
-                return (
-                  <div className="selected-model-summary">
-                    <div className="selected-model-summary-inner">
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-3)" }}>
-                          <span style={{ font: "600 15px/22px var(--font-sans)", color: "var(--color-fg-default)", letterSpacing: "-0.01rem" }}>{activeModel.name}</span>
-                          {activeModel.badge && <span className="model-badge">{activeModel.badge}</span>}
-                        </div>
-                        {activeModel.whenToUse && (
-                          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)", marginBottom: "var(--space-2)" }}>
-                            <svg viewBox="0 0 14 14" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ flexShrink: 0, marginTop: 2, color: "var(--color-fg-action)" }}><circle cx="7" cy="7" r="6"/><path d="M7 4.5v3l1.8 1.2"/></svg>
-                            <div>
-                              <span style={{ font: "500 11px/15px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>When to use  </span>
-                              <span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{activeModel.whenToUse}</span>
-                            </div>
-                          </div>
-                        )}
-                        {activeModel.industry && (
-                          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)" }}>
-                            <svg viewBox="0 0 14 14" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2, color: "var(--color-fg-action)" }}><rect x="1" y="6" width="12" height="7" rx="1"/><path d="M5 6V4.5a2.5 2.5 0 0 1 5 0V6"/></svg>
-                            <div>
-                              <span style={{ font: "500 11px/15px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Industry  </span>
-                              <span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{activeModel.industry}</span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      <button className="btn" style={{ flexShrink: 0 }} onClick={() => setModelDrawerOpen(true)}>
-                        Change model
-                      </button>
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-
-            {/* ── Survey Template sub-section ── */}
-            <div className="intel-sub-section">
-              {(() => {
-                const activeSurvey = SURVEY_DESIGNS.find(s => s.id === c.surveyDesignId);
-                if (!activeSurvey) {
                   return (
+                    <div className="selected-model-summary">
+                      <div className="selected-model-summary-inner">
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-3)" }}>
+                            <span style={{ font: "600 15px/22px var(--font-sans)", color: "var(--color-fg-default)", letterSpacing: "-0.01rem" }}>{activeModel.name}</span>
+                            {activeModel.badge && <span className="model-badge">{activeModel.badge}</span>}
+                          </div>
+                          {activeModel.whenToUse && <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)", marginBottom: "var(--space-2)" }}><svg viewBox="0 0 14 14" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ flexShrink: 0, marginTop: 2, color: "var(--color-fg-action)" }}><circle cx="7" cy="7" r="6"/><path d="M7 4.5v3l1.8 1.2"/></svg><div><span style={{ font: "500 11px/15px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>When to use  </span><span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{activeModel.whenToUse}</span></div></div>}
+                          {activeModel.industry && <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)" }}><svg viewBox="0 0 14 14" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2, color: "var(--color-fg-action)" }}><rect x="1" y="6" width="12" height="7" rx="1"/><path d="M5 6V4.5a2.5 2.5 0 0 1 5 0V6"/></svg><div><span style={{ font: "500 11px/15px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Industry  </span><span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{activeModel.industry}</span></div></div>}
+                        </div>
+                        <div style={{ display: "flex", gap: "var(--space-2)", flexShrink: 0 }}>
+                          <button className="btn btn-ghost btn-icon-only" title="Remove model" onClick={() => set("aiModelId", "")} style={{ color: "var(--color-fg-secondary)" }}>
+                            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>
+                          </button>
+                          <button className="btn" onClick={() => setModelDrawerOpen(true)}>Change model</button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+              <div className="intel-sub-section">
+                {(() => {
+                  const activeSurvey = SURVEY_DESIGNS.find(s => s.id === c.surveyDesignId);
+                  if (!activeSurvey) return (
                     <header className="form-section-head no-border" style={{ cursor: "default" }}>
                       <span className="step-num" style={{ display: "flex", fontSize: 0 }}>
                         <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="1" width="12" height="14" rx="1.5"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="9" y2="11"/></svg>
                       </span>
-                      <div style={{ flex: 1 }}>
-                        <h3>Survey Template</h3>
-                        <div className="sub">Pick the survey design that will be sent to customers</div>
-                      </div>
-                      <button className="btn primary" onClick={() => setSurveyDrawerOpen(true)}>
-                        Choose survey →
-                      </button>
+                      <div style={{ flex: 1 }}><h3>Survey Template</h3><div className="sub">Pick the survey design that will be sent to customers</div></div>
+                      <button className="btn" onClick={() => setSurveyDrawerOpen(true)}>Choose Survey Template →</button>
                     </header>
                   );
-                }
-                return (
-                  <div className="selected-model-summary">
-                    <div className="selected-model-summary-inner">
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-3)" }}>
-                          <span style={{ font: "600 15px/22px var(--font-sans)", color: "var(--color-fg-default)", letterSpacing: "-0.01rem" }}>{activeSurvey.name}</span>
-                          <span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>· {activeSurvey.category}</span>
-                        </div>
-                        {activeSurvey.why && (
-                          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)" }}>
-                            <svg viewBox="0 0 14 14" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ flexShrink: 0, marginTop: 2, color: "var(--color-fg-action)" }}><circle cx="7" cy="7" r="6"/><path d="M7 4.5v3l1.8 1.2"/></svg>
-                            <div>
-                              <span style={{ font: "500 11px/15px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>When to use  </span>
-                              <span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{activeSurvey.why}</span>
-                            </div>
+                  return (
+                    <div className="selected-model-summary">
+                      <div className="selected-model-summary-inner">
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-3)" }}>
+                            <span style={{ font: "600 15px/22px var(--font-sans)", color: "var(--color-fg-default)", letterSpacing: "-0.01rem" }}>{activeSurvey.name}</span>
+                            <span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>· {activeSurvey.category}</span>
                           </div>
-                        )}
+                          {activeSurvey.why && <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)" }}><svg viewBox="0 0 14 14" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ flexShrink: 0, marginTop: 2, color: "var(--color-fg-action)" }}><circle cx="7" cy="7" r="6"/><path d="M7 4.5v3l1.8 1.2"/></svg><div><span style={{ font: "500 11px/15px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>When to use  </span><span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{activeSurvey.why}</span></div></div>}
+                        </div>
+                        <div style={{ display: "flex", gap: "var(--space-2)", flexShrink: 0 }}>
+                          <button className="btn btn-ghost btn-icon-only" title="Remove survey" onClick={() => set("surveyDesignId", "")} style={{ color: "var(--color-fg-secondary)" }}>
+                            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>
+                          </button>
+                          <button className="btn" onClick={() => setSurveyDrawerOpen(true)}>Change survey</button>
+                        </div>
                       </div>
-                      <button className="btn" style={{ flexShrink: 0 }} onClick={() => setSurveyDrawerOpen(true)}>
-                        Change survey
-                      </button>
                     </div>
-                  </div>
-                );
-              })()}
+                  );
+                })()}
+              </div>
+              </div>
             </div>
+          )}
 
-          </FormSection>
+          {/* ── Step 4: Summary & Review ── */}
+          {activeStep === 4 && (() => {
+            const CHANNEL_LABEL = { digital: "Digital", voice: "Voice", email: "Email", sms: "SMS" };
+            const aiModel = AI_MODELS?.find(m => m.id === c.aiModelId);
+            const survey  = SURVEY_DESIGNS?.find(s => s.id === c.surveyDesignId);
+            const SRSection = ({ title, num, children }) => (
+              <div className="sr-section">
+                <div className="sr-section-head">
+                  <span className="sr-section-num">{num}</span>
+                  <span className="sr-section-title">{title}</span>
+                  <button className="btn btn-ghost" style={{ marginLeft: "auto", font: "var(--text-body-sm)", color: "var(--color-fg-action)" }}
+                    onClick={() => setActiveStep(num - 1)}>
+                    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M11 2.5a2 2 0 0 1 2.8 2.8L5 14l-3.5.8.8-3.5z"/></svg>
+                    Edit
+                  </button>
+                </div>
+                <div className="sr-section-body">{children}</div>
+              </div>
+            );
+            const SRRow = ({ label, children }) => (
+              <div className="sr-row">
+                <div className="sr-row-label">{label}</div>
+                <div className="sr-row-value">{children || <span style={{ color: "var(--color-fg-secondary)" }}>—</span>}</div>
+              </div>
+            );
+            const missingRequired = !c.name || !c.channels?.length || !c.queues?.length;
+            return (
+              <div className="wz-step-content">
+                <div style={{ marginBottom: "var(--space-5)" }}>
+                  <h2 className="setup-section-title">Summary &amp; Review</h2>
+                  <p className="setup-section-sub">Review every setting before activating. Click Edit on any section to go back.</p>
+                </div>
 
-        </div>
+                {missingRequired && (
+                  <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", padding: "var(--space-3) var(--space-4)", background: "#fff0f0", border: "1px solid var(--color-status-error)", borderRadius: "var(--radius-md)", marginBottom: "var(--space-4)", font: "var(--text-body-sm)", color: "var(--color-status-error)" }}>
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                    Some required fields are incomplete. Return to the relevant steps to fill them in before activating.
+                  </div>
+                )}
 
-        {/* Right side: Campaign Summary side panel (per Lyra Full Page layout) */}
-        <aside className="summary-pane">
-          <FloatingMetrics campaign={c}/>
-        </aside>
+                {selectedTemplate && (
+                  <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", padding: "var(--space-2) var(--space-4)", background: "var(--color-bg-active-subtle)", border: "1px solid var(--lyra-brand-200)", borderRadius: "var(--radius-md)", marginBottom: "var(--space-4)", font: "var(--text-body-sm)", color: "var(--lyra-brand-700)" }}>
+                    <svg viewBox="0 0 16 16" width="13" height="13" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="1" width="12" height="14" rx="1.5"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="9" y2="11"/></svg>
+                    <span><strong>Template applied:</strong> {selectedTemplate.name}</span>
+                  </div>
+                )}
+
+                <SRSection title="Template, Identity &amp; Scope" num={1}>
+                  <SRRow label="Campaign Name">{c.name || <span style={{ color: "var(--color-status-error)" }}>Required</span>}</SRRow>
+                  {c.description && <SRRow label="Description">{c.description}</SRRow>}
+                  <SRRow label="Active Date Range">
+                    {c.startDate ? (c.ongoing ? `Ongoing from ${c.startDate}` : c.endDate ? `${c.startDate} — ${c.endDate}` : c.startDate) : "Not set"}
+                  </SRRow>
+                  <SRRow label="Channels">
+                    {c.channels?.length
+                      ? <div style={{ display: "flex", gap: "var(--space-3)", flexWrap: "wrap" }}>
+                          {c.channels.map(ch => <span key={ch} style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><ChannelChip kind={ch}/>{CHANNEL_LABEL[ch] || ch}</span>)}
+                        </div>
+                      : <span style={{ color: "var(--color-status-error)" }}>Required</span>}
+                  </SRRow>
+                  <SRRow label="Agent Teams">{c.queues?.length ? c.queues.join(", ") : <span style={{ color: "var(--color-status-error)" }}>Required</span>}</SRRow>
+                  <SRRow label="Agent Groups">{c.teams?.length ? c.teams.join(", ") : "All groups"}</SRRow>
+                  <SRRow label="Language">English</SRRow>
+                </SRSection>
+
+                <SRSection title="Suppression Rules" num={2}>
+                  <SRRow label="Opt-out tag">{c.suppressOptOut !== false ? "Enabled" : "Disabled"}</SRRow>
+                  <SRRow label="Recency window">{c.suppressRecent !== false ? `Enabled · ${c.recentDays ?? 30} days` : "Disabled"}</SRRow>
+                </SRSection>
+
+                <SRSection title="Volume & Sampling" num={3}>
+                  <SRRow label="Sampling Rate">{c.samplingPct ? `${c.samplingPct}%` : <span style={{ color: "var(--color-fg-secondary)" }}>Not set</span>}</SRRow>
+                </SRSection>
+
+                <SRSection title="Topic AI Model &amp; Survey Template" num={4}>
+                  <SRRow label="Topic AI Model">{aiModel ? aiModel.name : <span style={{ color: "var(--color-fg-secondary)" }}>Not configured</span>}</SRRow>
+                  <SRRow label="Survey Template">{survey ? survey.name : <span style={{ color: "var(--color-fg-secondary)" }}>Not configured</span>}</SRRow>
+                </SRSection>
+              </div>
+            );
+          })()}
+
+          </div>{/* /form-pane */}
+
+          {/* Right rail summary */}
+          <aside className="summary-pane">
+            <FloatingMetrics campaign={c}/>
+          </aside>
+        </div>{/* /wz-body */}
+      </div>{/* /wz-scroll-area */}
+
+      {/* ── Back / Next footer — outside scroll area, always visible ── */}
+      <div className="wz-footer">
+        {activeStep > 0 && (
+          <button className="btn" onClick={goBack}>← Back</button>
+        )}
+        <span style={{ flex: 1 }}/>
+        {activeStep < 4 ? (
+          <button className="btn primary" onClick={goNext}>
+            {activeStep === 3 ? "Review →" : "Next →"}
+          </button>
+        ) : (
+          <>
+            <button className="btn" onClick={() => onSave({ ...c, status: "draft" })}>Save as draft</button>
+            <button className="btn primary" disabled={!canActivate}
+              onClick={() => onSave({ ...c, status: "active" })}>
+              Activate Campaign →
+            </button>
+          </>
+        )}
       </div>
 
       {/* Template drawer */}
@@ -6839,9 +7422,6 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
                   );
                 })}
               </div>
-            </div>
-            <div className="tmpl-drawer-footer">
-              <button className="clear-link" onClick={goScratch}>Start from scratch →</button>
             </div>
           </div>
         </div>,
@@ -7253,8 +7833,6 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
   return (
     <div className="pane" style={{ overflow: "hidden" }}>
       <div className="crumbs">
-        <a href="#" onClick={e => { e.preventDefault(); onBack(); }}>Feedback Intelligence</a>
-        <span className="sep">/</span>
         <a href="#" onClick={e => { e.preventDefault(); onBack(); }}>Survey Campaigns</a>
         <span className="sep">/</span>
         <span className="last">{c.name}</span>
@@ -7285,7 +7863,7 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
       {/* Meta row — info dot-separated on left, status badges on right */}
       <div style={{
         display: "flex", alignItems: "center", gap: "var(--space-3)",
-        padding: "0 var(--space-8) var(--space-4)",
+        padding: "var(--space-3) var(--space-8) var(--space-4)",
       }}>
         <div style={{
           flex: 1,
@@ -7330,7 +7908,7 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
               Discard Changes
             </button>
-            <button className="btn primary" onClick={publishWorkingCopy}>
+            <button className="btn" onClick={publishWorkingCopy}>
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 13 10 19 20 5"/></svg>
               Publish V{c.workingCopyVersion}
             </button>
@@ -7338,9 +7916,13 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
         </div>
       ) : null}
 
-      <div style={{ flex: 1, overflow: "auto", padding: "0 var(--space-8) var(--space-6)", background: "var(--lyra-white)" }}>
-        <CampaignSummaryCard campaign={c}/>
-        <ConfigurationView campaign={c}/>
+      <div className="detail-layout">
+        <div className="detail-main">
+          <ConfigurationView campaign={c}/>
+        </div>
+        <aside className="detail-sidebar">
+          <CampaignSummaryCard campaign={c}/>
+        </aside>
       </div>
       {toast ? (
         <div className="toast">
@@ -7352,46 +7934,85 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
   );
 }
 
-/* Campaign Summary horizontal card — sits between meta row and config sections */
+/* Campaign Summary sidebar card */
 function CampaignSummaryCard({ campaign: c }) {
-  const CHANNEL_LABEL = { digital: "Digital", voice: "Voice", email: "Email", sms: "SMS" };
+  const isLive = c.status === "active" || c.status === "paused";
 
-  const dateRange = c.startDate
-    ? (c.ongoing ? `${c.startDate} — Ongoing` : c.endDate ? `${c.startDate} — ${c.endDate}` : `${c.startDate} — No end date`)
-    : "Not set";
-
-  const channels = c.channels?.length
-    ? c.channels.map(ch => CHANNEL_LABEL[ch] || ch).join(", ")
-    : "Not set";
-
-  const teams = c.teams?.length ? c.teams.join(", ") : "All teams";
-
-  const interactions = c.samplingPct
-    ? `${c.samplingPct}% of interactions sampled`
-    : "Not configured";
-
-  const rows = [
-    { icon: "calendar", label: "Active date range", value: dateRange },
-    { icon: "channel",  label: "Channel",           value: channels },
-    { icon: "agents",   label: "Agent teams",        value: teams },
-    { icon: "survey",   label: "Interactions surveyed", value: interactions },
+  /* ── Live metrics (active / paused campaigns) ── */
+  const metricRows = [
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><polyline points="2 10 6 6 9 9 14 4"/></svg>,
+      label: "Response Rate", value: c.responseRate || "31%", highlight: true,
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="1.5" width="10" height="13" rx="1.5"/><line x1="6" y1="5" x2="10" y2="5"/><line x1="6" y1="8" x2="10" y2="8"/><line x1="6" y1="11" x2="8.5" y2="11"/></svg>,
+      label: "Total Surveys Sent", value: c.totalSurveys ? c.totalSurveys.toLocaleString() : "2,847",
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><polyline points="2 11 6 7 9 10 14 5"/><line x1="14" y1="5" x2="14" y2="9"/><line x1="14" y1="5" x2="10" y2="5"/></svg>,
+      label: "Completed Responses", value: c.completedResponses ? c.completedResponses.toLocaleString() : "882",
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>,
+      label: "Avg. Completion Time", value: c.avgCompletionTime || "1m 42s",
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 2l1.8 3.6L14 6.3l-3 2.9.7 4.1L8 11.2l-3.7 2.1.7-4.1-3-2.9 4.2-.7z"/></svg>,
+      label: "Avg. CSAT Score", value: c.avgCsat || "4.2 / 5",
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="12" height="11" rx="1.5"/><line x1="5" y1="1.5" x2="5" y2="4.5"/><line x1="11" y1="1.5" x2="11" y2="4.5"/><line x1="2" y1="7" x2="14" y2="7"/></svg>,
+      label: "Last Survey Sent", value: c.lastSurveySent || "Today, 9:41 AM",
+    },
   ];
 
+  /* ── Config info (draft / ended campaigns) ── */
+  const CHANNEL_LABEL = { digital: "Digital", voice: "Voice", email: "Email", sms: "SMS" };
+  const channels = c.channels?.length ? c.channels.map(ch => CHANNEL_LABEL[ch] || ch).join(", ") : "Not set";
+  const teams = c.queues?.length ? c.queues.join(", ") : "All teams";
+  const dateRange = c.startDate
+    ? (c.ongoing ? `Ongoing from ${c.startDate}` : c.endDate ? `${c.startDate} — ${c.endDate}` : `${c.startDate} — No end date`)
+    : "Not set";
+
+  const configRows = [
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="12" height="11" rx="1.5"/><line x1="5" y1="1.5" x2="5" y2="4.5"/><line x1="11" y1="1.5" x2="11" y2="4.5"/><line x1="2" y1="7" x2="14" y2="7"/></svg>,
+      label: "Active Date Range", value: dateRange,
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M2 11.5C2 9.5 3.5 8 5.5 8h5C12.5 8 14 9.5 14 11.5"/><circle cx="8" cy="4.5" r="2.5"/></svg>,
+      label: "Channel", value: channels,
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="6" cy="5" r="2"/><path d="M1 13c0-2.2 1.8-4 4-4h2"/><circle cx="11.5" cy="6" r="2"/><path d="M8 13.5c0-1.9 1.6-3.5 3.5-3.5s3.5 1.6 3.5 3.5"/></svg>,
+      label: "Agent Teams", value: teams,
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>,
+      label: "Sampling Rate", value: c.samplingPct ? `${c.samplingPct}%` : "—",
+    },
+  ];
+
+  const rows = isLive ? metricRows : configRows;
+  const headLabel = isLive ? "Live Metrics" : "Campaign Summary";
+
   return (
-    <div className="summary-card">
-      <div className="summary-card-head">Campaign Summary</div>
-      <div className="summary-card-rows">
+    <div className="detail-summary-card">
+      <div className="detail-summary-head">
+        {isLive
+          ? <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><polyline points="2 10 6 6 9 9 14 4"/></svg>
+          : <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+        }
+        {headLabel}
+        {isLive && <span className="detail-summary-live-dot"/>}
+      </div>
+      <div className="detail-summary-rows">
         {rows.map(r => (
-          <div key={r.label} className="summary-card-row">
-            <div className="summary-card-icon">
-              {r.icon === "calendar" && <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="12" height="11" rx="1.5"/><line x1="5" y1="1.5" x2="5" y2="4.5"/><line x1="11" y1="1.5" x2="11" y2="4.5"/><line x1="2" y1="7" x2="14" y2="7"/></svg>}
-              {r.icon === "channel"  && <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M2 11.5C2 9.5 3.5 8 5.5 8h5C12.5 8 14 9.5 14 11.5"/><circle cx="8" cy="4.5" r="2.5"/></svg>}
-              {r.icon === "agents"   && <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="6" cy="5" r="2"/><path d="M1 13c0-2.2 1.8-4 4-4h2"/><circle cx="11.5" cy="6" r="2"/><path d="M8 13.5c0-1.9 1.6-3.5 3.5-3.5s3.5 1.6 3.5 3.5"/></svg>}
-              {r.icon === "survey"   && <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="1.5" width="10" height="13" rx="1.5"/><line x1="6" y1="5" x2="10" y2="5"/><line x1="6" y1="8" x2="10" y2="8"/><line x1="6" y1="11" x2="8.5" y2="11"/></svg>}
-            </div>
-            <div className="summary-card-row-body">
-              <div className="summary-card-label">{r.label}</div>
-              <div className="summary-card-value">{r.value}</div>
+          <div key={r.label} className={`detail-summary-row${r.highlight ? " highlight" : ""}`}>
+            <div className="detail-summary-ico">{r.icon}</div>
+            <div className="detail-summary-body">
+              <div className="detail-summary-label">{r.label}</div>
+              <div className="detail-summary-value">{r.value}</div>
             </div>
           </div>
         ))}
@@ -7400,91 +8021,87 @@ function CampaignSummaryCard({ campaign: c }) {
   );
 }
 
-/* DefRow — read-only label/value row inside a config section.
-   Matches the design: "Label:" on left at 200px width, value on right with the
-   regular Lyra Body-md weight; rows separated by border/subtle. */
 function DefRow({ label, children }) {
   return (
-    <div style={{
-      display: "flex", alignItems: "flex-start",
-      padding: "var(--space-3) 0",
-      borderTop: "1px solid var(--color-border-subtle)",
-      fontFamily: "var(--font-sans)",
-      fontSize: 14, fontWeight: 400, lineHeight: "20px", letterSpacing: 0,
-      color: "var(--color-fg-default)",
-    }}>
-      <div style={{
-        flex: "0 0 200px",
-        fontWeight: 500,
-        color: "var(--color-fg-default)",
-      }}>
-        {label}:
-      </div>
-      <div style={{ flex: 1, fontWeight: 400 }}>{children}</div>
+    <div className="def-row">
+      <div className="def-row-label">{label}</div>
+      <div className="def-row-value">{children}</div>
     </div>
   );
 }
 
-/* ConfigGroup — collapsible Lyra form-section card for read-only display. */
+/* ConfigGroup — collapsible accordion card for read-only display. */
 function ConfigGroup({ title, num, children, defaultOpen = true }) {
   const [open, setOpen] = React.useState(defaultOpen);
   return (
-    <section className={`form-section ${open ? "" : "collapsed"}`} style={{ marginBottom: "var(--space-3)" }}>
-      <header className="form-section-head" onClick={() => setOpen(!open)}>
-        <span className="step-num">{num}</span>
-        <h3 style={{ margin: 0 }}>{title}</h3>
-        <svg className="chev" viewBox="0 0 16 16">
+    <section className={`cfg-group${open ? "" : " cfg-group--closed"}`}>
+      <header className="cfg-group-head" onClick={() => setOpen(!open)}>
+        <span className="cfg-group-num">{num}</span>
+        <span className="cfg-group-title">{title}</span>
+        <svg className="cfg-group-chev" viewBox="0 0 16 16">
           <path d="M3.5 6 8 10.5 12.5 6" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </header>
-      <div className="form-section-body">{children}</div>
+      {open && <div className="cfg-group-body">{children}</div>}
     </section>
   );
 }
 
-function ConfigurationView({ campaign }) {
-  /* Read-only summary of the campaign config — matches the design exactly. */
-  const routing = CAMPAIGNS.filter(x => x.status === "active" || x.status === "paused");
-  const routingIdx = routing.findIndex(x => x.id === campaign.id);
-  const routingText = (campaign.status === "active" || campaign.status === "paused") && routingIdx >= 0
-    ? `Position ${routingIdx + 1} of ${routing.length} · You Can Reorder On The Campaigns List`
-    : "—";
+function ConfigurationView({ campaign: c }) {
+  const CHANNEL_LABEL = { digital: "Digital", voice: "Voice", email: "Email", sms: "SMS" };
+  const channels = c.channels?.length ? c.channels : ["digital", "voice"];
+  const dateRange = c.startDate
+    ? (c.ongoing ? `Ongoing from ${c.startDate}` : c.endDate ? `${c.startDate} — ${c.endDate}` : `${c.startDate} — No end date`)
+    : "Ongoing from " + c.created;
+
+  const aiModel = AI_MODELS?.find(m => m.id === c.aiModelId);
+  const survey  = SURVEY_DESIGNS?.find(s => s.id === c.surveyDesignId);
 
   return (
-    <div>
+    <div className="cfg-group-stack">
+      {/* Step 0 mirror: Template, Identity &amp; Scope */}
       <ConfigGroup num="1" title="Campaign Identity & Scope">
-        <DefRow label="Campaign Name">{campaign.name}</DefRow>
-        <DefRow label="Active Date Range">Ongoing from {campaign.created}</DefRow>
+        <DefRow label="Campaign Name">{c.name}</DefRow>
+        {c.description && <DefRow label="Description">{c.description}</DefRow>}
+        <DefRow label="Active Date Range">{dateRange}</DefRow>
         <DefRow label="Channels">
           <div className="channel-stack" style={{ gap: "var(--space-3)" }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              <ChannelChip kind="digital"/> Digital
-            </span>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              <ChannelChip kind="voice"/> Voice
-            </span>
+            {channels.map(ch => (
+              <span key={ch} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <ChannelChip kind={ch}/> {CHANNEL_LABEL[ch] || ch}
+              </span>
+            ))}
           </div>
         </DefRow>
-        <DefRow label="Agent Teams">All Teams</DefRow>
-        <DefRow label="Agents Groups">All Groups</DefRow>
-        <DefRow label="Routing Priority">{routingText}</DefRow>
+        <DefRow label="Agent Teams">{c.queues?.length ? c.queues.join(", ") : "All teams"}</DefRow>
+        <DefRow label="Agent Groups">{c.teams?.length ? c.teams.join(", ") : "All groups"}</DefRow>
         <DefRow label="Language">English</DefRow>
       </ConfigGroup>
 
-      <ConfigGroup num="2" title="Volume & Sampling">
-        <DefRow label="Sampling">{campaign.sampling}% (Daily 20 Interactions Would Be Surveyed)</DefRow>
-        <DefRow label="Per-agent cap">3 surveys / day</DefRow>
+      {/* Step 1 mirror: Suppression Rules */}
+      <ConfigGroup num="2" title="Suppression Rules">
+        <DefRow label="Opt-out tag">{c.suppressOptOut !== false ? "Enabled" : "Disabled"}</DefRow>
+        <DefRow label="Recency window">
+          {c.suppressRecent !== false ? `Enabled · ${c.recentDays ?? 30} days` : "Disabled"}
+        </DefRow>
       </ConfigGroup>
 
-      <ConfigGroup num="3" title="Suppression Rules">
-        <DefRow label="Opt-out tag">Enabled</DefRow>
-        <DefRow label="Recency window">Enabled • 30 Days</DefRow>
-        <DefRow label="Internal / test">Always on (hard-coded)</DefRow>
+      {/* Step 2 mirror: Volume & Sampling */}
+      <ConfigGroup num="3" title="Volume & Sampling">
+        <DefRow label="Sampling Rate">
+          {c.samplingPct ? `${c.samplingPct}%` : "Not set"}
+          {c.samplingPct ? ` — approx. ${Math.round(c.samplingPct * 0.4)} interactions / day` : ""}
+        </DefRow>
       </ConfigGroup>
 
-      <ConfigGroup num="4" title="Trigger Rules">
-        <DefRow label="Trigger event">Post-digital interaction</DefRow>
-        <DefRow label="Delay">Immediate</DefRow>
+      {/* Step 3 mirror: Topic AI Model &amp; Survey Template */}
+      <ConfigGroup num="4" title="Topic AI Model &amp; Survey Template">
+        <DefRow label="Topic AI Model">
+          {aiModel ? aiModel.name : <span style={{ color: "var(--color-fg-secondary)" }}>Not configured</span>}
+        </DefRow>
+        <DefRow label="Survey Template">
+          {survey ? survey.name : <span style={{ color: "var(--color-fg-secondary)" }}>Not configured</span>}
+        </DefRow>
       </ConfigGroup>
     </div>
   );
@@ -7832,6 +8449,24 @@ function CampaignTemplatePicker({ onSelect, onSkip }) {
 
 Object.assign(window, { SurveyCampaignsGrid, CreateCampaign, CampaignDetail, ChannelChip, StatusPill, Sparkline, CAMPAIGNS, WorkingCopyChip, FilterChip, CampaignTemplatePicker });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 <script type="text/babel" data-presets="react">
 /* Feedback Intelligence — Survey Templates admin page.
@@ -8033,9 +8668,9 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
   const [d, setD] = React.useState(initial || DEFAULT_DESIGN);
   const set = (k, v) => setD(prev => ({ ...prev, [k]: v }));
   const isEdit = !!initial;
-  const [activeStep, setActiveStep] = React.useState(1);
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [visitedSteps, setVisitedSteps] = React.useState(new Set());
 
-  // Linked campaigns: seed from any campaign whose surveyDesignId matches this design's id.
   const initialLinkedIds = React.useMemo(() => {
     if (!initial || !window.CAMPAIGNS) return [];
     return window.CAMPAIGNS.filter(c => c.surveyDesignId === initial.id).map(c => c.id);
@@ -8046,11 +8681,30 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
   );
 
   const STEPS = [
-    { n: 1, label: "Identity",         id: "dsec-1", done: !!d.name },
-    { n: 2, label: "Survey Content",   id: "dsec-2", done: !!d.defaultScaleQuestion },
-    { n: 3, label: "Delivery",         id: "dsec-3", done: true },
-    { n: 4, label: "Linked Campaigns", id: "dsec-4", done: linkedIds.length > 0 },
+    { n: 0, label: "Identity",         done: !!d.name },
+    { n: 1, label: "Survey Content",   done: !!d.defaultScaleQuestion },
+    { n: 2, label: "Delivery",         done: true },
+    { n: 3, label: "Linked Campaigns", done: linkedIds.length > 0 },
+    { n: 4, label: "Summary & Review", done: false },
   ];
+
+  function stepState(s) {
+    if (s.n === activeStep) return "active";
+    if (visitedSteps.has(s.n) && s.done) return "done";
+    if (visitedSteps.has(s.n) && !s.done) return "error";
+    return "default";
+  }
+
+  function goNext() {
+    setVisitedSteps(prev => new Set([...prev, activeStep]));
+    setActiveStep(prev => Math.min(prev + 1, 4));
+  }
+
+  function goBack() {
+    setActiveStep(prev => Math.max(prev - 1, 0));
+  }
+
+  const canSave = !!d.name;
 
   function TemplateFloatingSummary() {
     const rows = [
@@ -8063,11 +8717,6 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
         icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M2 11.5C2 9.5 3.5 8 5.5 8h5C12.5 8 14 9.5 14 11.5"/><circle cx="8" cy="4.5" r="2.5"/></svg>,
         label: "Channel",
         value: d.channel || "Digital",
-      },
-      {
-        icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4v4l3 2"/></svg>,
-        label: "Survey type",
-        value: d.surveyType || "—",
       },
     ];
 
@@ -8091,283 +8740,466 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
 
   return (
     <div className="pane" style={{ overflow: "hidden" }}>
+      {/* Breadcrumb */}
       <div className="crumbs">
-        <a href="#" onClick={e => { e.preventDefault(); onCancel(); }}>Feedback Intelligence</a>
-        <span className="sep">/</span>
         <a href="#" onClick={e => { e.preventDefault(); onCancel(); }}>Survey Templates</a>
         <span className="sep">/</span>
         <span className="last">{isEdit ? d.name : "New Survey Template"}</span>
       </div>
 
+      {/* Page header */}
       <div className="pane-head" style={{ paddingTop: 6 }}>
         <h1>{isEdit ? d.name : "New Survey Template"}</h1>
         <div className="head-actions">
           <button className="btn" onClick={onCancel}>Cancel</button>
-          <button className="btn primary" disabled={!d.name}
-            onClick={() => onSave(d)}>
-            <svg viewBox="0 0 24 24"><polyline points="4 13 10 19 20 5"/></svg>
-            {isEdit ? "Save changes" : "Save template"}
-          </button>
+          <button className="btn" disabled={!canSave} onClick={() => onSave({ ...d, status: "draft" })}>Save as draft</button>
         </div>
       </div>
 
-      <div className="create-grid">
-        {/* Side TOC */}
-        <nav className="form-toc">
-          {STEPS.map(s => (
-            <div key={s.n}
-              className={`toc-item ${activeStep === s.n ? "on" : ""} ${s.done ? "done" : ""}`}
-              onClick={() => {
-                setActiveStep(s.n);
-                document.getElementById(s.id)?.scrollIntoView({ block: "start", behavior: "smooth" });
-              }}>
-              <span className="num">{s.n}</span>
-              {s.label}
-            </div>
-          ))}
-        </nav>
-
-        {/* Form pane */}
-        <div className="form-pane">
-
-        <FormSection num={1} title="Identity"
-          sub="Name this template so your team knows when to use it."
-          id="dsec-1" complete={!!d.name}>
-          <FieldRow label="Name" req hint="Use a name your team will recognise, e.g. 'Post-Chat CSAT'.">
-            <input className="fi-input" placeholder="Type here"
-              value={d.name} onChange={e => set("name", e.target.value)}/>
-          </FieldRow>
-          <FieldRow label="Description" hint="What this template is for and which campaigns should use it.">
-            <textarea className="fi-input"
-              placeholder="Type here"
-              value={d.description} onChange={e => set("description", e.target.value)}/>
-          </FieldRow>
-        </FormSection>
-
-        <FormSection num={2} title="Survey Content"
-          sub="Set the questions customers will see and how they will answer."
-          id="dsec-2" complete={!!d.defaultScaleQuestion}>
-
-          {/* Survey Channel */}
-          <FieldRow label="Survey channel" req
-            tooltip="Choose where this survey will be delivered. This affects which display options are available below."
-            hint={
-              d.channel === "Digital" ? "Survey will be delivered on digital channels like: chat, AI sessions, social & email." :
-              d.channel === "IVR"     ? "Survey will be sent after a phone call. Customers respond using their keypad." :
-                                        "Survey will be delivered on both phone and digital channels."
-            }>
-            <Segmented options={["Digital", "IVR", "Both"]}
-              value={d.channel} onChange={v => set("channel", v)}/>
-          </FieldRow>
-
-          {/* Welcome Message */}
-          <FieldRow label={`Welcome Message (the first thing customer ${d.channel === "IVR" ? "hear" : "see"} before the survey starts)`} req
-            tooltip="The opening screen before question 1. Offering an opt-out is recommended — customers who choose to respond give more honest feedback.">
-            <div className="welcome-mode-radio">
-              {(d.channel === "IVR" ? [
-                { v: "with-optout",    label: "Invitation with Opt Out",    desc: "After hearing the message, the customer can press 1 to decline." },
-                { v: "without-optout", label: "Invitation without Opt Out", desc: "The customer hears the message, then goes to the survey." },
-                { v: "none",           label: "None",                       desc: "Survey starts immediately with no introduction." },
-              ] : [
-                { v: "with-optout",    label: "Invitation with Opt Out",    desc: "Customer can read the invitation & choose to decline it." },
-                { v: "without-optout", label: "Invitation without Opt Out", desc: "Customer see the invitation & start button only." },
-                { v: "none",           label: "None",                       desc: "Survey starts immediately with no introduction." },
-              ]).map(opt => (
-                <label key={opt.v} className={`welcome-mode-option ${d.welcomeMode === opt.v ? "on" : ""}`}>
-                  <input type="radio" name="welcomeMode" value={opt.v}
-                    checked={d.welcomeMode === opt.v}
-                    onChange={() => set("welcomeMode", opt.v)}/>
-                  <span className="dot"/>
-                  <span className="body">
-                    <span className="title">{opt.label}</span>
-                    <span className="desc">{opt.desc}</span>
-                  </span>
-                </label>
-              ))}
-            </div>
-
-            {d.welcomeMode !== "none" ? (
-              <div style={{ marginTop: 12, padding: 16, borderRadius: 8, background: "var(--lyra-slate-100)", border: "1px solid rgba(0,0,0,0.06)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-                  <div className="kicker">Invitation Text</div>
-                  <span style={{ font: "400 12px/16px var(--font-sans)", color: (d.welcomeMessage || "").length > 220 ? "var(--fi-amber)" : "var(--lyra-slate-400)" }}>
-                    {(d.welcomeMessage || "").length}/240
-                  </span>
+      {/* ── Horizontal Wizard Bar ── */}
+      <div className="wz-bar">
+        <div className="wz-bar-inner">
+          {STEPS.map((s, i) => {
+            const st = stepState(s);
+            const prevDone = i > 0 && stepState(STEPS[i - 1]) === "done";
+            return (
+              <React.Fragment key={s.n}>
+                {i > 0 && <div className={`wz-line ${prevDone ? "done" : ""}`}/>}
+                <div className={`wz-step ${st}`} onClick={() => setActiveStep(s.n)}>
+                  <div className="wz-node">
+                    {st === "done" ? (
+                      <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="2 6 5 9.5 10 2.5"/></svg>
+                    ) : s.n + 1}
+                  </div>
+                  <div className="wz-label">{s.label}</div>
                 </div>
-                <textarea className="fi-input" rows={3} maxLength={240}
-                  style={{ resize: "vertical", minHeight: 72, font: "400 14px/20px Inter", background: "var(--lyra-white)" }}
-                  placeholder={`"{{First Name}}", we'd love to hear about your experience today. We have just a few quick questions, just two minutes of your time.`}
-                  value={d.welcomeMessage}
-                  onChange={e => set("welcomeMessage", e.target.value)}/>
-                <div className="help" style={{ marginTop: 6 }}>
-                  Use <code style={{ background: "var(--lyra-white)", padding: "1px 5px", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 3, font: "500 12px/16px Inter", color: "var(--lyra-slate-700)" }}>{"{{First Name}}"}</code> to personalise.
-                </div>
-
-                {/* Button labels — shown for Digital/Both */}
-                {(d.channel === "Digital" || d.channel === "Both") ? (
-                  <div style={{ display: "grid", gridTemplateColumns: d.welcomeMode === "with-optout" ? "1fr 1fr" : "1fr", gap: 12, marginTop: 14 }}>
-                    <div>
-                      <div className="kicker" style={{ marginBottom: 4 }}>Button label to get started with survey</div>
-                      <input className="fi-input" disabled readOnly value={d.buttonToStart}
-                        style={{ background: "var(--lyra-slate-200)", color: "var(--lyra-slate-600)", cursor: "not-allowed" }}/>
-                    </div>
-                    {d.welcomeMode === "with-optout" ? (
-                      <div>
-                        <div className="kicker" style={{ marginBottom: 4 }}>Button label to opt out / decline the survey</div>
-                        <input className="fi-input" disabled readOnly value={d.buttonToOptOut}
-                          style={{ background: "var(--lyra-slate-200)", color: "var(--lyra-slate-600)", cursor: "not-allowed" }}/>
-                      </div>
-                    ) : null}
-                  </div>
-                ) : null}
-
-                {/* IVR note */}
-                {d.channel === "IVR" ? (
-                  <div className="help" style={{ marginTop: 10, padding: "8px 10px", borderRadius: 4, background: "rgba(0,0,0,0.03)" }}>
-                    On phone surveys, this message is read aloud. The customer presses 1 to start or hangs up to skip.
-                  </div>
-                ) : null}
-              </div>
-            ) : null}
-          </FieldRow>
-
-          {/* Survey Type */}
-          <FieldRow label="Survey type" req>
-            <Segmented options={["CSAT (1–5 Star)", "Like / Dislike", "Both"]}
-              value={d.surveyType} onChange={v => set("surveyType", v)}/>
-          </FieldRow>
-
-          {/* Digital Display Style — only for Digital/Both */}
-          {(d.channel === "Digital" || d.channel === "Both") ? (
-            <>
-              <FieldRow label="Digital display style" req
-                tooltip="Controls how the rating options appear to the customer in the chat window."
-                hint={
-                  d.displayStyle === "Quick Reply"
-                    ? "Inline tappable bubbles below the question. Fastest to answer, best for ≤ 5 options on mobile."
-                    : "Rating options appear as a list the customer can scroll through. Good for desktop and longer scales."
-                }>
-                <Segmented options={["Quick Reply", "List Picker"]}
-                  value={d.displayStyle} onChange={v => set("displayStyle", v)}/>
-              </FieldRow>
-              {d.displayStyle === "List Picker" ? (
-                <FieldRow label="List picker label" req
-                  hint="Short heading shown above the dropdown, e.g. 'Rate your experience'.">
-                  <input className="fi-input" maxLength={48}
-                    placeholder="Rate your experience"
-                    value={d.listPickerLabel}
-                    onChange={e => set("listPickerLabel", e.target.value)}/>
-                  <div className="help">{(d.listPickerLabel || "").length}/48 characters</div>
-                </FieldRow>
-              ) : null}
-            </>
-          ) : null}
-
-          {/* AI-Generated Contextual Questions */}
-          <FieldRow label="AI-Generated Contextual Questions">
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <label className="switch" style={{ flexShrink: 0 }}>
-                <input type="checkbox" checked={d.aiQuestions} onChange={e => set("aiQuestions", e.target.checked)}/>
-                <span className="slider" style={{ background: d.aiQuestions ? "var(--lyra-brand-600)" : undefined }}/>
-              </label>
-              <span style={{ font: "500 14px/20px var(--font-sans)", color: d.aiQuestions ? "var(--lyra-brand-600)" : "var(--color-fg-secondary)" }}>
-                {d.aiQuestions ? "On - Question Adapts To Each Interaction" : "Off - Same questions for every customer"}
-              </span>
-            </div>
-            <span className="hint">
-              When on, the AI writes questions based on what happened in each call or chat. When off, every customer gets the same fixed questions.
-            </span>
-            {d.aiQuestions ? (
-              <div style={{ padding: "12px 14px", borderRadius: 8, background: "var(--lyra-slate-100)", border: "1px solid rgba(0,0,0,0.06)", display: "flex", flexDirection: "column", gap: 8 }}>
-                {[
-                  { dot: "var(--fi-green)",       text: "If configured category is found, then AI writes questions specific to that category." },
-                  { dot: "var(--fi-purple)",       text: "If unmatched category is found, then AI still writes questions, but the new category is flagged for your review." },
-                  { dot: "var(--lyra-slate-400)",  text: "If no category is identified, then it falls back to the default questions you set below." },
-                ].map((item, i) => (
-                  <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: item.dot, flexShrink: 0, marginTop: 7 }}/>
-                    <span style={{ font: "400 13px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>{item.text}</span>
-                  </div>
-                ))}
-              </div>
-            ) : null}
-          </FieldRow>
-
-          {/* Default Fallback / Preconfigured Questions */}
-          <FieldRow label={d.aiQuestions ? "Default Fallback Questions" : "Preconfigured Questions"} req>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <div>
-                <div style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginBottom: 6 }}>Scale: Rating Question</div>
-                <input className="fi-input" maxLength={120}
-                  placeholder="On a scale of 1 to 5, how would you rate your experience today?"
-                  value={d.defaultScaleQuestion}
-                  onChange={e => set("defaultScaleQuestion", e.target.value)}/>
-              </div>
-              <div>
-                <div style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginBottom: 6 }}>Text: Comment Question</div>
-                <input className="fi-input" maxLength={120}
-                  placeholder="What could we have done better?"
-                  value={d.defaultCommentQuestion}
-                  onChange={e => set("defaultCommentQuestion", e.target.value)}/>
-              </div>
-              <span className="hint">
-                {d.aiQuestions
-                  ? "This is sent when AI can't match the interaction to a topic. Keep these broad so they work for any conversation."
-                  : "Every customer will receive these questions. Update them to reflect what your team wants to learn."}
-              </span>
-            </div>
-          </FieldRow>
-
-          {/* Free Text Comment Box */}
-          <FieldRow label="Free Text Comment Box"
-            hint={
-              d.freeText === "Always On"  ? "Let customers write their own feedback in addition to the rating." :
-              d.freeText === "Conditional" ? "Free text only appears when the rating is ≤ 2 stars." :
-              null
-            }>
-            <Segmented options={["Always On", "Conditional", "Always Off"]}
-              value={d.freeText}
-              onChange={v => set("freeText", v)}/>
-          </FieldRow>
-        </FormSection>
-
-        <FormSection num={3} title="Delivery"
-          sub="Set how long the survey stays open and who gets notified on a poor score."
-          id="dsec-3" complete>
-
-          {/* Real-time Alerting */}
-          <FieldRow label="Real time response alerting"
-            hint="Notify a supervisor straight away when a customer gives 1 or 2 stars.">
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <label className="switch" style={{ flexShrink: 0 }}>
-                <input type="checkbox" checked={d.realtimeAlerts} onChange={e => set("realtimeAlerts", e.target.checked)}/>
-                <span className="slider" style={{ background: d.realtimeAlerts ? "var(--lyra-brand-600)" : undefined }}/>
-              </label>
-              <span style={{ font: "500 14px/20px var(--font-sans)", color: d.realtimeAlerts ? "var(--lyra-brand-600)" : "var(--color-fg-secondary)" }}>
-                {d.realtimeAlerts
-                  ? "On - Alert supervisor immediately on low ratings (1–2 stars)"
-                  : "Off — supervisors are not notified on low ratings"}
-              </span>
-            </div>
-          </FieldRow>
-        </FormSection>
-
-        <FormSection num={4} title="Linked Campaigns"
-          sub="Choose which campaigns use this template. Any edits you make here will automatically apply to all linked campaigns."
-          id="dsec-4" complete>
-          <LinkedCampaignsTable
-            linkedIds={linkedIds}
-            currentDesignId={initial?.id}
-            onToggle={toggleLink}
-          />
-        </FormSection>
-
+              </React.Fragment>
+            );
+          })}
         </div>
+      </div>
 
-        {/* Right-rail summary */}
-        <aside className="summary-pane">
-          <TemplateFloatingSummary/>
-        </aside>
+      {/* ── Wizard body ── */}
+      <div className="wz-scroll-area">
+        <div className="wz-body">
+          <div className="form-pane">
+
+          {/* ── Step 0: Identity ── */}
+          {activeStep === 0 && (()=>{
+            const showErr = visitedSteps.has(0);
+            const nameErr = showErr && !d.name;
+            return <div className="wz-step-content">
+              <div className="setup-section">
+                <div className="setup-section-head">
+                  <div>
+                    <h2 className="setup-section-title">Identity</h2>
+                    <p className="setup-section-sub">Name this template so your team knows when to use it.</p>
+                  </div>
+                </div>
+                <div className="setup-section-body">
+                  <div className="field-grid-2">
+                    <div className="field-cell">
+                      <label className="field-label">Template Name<span className="req">*</span></label>
+                      <input className={`fi-input${nameErr ? " error" : ""}`} placeholder="e.g. Post-Chat CSAT"
+                        aria-invalid={nameErr || undefined}
+                        value={d.name} onChange={e => set("name", e.target.value)}/>
+                      {nameErr && <div className="field-control"><span className="error-msg">
+                        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                        Template name is required
+                      </span></div>}
+                    </div>
+                    <div className="field-cell">
+                      <label className="field-label">Description</label>
+                      <textarea className="fi-input" rows={3} placeholder="What this template is for and which campaigns should use it."
+                        value={d.description} onChange={e => set("description", e.target.value)}/>
+                      <div className="help">Help your team understand when to apply this template.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>;
+          })()}
+
+          {/* ── Step 1: Survey Content ── */}
+          {activeStep === 1 && (()=>{
+            const showErr = visitedSteps.has(1);
+            const scaleErr = showErr && !d.defaultScaleQuestion;
+            return <div className="wz-step-content">
+              <div className="setup-section">
+                <div className="setup-section-head">
+                  <div>
+                    <h2 className="setup-section-title">Survey Content</h2>
+                    <p className="setup-section-sub">Set the questions customers will see and how they will answer.</p>
+                  </div>
+                </div>
+                <div className="setup-section-body">
+
+                  {/* ── Group 1: Channel ── */}
+                  <div className="sc-group">
+                    <div className="sc-group-label">Channel</div>
+                    <div className="field-cell">
+                      <label className="field-label">Survey Channel<span className="req">*</span></label>
+                      <Segmented options={["Digital", "IVR", "Both"]}
+                        value={d.channel} onChange={v => set("channel", v)}/>
+                      <div className="help">
+                        {d.channel === "Digital" ? "Delivered on chat, AI sessions, social & email." :
+                         d.channel === "IVR"     ? "Sent after a phone call — customers respond using their keypad." :
+                                                   "Delivered on both phone and digital channels."}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ── Group 2: Welcome Message ── */}
+                  <div className="sc-group">
+                    <div className="sc-group-label">Welcome Message</div>
+                    <div className="field-cell">
+                      <label className="field-label">Message Mode<span className="req">*</span></label>
+                      <div className="welcome-mode-radio">
+                        {(d.channel === "IVR" ? [
+                          { v: "with-optout",    label: "Invitation with Opt Out",    desc: "After hearing the message, the customer can press 1 to decline." },
+                          { v: "without-optout", label: "Invitation without Opt Out", desc: "The customer hears the message, then goes to the survey." },
+                          { v: "none",           label: "None",                       desc: "Survey starts immediately with no introduction." },
+                        ] : [
+                          { v: "with-optout",    label: "Invitation with Opt Out",    desc: "Customer can read the invitation & choose to decline it." },
+                          { v: "without-optout", label: "Invitation without Opt Out", desc: "Customer sees the invitation & start button only." },
+                          { v: "none",           label: "None",                       desc: "Survey starts immediately with no introduction." },
+                        ]).map(opt => (
+                          <label key={opt.v} className={`welcome-mode-option ${d.welcomeMode === opt.v ? "on" : ""}`}>
+                            <input type="radio" name="welcomeMode" value={opt.v}
+                              checked={d.welcomeMode === opt.v}
+                              onChange={() => set("welcomeMode", opt.v)}/>
+                            <span className="dot"/>
+                            <span className="body">
+                              <span className="title">{opt.label}</span>
+                              <span className="desc">{opt.desc}</span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    {d.welcomeMode !== "none" && (
+                      <div className="field-cell" style={{ marginTop: "var(--space-4)" }}>
+                        <label className="field-label">Invitation Text</label>
+                        <div style={{ borderRadius: "var(--radius-md)", background: "var(--lyra-slate-50)", border: "1px solid var(--color-border-subtle)", padding: "var(--space-4)" }}>
+                          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "var(--space-2)" }}>
+                            <span style={{ font: "400 12px/16px var(--font-sans)", color: (d.welcomeMessage || "").length > 220 ? "var(--fi-amber)" : "var(--lyra-slate-400)" }}>
+                              {(d.welcomeMessage || "").length}/240
+                            </span>
+                          </div>
+                          <textarea className="fi-input" rows={3} maxLength={240}
+                            style={{ resize: "vertical", minHeight: 72, background: "var(--lyra-white)" }}
+                            placeholder={`"{{First Name}}", we'd love to hear about your experience today. Just two minutes of your time.`}
+                            value={d.welcomeMessage}
+                            onChange={e => set("welcomeMessage", e.target.value)}/>
+                          <div className="help" style={{ marginTop: "var(--space-2)" }}>
+                            Use <code style={{ background: "var(--lyra-white)", padding: "1px 5px", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 3, font: "500 12px/16px var(--font-sans)", color: "var(--lyra-slate-700)" }}>{"{{First Name}}"}</code> to personalise.
+                          </div>
+                          {(d.channel === "Digital" || d.channel === "Both") && (
+                            <div style={{ display: "grid", gridTemplateColumns: d.welcomeMode === "with-optout" ? "1fr 1fr" : "1fr", gap: "var(--space-3)", marginTop: "var(--space-4)", paddingTop: "var(--space-3)", borderTop: "1px solid var(--color-border-subtle)" }}>
+                              <div>
+                                <div style={{ font: "500 11px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--space-1)" }}>Start survey button label</div>
+                                <input className="fi-input" disabled readOnly value={d.buttonToStart}
+                                  style={{ background: "var(--lyra-slate-200)", color: "var(--lyra-slate-600)", cursor: "not-allowed" }}/>
+                              </div>
+                              {d.welcomeMode === "with-optout" && (
+                                <div>
+                                  <div style={{ font: "500 11px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--space-1)" }}>Opt-out button label</div>
+                                  <input className="fi-input" disabled readOnly value={d.buttonToOptOut}
+                                    style={{ background: "var(--lyra-slate-200)", color: "var(--lyra-slate-600)", cursor: "not-allowed" }}/>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {d.channel === "IVR" && (
+                            <div className="help" style={{ marginTop: "var(--space-3)", padding: "var(--space-2) var(--space-3)", borderRadius: "var(--radius-sm)", background: "rgba(0,0,0,0.03)" }}>
+                              On phone surveys, this message is read aloud. The customer presses 1 to start or hangs up to skip.
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ── Group 3: Rating Format ── */}
+                  <div className="sc-group">
+                    <div className="sc-group-label">Rating Format</div>
+                    <div className="field-cell" style={{ marginBottom: "var(--space-5)" }}>
+                      <label className="field-label">Survey Type<span className="req">*</span></label>
+                      <Segmented options={["CSAT (1–5 Star)", "Like / Dislike", "Both"]}
+                        value={d.surveyType} onChange={v => set("surveyType", v)}/>
+                    </div>
+                    {(d.channel === "Digital" || d.channel === "Both") && (
+                      <>
+                        <div className="field-cell" style={{ marginBottom: d.displayStyle === "List Picker" ? "var(--space-5)" : 0 }}>
+                          <label className="field-label">Digital Display Style<span className="req">*</span></label>
+                          <Segmented options={["Quick Reply", "List Picker"]}
+                            value={d.displayStyle} onChange={v => set("displayStyle", v)}/>
+                          <div className="help">
+                            {d.displayStyle === "Quick Reply"
+                              ? "Inline tappable bubbles — fastest to answer, best for mobile."
+                              : "Rating options as a scrollable list — good for desktop."}
+                          </div>
+                        </div>
+                        {d.displayStyle === "List Picker" && (
+                          <div className="field-cell">
+                            <label className="field-label">List Picker Label<span className="req">*</span></label>
+                            <input className="fi-input" maxLength={48}
+                              placeholder="Rate your experience"
+                              value={d.listPickerLabel}
+                              onChange={e => set("listPickerLabel", e.target.value)}/>
+                            <div className="help">{(d.listPickerLabel || "").length}/48 characters</div>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+
+                  {/* ── Group 4: Questions ── */}
+                  <div className="sc-group">
+                    <div className="sc-group-label">Questions</div>
+
+                    {/* AI toggle */}
+                    <div className="field-cell" style={{ marginBottom: "var(--space-5)" }}>
+                      <label className="field-label">AI-Generated Contextual Questions</label>
+                      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", padding: "var(--space-3) var(--space-4)", borderRadius: "var(--radius-md)", border: "1px solid var(--color-border-subtle)", background: d.aiQuestions ? "var(--color-bg-active-subtle)" : "var(--lyra-white)" }}>
+                        <label className="switch" style={{ flexShrink: 0 }}>
+                          <input type="checkbox" checked={d.aiQuestions} onChange={e => set("aiQuestions", e.target.checked)}/>
+                          <span className="slider" style={{ background: d.aiQuestions ? "var(--lyra-brand-600)" : undefined }}/>
+                        </label>
+                        <div>
+                          <div style={{ font: "500 14px/20px var(--font-sans)", color: d.aiQuestions ? "var(--lyra-brand-700)" : "var(--color-fg-default)" }}>
+                            {d.aiQuestions ? "On — Question adapts to each interaction" : "Off — Same questions for every customer"}
+                          </div>
+                          <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 2 }}>
+                            When on, the AI writes questions based on what happened in each call or chat.
+                          </div>
+                        </div>
+                      </div>
+                      {d.aiQuestions && (
+                        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)", padding: "var(--space-3) var(--space-4)", borderRadius: "var(--radius-md)", background: "var(--lyra-slate-50)", border: "1px solid var(--color-border-subtle)", marginTop: "var(--space-2)" }}>
+                          {[
+                            { dot: "var(--fi-green)",      text: "Configured category found → AI writes questions specific to that category." },
+                            { dot: "var(--fi-purple)",      text: "Unmatched category found → AI still writes questions; new category flagged for review." },
+                            { dot: "var(--lyra-slate-400)", text: "No category identified → falls back to the default questions below." },
+                          ].map((item, i) => (
+                            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)" }}>
+                              <span style={{ width: 6, height: 6, borderRadius: "50%", background: item.dot, flexShrink: 0, marginTop: 7 }}/>
+                              <span style={{ font: "400 13px/20px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{item.text}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Scale + Comment questions */}
+                    <div className="field-cell" style={{ marginBottom: "var(--space-5)" }}>
+                      <label className="field-label">
+                        {d.aiQuestions ? "Default Fallback Questions" : "Survey Questions"}<span className="req">*</span>
+                      </label>
+                      {scaleErr && <div className="field-control" style={{ marginBottom: "var(--space-2)" }}><span className="error-msg">
+                        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                        Scale question is required
+                      </span></div>}
+                      <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", padding: "var(--space-4)", borderRadius: "var(--radius-md)", background: "var(--lyra-slate-50)", border: "1px solid var(--color-border-subtle)" }}>
+                        <div>
+                          <div style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--space-2)" }}>Rating Question</div>
+                          <input className={`fi-input${scaleErr ? " error" : ""}`} maxLength={120}
+                            style={{ background: "var(--lyra-white)" }}
+                            placeholder="On a scale of 1 to 5, how would you rate your experience today?"
+                            value={d.defaultScaleQuestion}
+                            onChange={e => set("defaultScaleQuestion", e.target.value)}/>
+                        </div>
+                        <div>
+                          <div style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--space-2)" }}>Follow-up / Comment Question</div>
+                          <input className="fi-input" maxLength={120}
+                            style={{ background: "var(--lyra-white)" }}
+                            placeholder="What could we have done better?"
+                            value={d.defaultCommentQuestion}
+                            onChange={e => set("defaultCommentQuestion", e.target.value)}/>
+                        </div>
+                      </div>
+                      <div className="help">
+                        {d.aiQuestions
+                          ? "Sent when AI can't match the interaction to a topic. Keep these broad."
+                          : "Every customer will receive these questions in this order."}
+                      </div>
+                    </div>
+
+                    {/* Free Text */}
+                    <div className="field-cell">
+                      <label className="field-label">Free Text Comment Box</label>
+                      <Segmented options={["Always On", "Conditional", "Always Off"]}
+                        value={d.freeText} onChange={v => set("freeText", v)}/>
+                      <div className="help">
+                        {d.freeText === "Always On"   ? "Customers can always write their own feedback in addition to the rating." :
+                         d.freeText === "Conditional"  ? "Free text box only appears when the rating is ≤ 2 stars." : null}
+                      </div>
+                    </div>
+                  </div>
+
+                </div>{/* /setup-section-body */}
+              </div>
+            </div>;
+          })()}
+
+          {/* ── Step 2: Delivery ── */}
+          {activeStep === 2 && (
+            <div className="wz-step-content">
+              <div className="setup-section">
+                <div className="setup-section-head">
+                  <div>
+                    <h2 className="setup-section-title">Delivery</h2>
+                    <p className="setup-section-sub">Set how long the survey stays open and who gets notified on a poor score.</p>
+                  </div>
+                </div>
+                <div className="setup-section-body">
+                  <div className="field-cell">
+                    <label className="field-label">Real-time Response Alerting</label>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
+                      <label className="switch" style={{ flexShrink: 0 }}>
+                        <input type="checkbox" checked={d.realtimeAlerts} onChange={e => set("realtimeAlerts", e.target.checked)}/>
+                        <span className="slider" style={{ background: d.realtimeAlerts ? "var(--lyra-brand-600)" : undefined }}/>
+                      </label>
+                      <span style={{ font: "500 14px/20px var(--font-sans)", color: d.realtimeAlerts ? "var(--lyra-brand-600)" : "var(--color-fg-secondary)" }}>
+                        {d.realtimeAlerts
+                          ? "On — Alert supervisor immediately on low ratings (1–2 stars)"
+                          : "Off — Supervisors are not notified on low ratings"}
+                      </span>
+                    </div>
+                    <div className="help">Notify a supervisor straight away when a customer gives 1 or 2 stars.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── Step 3: Linked Campaigns ── */}
+          {activeStep === 3 && (
+            <div className="wz-step-content">
+              <div className="setup-section">
+                <div className="setup-section-head">
+                  <div>
+                    <h2 className="setup-section-title">Linked Campaigns</h2>
+                    <p className="setup-section-sub">Choose which campaigns use this template. Any edits here will automatically apply to all linked campaigns.</p>
+                  </div>
+                </div>
+                <div className="setup-section-body">
+                  <LinkedCampaignsTable
+                    linkedIds={linkedIds}
+                    currentDesignId={initial?.id}
+                    onToggle={toggleLink}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── Step 4: Summary & Review ── */}
+          {activeStep === 4 && (() => {
+            const missingRequired = !d.name;
+            const SRSection = ({ title, num, children }) => (
+              <div className="sr-section">
+                <div className="sr-section-head">
+                  <span className="sr-section-num">{num}</span>
+                  <span className="sr-section-title">{title}</span>
+                  <button className="btn btn-ghost" style={{ marginLeft: "auto", font: "var(--text-body-sm)", color: "var(--color-fg-action)" }}
+                    onClick={() => setActiveStep(num - 1)}>
+                    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M11 2.5a2 2 0 0 1 2.8 2.8L5 14l-3.5.8.8-3.5z"/></svg>
+                    Edit
+                  </button>
+                </div>
+                <div className="sr-section-body">{children}</div>
+              </div>
+            );
+            const SRRow = ({ label, children }) => (
+              <div className="sr-row">
+                <div className="sr-row-label">{label}</div>
+                <div className="sr-row-value">{children || <span style={{ color: "var(--color-fg-secondary)" }}>—</span>}</div>
+              </div>
+            );
+            return (
+              <div className="wz-step-content">
+                <div style={{ marginBottom: "var(--space-5)" }}>
+                  <h2 className="setup-section-title">Summary &amp; Review</h2>
+                  <p className="setup-section-sub">Review every setting before saving. Click Edit on any section to go back.</p>
+                </div>
+
+                {missingRequired && (
+                  <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", padding: "var(--space-3) var(--space-4)", background: "#fff0f0", border: "1px solid var(--color-status-error)", borderRadius: "var(--radius-md)", marginBottom: "var(--space-4)", font: "var(--text-body-sm)", color: "var(--color-status-error)" }}>
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                    Some required fields are incomplete. Return to the relevant steps to fill them in.
+                  </div>
+                )}
+
+                <SRSection title="Identity" num={1}>
+                  <SRRow label="Template Name">{d.name || <span style={{ color: "var(--color-status-error)" }}>Required</span>}</SRRow>
+                  {d.description && <SRRow label="Description">{d.description}</SRRow>}
+                </SRSection>
+
+                <SRSection title="Survey Content" num={2}>
+                  <SRRow label="Survey Channel">{d.channel || "Digital"}</SRRow>
+                  <SRRow label="Welcome Message">
+                    {d.welcomeMode === "with-optout"    ? "Invitation with Opt Out" :
+                     d.welcomeMode === "without-optout" ? "Invitation without Opt Out" : "None"}
+                  </SRRow>
+                  {d.welcomeMode !== "none" && d.welcomeMessage && (
+                    <SRRow label="Invitation Text">
+                      <span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{d.welcomeMessage}</span>
+                    </SRRow>
+                  )}
+                  <SRRow label="Survey Type">{d.surveyType || "CSAT (1–5 Star)"}</SRRow>
+                  {(d.channel === "Digital" || d.channel === "Both") && (
+                    <SRRow label="Display Style">{d.displayStyle || "Quick Reply"}</SRRow>
+                  )}
+                  <SRRow label="AI Questions">{d.aiQuestions ? "Enabled" : "Disabled"}</SRRow>
+                  <SRRow label="Rating Question">{d.defaultScaleQuestion || <span style={{ color: "var(--color-status-error)" }}>Required</span>}</SRRow>
+                  {d.defaultCommentQuestion && <SRRow label="Follow-up Question">{d.defaultCommentQuestion}</SRRow>}
+                  <SRRow label="Free Text Box">{d.freeText || "Conditional"}</SRRow>
+                </SRSection>
+
+                <SRSection title="Delivery" num={3}>
+                  <SRRow label="Real-time Alerting">{d.realtimeAlerts ? "Enabled — Alert supervisor on 1–2 star ratings" : "Disabled"}</SRRow>
+                </SRSection>
+
+                <SRSection title="Linked Campaigns" num={4}>
+                  <SRRow label="Campaigns linked">
+                    {linkedIds.length > 0
+                      ? `${linkedIds.length} campaign${linkedIds.length === 1 ? "" : "s"}`
+                      : <span style={{ color: "var(--color-fg-secondary)" }}>None linked</span>}
+                  </SRRow>
+                </SRSection>
+              </div>
+            );
+          })()}
+
+          </div>
+
+          {/* Right-rail summary */}
+          <aside className="summary-pane">
+            <TemplateFloatingSummary/>
+          </aside>
+        </div>
+      </div>
+
+      {/* ── Wizard Footer ── */}
+      <div className="wz-footer">
+        <div style={{ flex: 1 }}/>
+        {activeStep > 0 && (
+          <button className="btn" onClick={goBack}>← Back</button>
+        )}
+        {activeStep < 4 ? (
+          <button className="btn primary" onClick={goNext}>
+            {activeStep === 3 ? "Review →" : "Next →"}
+          </button>
+        ) : (
+          <>
+            <button className="btn" disabled={!canSave} onClick={() => onSave({ ...d, status: "draft" })}>Save as draft</button>
+            <button className="btn primary" disabled={!canSave} onClick={() => onSave(d)}>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 13 10 19 20 5"/></svg>
+              {isEdit ? "Save changes" : "Save template"}
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
@@ -8441,7 +9273,12 @@ function LinkedCampaignsTable({ linkedIds, currentDesignId, onToggle }) {
                   </td>
                   <td style={{ padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
                     <div className="channel-stack">
-                      {c.channels.map(k => <ChannelChip key={k} kind={k}/>)}
+                      {c.channels.map(k => (
+                        <span key={k} className="channel-label-item">
+                          <ChannelChip kind={k}/>
+                          <span className="channel-label-text">{k === "voice" ? "Voice" : "Digital"}</span>
+                        </span>
+                      ))}
                     </div>
                   </td>
                   <td style={{ padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.05)", color: "var(--lyra-slate-600)" }}>{c.owner}</td>

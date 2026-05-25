@@ -929,23 +929,10 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
       ? { ...DEFAULT_CAMPAIGN, samplingPct: initialTemplate.suggestedSampling, channels: initialTemplate.channels || DEFAULT_CAMPAIGN.channels }
       : DEFAULT_CAMPAIGN
   );
-  const [activeStep, setActiveStep] = React.useState(initialTemplate ? 1 : "tmpl");
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [visitedSteps, setVisitedSteps] = React.useState(new Set());
   const [reviewing, setReviewing] = React.useState(false);
   const set = (k, v) => setC(prev => ({ ...prev, [k]: v }));
-
-  React.useEffect(() => {
-    const ids = ["sec-template", "sec-1", "sec-2", "sec-3", "sec-4"];
-    const keyMap = { "sec-template": "tmpl", "sec-1": 1, "sec-2": 2, "sec-3": 3, "sec-4": 4 };
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter(e => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible.length > 0) setActiveStep(keyMap[visible[0].target.id]);
-      },
-      { threshold: 0.25 }
-    );
-    ids.forEach(id => { const el = document.getElementById(id); if (el) observer.observe(el); });
-    return () => observer.disconnect();
-  }, [reviewing]);
 
   function pickTemplate(t) {
     setSelectedTemplate(t);
@@ -953,24 +940,37 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
     setDrawerOpen(false);
     set("samplingPct", t.suggestedSampling);
     set("channels", t.channels || DEFAULT_CAMPAIGN.channels);
-    setActiveStep(1);
-    setTimeout(() => document.getElementById("sec-1")?.scrollIntoView({ block: "start", behavior: "smooth" }), 60);
   }
 
   function goScratch() {
     setSelectedTemplate(null);
     setSamplingAutofilled(false);
     setDrawerOpen(false);
-    setActiveStep(1);
-    setTimeout(() => document.getElementById("sec-1")?.scrollIntoView({ block: "start", behavior: "smooth" }), 60);
   }
 
-  const STEPS = [
-    { n: 1, label: "Identity & Scope",      id: "sec-1", done: !!c.name },
-    { n: 2, label: "Suppression Rules",     id: "sec-2", done: true },
-    { n: 3, label: "Volume & Sampling",     id: "sec-3", done: c.samplingPct > 0 },
-    { n: 4, label: "Intelligence & Survey", id: "sec-4", done: !!c.aiModelId && !!c.surveyDesignId },
+  const ALL_STEPS = [
+    { n: 0, label: "Template & Identity",   done: !!c.name },
+    { n: 1, label: "Suppression Rules",     done: true },
+    { n: 2, label: "Volume & Sampling",     done: c.samplingPct > 0 },
+    { n: 3, label: "Intelligence & Survey", done: !!c.aiModelId && !!c.surveyDesignId },
+    { n: 4, label: "Summary & Review",      done: false },
   ];
+
+  function stepState(s) {
+    if (s.n === activeStep) return "active";
+    if (visitedSteps.has(s.n) && s.done) return "done";
+    if (visitedSteps.has(s.n) && !s.done) return "error";
+    return "default";
+  }
+
+  function goNext() {
+    setVisitedSteps(prev => new Set([...prev, activeStep]));
+    setActiveStep(prev => Math.min(prev + 1, 4));
+  }
+
+  function goBack() {
+    setActiveStep(prev => Math.max(prev - 1, 0));
+  }
 
   if (reviewing) {
     const SummarySection = ({ title, children }) => (
@@ -1057,11 +1057,12 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
     );
   }
 
+  const canDraft    = !!(c.name && c.channels?.length && c.samplingPct);
+  const canActivate = !!(c.name && c.channels?.length && c.queues?.length);
+
   return (
-    <div className="pane" style={{ overflow: "hidden" }}>
+    <div className="pane" style={{ display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <div className="crumbs">
-        <a href="#" onClick={e => { e.preventDefault(); onCancel(); }}>Feedback Intelligence</a>
-        <span className="sep">/</span>
         <a href="#" onClick={e => { e.preventDefault(); onCancel(); }}>Survey Campaigns</a>
         <span className="sep">/</span>
         <span className="last">Create New Survey Campaign</span>
@@ -1074,385 +1075,481 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
             <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42"/></svg>
             AI Campaign Assistant
           </button>
-          {(() => {
-            const canDraft   = !!(c.name && c.channels?.length && c.samplingPct);
-            const canActivate = !!(c.name && c.channels?.length && c.queues?.length);
-            return (<>
-              <button className="btn" onClick={onCancel}>Cancel</button>
-              <button className="btn" disabled={!canDraft} onClick={() => onSave({ ...c, status: "draft" })}
-                title={!canDraft ? "Fill in campaign name, channel and sampling % to save a draft" : ""}>
-                Save as draft
-              </button>
-              <button className="btn primary" disabled={!canActivate} onClick={() => setReviewing(true)}
-                title={!canActivate ? "Fill in name, channel and agent teams to review" : ""}>
-                Review &amp; activate
-              </button>
-            </>);
-          })()}
+          <button className="btn" onClick={onCancel}>Cancel</button>
+          <button className="btn" disabled={!canDraft} onClick={() => onSave({ ...c, status: "draft" })}>Save as draft</button>
         </div>
       </div>
 
-      <div className="create-grid">
-        {/* Side TOC */}
-        <nav className="form-toc">
-          <div
-            className={`toc-item ${activeStep === "tmpl" ? "on" : ""} ${selectedTemplate ? "done" : ""}`}
-            onClick={() => { setActiveStep("tmpl"); setDrawerOpen(true); }}>
-            <span className="num" style={{ display: "flex", fontSize: 0 }}>
-              <svg viewBox="0 0 16 16" width="12" height="12" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="1" width="12" height="14" rx="1.5"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="9" y2="11"/></svg>
-            </span>
-            Template
-          </div>
-          {STEPS.map(s => (
-            <div key={s.n}
-              className={`toc-item ${activeStep === s.n ? "on" : ""} ${s.done ? "done" : ""}`}
-              onClick={() => {
-                setActiveStep(s.n);
-                document.getElementById(s.id)?.scrollIntoView({ block: "start", behavior: "smooth" });
-              }}>
-              <span className="num">{s.n}</span>
-              {s.label}
-            </div>
-          ))}
-        </nav>
-
-        {/* Form pane */}
-        <div className="form-pane">
-          {/* Template step — optional, opens drawer */}
-          <section className="form-section" id="sec-template">
-            <header className={`form-section-head no-border ${selectedTemplate ? "complete" : ""}`} style={{ cursor: "default" }}>
-              <span className="step-num" style={{ display: "flex", fontSize: 0 }}>
-                <svg viewBox="0 0 16 16" width="12" height="12" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="1" width="12" height="14" rx="1.5"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="9" y2="11"/></svg>
-              </span>
-              <div style={{ flex: 1 }}>
-                <h3>Campaign Template <span style={{ font: "400 13px/20px var(--font-sans)", color: "var(--color-fg-secondary)", letterSpacing: 0 }}>(Optional)</span></h3>
-                <div className="sub">
-                  {selectedTemplate
-                    ? <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                        Using: <strong style={{ color: "var(--color-fg-default)" }}>{selectedTemplate.name}</strong>
-                      </span>
-                    : "Start from a preset to pre-fill settings"}
+      {/* ── Horizontal Wizard Bar ── */}
+      <div className="wz-bar">
+        <div className="wz-bar-inner">
+          {ALL_STEPS.map((s, i) => {
+            const st = stepState(s);
+            const prevDone = i > 0 && stepState(ALL_STEPS[i - 1]) === "done";
+            return (
+              <React.Fragment key={s.n}>
+                {i > 0 && <div className={`wz-line ${prevDone ? "done" : ""}`}/>}
+                <div className={`wz-step ${st}`} onClick={() => setActiveStep(s.n)}>
+                  <div className="wz-node">
+                    {st === "done" ? (
+                      <svg viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="2 6 5 9.5 10 2.5"/></svg>
+                    ) : s.n + 1}
+                  </div>
+                  <div className="wz-label">{s.label}</div>
                 </div>
-              </div>
-              <button className={selectedTemplate ? "btn" : "btn primary"} onClick={() => setDrawerOpen(true)}>
-                {selectedTemplate ? "Change template" : "Choose from template →"}
-              </button>
-            </header>
-          </section>
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </div>
 
-          {/* Section 1 — Identity & Scope */}
-          <FormSection num={1} title="Campaign Identity & Scope"
-            sub="Name, scope, channels & agent teams."
-            id="sec-1" complete={!!c.name}>
-            <div className="field-grid-2">
-              <div className="field-cell">
-                <label className="field-label">Campaign Name<span className="req">*</span></label>
-                <input className="fi-input" placeholder="Type"
-                  value={c.name} onChange={e => set("name", e.target.value)}/>
-              </div>
-              <div className="field-cell">
-                <label className="field-label">
-                  Description
-                  <span className="char-counter">{(c.description || "").length}/100</span>
-                </label>
-                <input className="fi-input" maxLength={100} placeholder="Type"
-                  value={c.description} onChange={e => set("description", e.target.value)}/>
-              </div>
-            </div>
+      {/* ── Wizard body: scrollable area + footer ── */}
+      <div className="wz-scroll-area">
+        <div className="wz-body">
+          <div className="form-pane">
 
-            {/* Active Date Range with Ongoing toggle */}
-            <div style={{ padding: "var(--space-3) 0", borderTop: "1px solid var(--color-border-subtle)" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--space-3)" }}>
-                <div className="field-label" style={{ margin: 0 }}>Active Date Range</div>
-                <label style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", font: "400 13px/20px var(--font-sans)", color: "var(--color-fg-secondary)", cursor: "pointer" }}>
-                  <Toggle checked={c.ongoing} onChange={v => set("ongoing", v)}/>
-                  <span>Ongoing</span>
-                </label>
-              </div>
-              <div className="field-grid-2" style={{ padding: 0, borderTop: 0 }}>
-                <div className="field-cell">
-                  <label className="field-label" style={{ fontWeight: 400, color: "var(--color-fg-default)" }}>Start Date</label>
-                  <FiDatePicker value={c.startDate} onChange={v => set("startDate", v)} placeholder="Oct 30, 2025"/>
+          {/* ── Step 0: Template & Identity ── */}
+          {activeStep === 0 && (()=>{
+            const showErr  = visitedSteps.has(0);
+            const nameErr  = showErr && !c.name;
+            const teamsErr = showErr && !c.queues?.[0];
+            const groupErr = showErr && !c.teams?.[0];
+            const chansErr = showErr && c.channels.length === 0;
+            return <div className="wz-step-content">
+
+              {/* ── Section A: Choose a Template ── */}
+              <div className="setup-section">
+                <div className="setup-section-head">
+                  <div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+                      <h2 className="setup-section-title">Choose a Template</h2>
+                      <span style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", background: "rgba(0,0,0,0.06)", padding: "2px 8px", borderRadius: "var(--radius-round)" }}>Optional</span>
+                    </div>
+                    <p className="setup-section-sub">Jumpstart your campaign — templates pre-fill channels, sampling rate &amp; survey design.</p>
+                  </div>
+                  <div style={{ display: "flex", gap: "var(--space-2)" }}>
+                    {selectedTemplate && (
+                      <button className="btn btn-ghost btn-icon-only" title="Remove template" onClick={() => { setSelectedTemplate(null); setSamplingAutofilled(false); }} style={{ color: "var(--color-fg-secondary)" }}>
+                        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>
+                      </button>
+                    )}
+                    <button className="btn" onClick={() => setDrawerOpen(true)}>{selectedTemplate ? "Change template" : "Browse templates →"}</button>
+                  </div>
                 </div>
-                <div className="field-cell">
-                  <label className="field-label" style={{ fontWeight: 400, color: c.ongoing ? "var(--color-fg-disabled)" : "var(--color-fg-default)" }}>End Date</label>
-                  <FiDatePicker value={c.endDate} onChange={v => set("endDate", v)} disabled={c.ongoing} placeholder={c.ongoing ? "Ongoing" : "Oct 30, 2025"}/>
-                </div>
+                {selectedTemplate && (
+                  <div className="setup-section-body" style={{ paddingTop: "var(--space-3)", paddingBottom: "var(--space-3)" }}>
+                    <div className="tmpl-selected-banner">
+                      <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="var(--lyra-brand-700)" strokeWidth="1.5" strokeLinecap="round" style={{ flexShrink: 0 }}><rect x="2" y="1" width="12" height="14" rx="1.5"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="9" y2="11"/></svg>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ font: "500 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>{selectedTemplate.name}</div>
+                        <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 1 }}>{selectedTemplate.why}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
 
-            {/* Channels — Digital + Voice, both enabled */}
-            <FieldRow label="Channels" req>
-              <div className="lyra-check-group">
-                {[
-                  { k: "digital", l: "Digital",  icon: "digital" },
-                  { k: "voice",   l: "Voice",     icon: "voice"   },
-                ].map(opt => {
-                  const on = c.channels.includes(opt.k);
-                  return (
-                    <label key={opt.k} className="lyra-check">
-                      <input type="checkbox" checked={on}
-                        onChange={() => set("channels", on ? c.channels.filter(x => x !== opt.k) : [...c.channels, opt.k])}/>
-                      <ChannelChip kind={opt.icon}/>
-                      <span>{opt.l}</span>
+              {/* ── Section B: Start from Scratch ── */}
+              <div className="setup-section">
+                <div className="setup-section-head">
+                  <div>
+                    <h2 className="setup-section-title">Start from Scratch</h2>
+                    <p className="setup-section-sub">Configure every detail of your campaign manually.</p>
+                  </div>
+                </div>
+                <div className="setup-section-body">
+                <div className="field-grid-2">
+                  <div className="field-cell">
+                    <label className="field-label">Campaign Name<span className="req">*</span></label>
+                    <input className={`fi-input${nameErr ? " error" : ""}`} placeholder="Type"
+                      aria-invalid={nameErr || undefined}
+                      value={c.name} onChange={e => set("name", e.target.value)}/>
+                    {nameErr && <div className="field-control"><span className="error-msg">
+                      <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                      Campaign name is required
+                    </span></div>}
+                  </div>
+                  <div className="field-cell">
+                    <label className="field-label">
+                      Description
+                      <span className="char-counter">{(c.description || "").length}/100</span>
                     </label>
-                  );
-                })}
-              </div>
-            </FieldRow>
+                    <input className="fi-input" maxLength={100} placeholder="Type"
+                      value={c.description} onChange={e => set("description", e.target.value)}/>
+                  </div>
+                </div>
 
-            {/* Agents */}
-            <div className="section-heading" style={{ paddingBottom: "var(--space-2)" }}>Agents</div>
-            <div className="field-grid-2" style={{ borderTop: "none", paddingTop: 0 }}>
-              <div className="field-cell">
-                <label className="field-label">Agent Teams<span className="req">*</span></label>
-                <select className="fi-input"
-                  value={c.queues?.[0] || ""}
-                  onChange={e => set("queues", e.target.value ? [e.target.value] : [])}>
-                  <option value="">Select Teams</option>
-                  <option value="Tier 1 Billing">Tier 1 Billing</option>
-                  <option value="Tier 2 Support">Tier 2 Support</option>
-                  <option value="Sales">Sales</option>
-                  <option value="Retention">Retention</option>
-                </select>
+                <div style={{ padding: "var(--space-6) 0" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--space-3)" }}>
+                    <div className="section-heading" style={{ padding: 0 }}>Active Date Range</div>
+                    <label style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", font: "400 13px/20px var(--font-sans)", color: "var(--color-fg-secondary)", cursor: "pointer" }}>
+                      <Toggle checked={c.ongoing} onChange={v => set("ongoing", v)}/>
+                      <span>Ongoing</span>
+                    </label>
+                  </div>
+                  <div className="field-grid-2" style={{ padding: 0, borderTop: 0 }}>
+                    <div className="field-cell">
+                      <label className="field-label" style={{ fontWeight: 400 }}>Start Date</label>
+                      <FiDatePicker value={c.startDate} onChange={v => set("startDate", v)} placeholder="Oct 30, 2025"/>
+                    </div>
+                    <div className="field-cell">
+                      <label className="field-label" style={{ fontWeight: 400, color: c.ongoing ? "var(--color-fg-disabled)" : undefined }}>End Date</label>
+                      <FiDatePicker value={c.endDate} onChange={v => set("endDate", v)} disabled={c.ongoing} placeholder={c.ongoing ? "Ongoing" : "Oct 30, 2025"}/>
+                    </div>
+                  </div>
+                </div>
+
+                <FieldRow label="Channels" req>
+                  <div className={`lyra-check-group${chansErr ? " lyra-check-group--error" : ""}`}>
+                    {[{ k: "digital", l: "Digital", icon: "digital" }, { k: "voice", l: "Voice", icon: "voice" }].map(opt => {
+                      const on = c.channels.includes(opt.k);
+                      return (
+                        <label key={opt.k} className="lyra-check">
+                          <input type="checkbox" checked={on}
+                            onChange={() => set("channels", on ? c.channels.filter(x => x !== opt.k) : [...c.channels, opt.k])}/>
+                          <ChannelChip kind={opt.icon}/>
+                          <span>{opt.l}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                  {chansErr && <div className="field-control" style={{ marginTop: "var(--space-1)" }}><span className="error-msg">
+                    <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                    Select at least one channel
+                  </span></div>}
+                </FieldRow>
+
+                <div className="section-heading" style={{ paddingTop: "var(--space-6)", paddingBottom: "var(--space-2)" }}>Agents</div>
+                <div className="field-grid-2" style={{ borderTop: "none", paddingTop: 0, paddingBottom: 0 }}>
+                  <div className="field-cell">
+                    <label className="field-label">Agent Teams<span className="req">*</span></label>
+                    <select className={`fi-input${teamsErr ? " error" : ""}`} aria-invalid={teamsErr || undefined}
+                      value={c.queues?.[0] || ""} onChange={e => set("queues", e.target.value ? [e.target.value] : [])}>
+                      <option value="">Select Teams</option>
+                      <option value="Tier 1 Billing">Tier 1 Billing</option>
+                      <option value="Tier 2 Support">Tier 2 Support</option>
+                      <option value="Sales">Sales</option>
+                      <option value="Retention">Retention</option>
+                    </select>
+                    {teamsErr && <div className="field-control"><span className="error-msg">
+                      <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                      Select an agent team
+                    </span></div>}
+                  </div>
+                  <div className="field-cell">
+                    <label className="field-label">Agent Group<span className="req">*</span></label>
+                    <select className={`fi-input${groupErr ? " error" : ""}`} aria-invalid={groupErr || undefined}
+                      value={c.teams?.[0] || ""} onChange={e => set("teams", e.target.value ? [e.target.value] : [])}>
+                      <option value="">Select Group</option>
+                      <option value="North America">North America</option>
+                      <option value="EMEA">EMEA</option>
+                      <option value="APAC">APAC</option>
+                    </select>
+                    {groupErr && <div className="field-control"><span className="error-msg">
+                      <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                      Select an agent group
+                    </span></div>}
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", marginTop: "var(--space-2)", padding: "0 var(--space-3)", height: 36, background: "var(--lyra-white)", border: "1px solid var(--color-border-soft)", borderRadius: "var(--radius-md)", font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>
+                  Current Total Number Of Agents Selected: <strong style={{ marginLeft: 4 }}>{(c.queues?.length || 0) + (c.teams?.length || 0)}</strong>
+                </div>
+
+                <div style={{ paddingTop: "var(--space-6)" }}>
+                  <FieldRow label="Language">
+                    <label className="lyra-check disabled" style={{ pointerEvents: "none" }}>
+                      <input type="checkbox" checked readOnly disabled/>
+                      <span>English</span>
+                      <span style={{ font: "500 11px/16px var(--font-sans)", color: "var(--lyra-slate-400)", textTransform: "uppercase", letterSpacing: "0.05em", marginLeft: 4 }}>Default</span>
+                    </label>
+                  </FieldRow>
+                </div>
+                </div>{/* /setup-section-body */}
               </div>
-              <div className="field-cell">
-                <label className="field-label">Agent Group<span className="req">*</span></label>
-                <select className="fi-input"
-                  value={c.teams?.[0] || ""}
-                  onChange={e => set("teams", e.target.value ? [e.target.value] : [])}>
-                  <option value="">Select Group</option>
-                  <option value="North America">North America</option>
-                  <option value="EMEA">EMEA</option>
-                  <option value="APAC">APAC</option>
-                </select>
+
+            </div>;
+          })()}
+
+          {/* ── Step 1: Suppression Rules ── */}
+          {activeStep === 1 && (
+            <div className="wz-step-content">
+              <div className="wz-content-card">
+              <div className="wz-step-head">
+                <h2>Suppression Rules</h2>
+                <p>When not to send surveys, even if everything else qualifies.</p>
+              </div>
+              <div className="sup-row">
+                <Toggle checked={c.suppressOptOut} onChange={v => set("suppressOptOut", v)}/>
+                <div className="meta">
+                  <div className="title">
+                    Opt-Out Tag
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ marginLeft: 4, color: "var(--color-fg-secondary)" }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
+                  </div>
+                  <div className="ex">Skip any customer flagged as opted out. Sending anyway destroys trust and risks compliance.</div>
+                </div>
+              </div>
+              <div className="sup-row">
+                <Toggle checked={c.suppressRecent} onChange={v => set("suppressRecent", v)}/>
+                <div className="meta">
+                  <div className="title">
+                    Recency window
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ marginLeft: 4, color: "var(--color-fg-secondary)" }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
+                  </div>
+                  <div className="ex" style={{ marginTop: 6 }}>Don't send if the same customer was surveyed within (X Days)</div>
+                  <div className="inline-row" style={{ marginTop: 8, maxWidth: "50%" }}>
+                    <input type="number" className="fi-input"
+                      value={c.recentDays} onChange={e => set("recentDays", parseInt(e.target.value || 0))}
+                      disabled={!c.suppressRecent}/>
+                    <span style={{ color: "var(--color-fg-secondary)", fontSize: 14, lineHeight: "20px", flexShrink: 0 }}>Days</span>
+                  </div>
+                </div>
+              </div>
+              <div className="sup-row">
+                <Toggle checked={true} onChange={() => {}}/>
+                <div className="meta">
+                  <div className="title">
+                    Internal / test interactions
+                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ marginLeft: 4, color: "var(--color-fg-secondary)" }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
+                  </div>
+                  <div className="ex">Suppress interactions flagged as internal or test. Hard-coded — QA agents testing IVR flows never generate customer surveys.</div>
+                </div>
+              </div>
               </div>
             </div>
-            <div style={{
-              display: "flex", alignItems: "center",
-              marginTop: "var(--space-3)",
-              padding: "0 var(--space-3)", height: 36,
-              background: "var(--lyra-white)",
-              border: "1px solid var(--color-border-soft)",
-              borderRadius: "var(--radius-md)",
-              font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)",
-            }}>
-              Current Total Number Of Agents Selected: <strong style={{ marginLeft: 4 }}>{(c.queues?.length || 0) + (c.teams?.length || 0)}</strong>
-            </div>
+          )}
 
-            {/* Language — English checked, read-only */}
-            <FieldRow label="Language">
-              <label className="lyra-check disabled" style={{ pointerEvents: "none" }}>
-                <input type="checkbox" checked readOnly disabled/>
-                <span>English</span>
-                <span style={{ font: "500 11px/16px var(--font-sans)", color: "var(--lyra-slate-400)", textTransform: "uppercase", letterSpacing: "0.05em", marginLeft: 4 }}>Default</span>
-              </label>
-            </FieldRow>
-          </FormSection>
-
-          {/* Section 2 — Suppression Rules (moved here per design) */}
-          <FormSection num={2} title="Suppression Rules"
-            sub="When not to send surveys, even if everything else qualifies"
-            id="sec-2" complete>
-            <div className="sup-row">
-              <Toggle checked={c.suppressOptOut} onChange={v => set("suppressOptOut", v)}/>
-              <div className="meta">
-                <div className="title">
-                  Opt-Out Tag
-                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ marginLeft: 4, color: "var(--color-fg-secondary)" }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
+          {/* ── Step 2: Volume & Sampling ── */}
+          {activeStep === 2 && (
+            <div className="wz-step-content">
+              <div className="wz-content-card">
+              <div className="wz-step-head">
+                <h2>Volume & Sampling</h2>
+                <p>How many interactions get a survey, & which ones.</p>
+              </div>
+              <FieldRow label="Sampling %" hint="">
+                <div>
+                  <input type="range" min="10" max="100" step="5" value={c.samplingPct}
+                    style={{ width: "100%", accentColor: "var(--color-fg-active-strong)" }}
+                    onChange={e => { set("samplingPct", parseInt(e.target.value)); setSamplingAutofilled(false); }}/>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, font: "400 11px/16px var(--font-sans)", letterSpacing: "0.2px", color: "var(--color-fg-secondary)" }}>
+                    {[10,20,30,40,50,60,65,70,75,80,85,90,95,100].map(n => <span key={n}>{n}</span>)}
+                  </div>
                 </div>
-                <div className="ex">Skip any customer flagged as opted out. Sending anyway destroys trust and risks compliance.</div>
+              </FieldRow>
+              <div style={{ paddingTop: "var(--space-4)" }}>
+                <div className="section-heading" style={{ marginBottom: "var(--space-4)", display: "flex", alignItems: "center", gap: 4 }}>
+                  Interaction Length Filter
+                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ color: "var(--color-fg-secondary)", flexShrink: 0 }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
+                </div>
+                <div className="field-grid-2" style={{ borderTop: "none", paddingTop: 0 }}>
+                  <div className="field-cell">
+                    <label className="field-label">Customer turns greater than</label>
+                    <input type="number" className="fi-input" min="0"
+                      value={c.minCustomerTurns}
+                      onChange={e => set("minCustomerTurns", parseInt(e.target.value || 0))}/>
+                  </div>
+                  <div className="field-cell">
+                    <label className="field-label">Agent turns greater than</label>
+                    <input type="number" className="fi-input" min="0"
+                      value={c.minAgentTurns}
+                      onChange={e => set("minAgentTurns", parseInt(e.target.value || 0))}/>
+                  </div>
+                </div>
+              </div>
               </div>
             </div>
-            <div className="sup-row">
-              <Toggle checked={c.suppressRecent} onChange={v => set("suppressRecent", v)}/>
-              <div className="meta">
-                <div className="title">
-                  Recency window
-                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ marginLeft: 4, color: "var(--color-fg-secondary)" }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
-                </div>
-                <div className="ex" style={{ marginTop: 6 }}>Don't send if the same customer was surveyed within (X Days)</div>
-                <div className="inline-row" style={{ marginTop: 8, maxWidth: "50%" }}>
-                  <input type="number" className="fi-input"
-                    value={c.recentDays} onChange={e => set("recentDays", parseInt(e.target.value || 0))}
-                    disabled={!c.suppressRecent}/>
-                  <span style={{ color: "var(--color-fg-secondary)", fontSize: 14, lineHeight: "20px", flexShrink: 0 }}>Days</span>
-                </div>
-              </div>
-            </div>
-            <div className="sup-row">
-              <Toggle checked={true} onChange={() => {}}/>
-              <div className="meta">
-                <div className="title">
-                  Internal / test interactions
-                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ marginLeft: 4, color: "var(--color-fg-secondary)" }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
-                </div>
-                <div className="ex">Suppress interactions flagged as internal or test. Hard-coded — QA agents testing IVR flows never generate customer surveys.</div>
-              </div>
-            </div>
-          </FormSection>
+          )}
 
-          {/* Section 3 — Volume & Sampling */}
-          <FormSection num={3} title="Volume & Sampling"
-            sub="How many interactions get a survey, & which ones."
-            id="sec-3" complete={c.samplingPct > 0}>
-            <FieldRow label="Sampling %" hint="">
-              <div>
-                <input type="range" min="10" max="100" step="5" value={c.samplingPct}
-                  style={{ width: "100%", accentColor: "var(--color-fg-active-strong)" }}
-                  onChange={e => { set("samplingPct", parseInt(e.target.value)); setSamplingAutofilled(false); }}/>
-                <div style={{
-                  display: "flex", justifyContent: "space-between",
-                  marginTop: 4,
-                  font: "400 11px/16px var(--font-sans)", letterSpacing: "0.2px", color: "var(--color-fg-secondary)",
-                }}>
-                  {[10,20,30,40,50,60,65,70,75,80,85,90,95,100].map(n => <span key={n}>{n}</span>)}
-                </div>
+          {/* ── Step 3: Intelligence & Survey ── */}
+          {activeStep === 3 && (
+            <div className="wz-step-content">
+              <div className="wz-content-card">
+              <div className="wz-step-head">
+                <h2>Intelligence & Survey</h2>
+                <p>Choose the AI model and survey design for this campaign.</p>
               </div>
-            </FieldRow>
-
-            {/* Interaction Length Filter */}
-            <div style={{ paddingTop: "var(--space-4)", borderTop: "1px solid var(--color-border-subtle)" }}>
-              <div className="section-heading" style={{ marginBottom: "var(--space-4)", display: "flex", alignItems: "center", gap: 4 }}>
-                Interaction Length Filter
-                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ color: "var(--color-fg-secondary)", flexShrink: 0 }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
-              </div>
-              <div className="field-grid-2" style={{ borderTop: "none", paddingTop: 0 }}>
-                <div className="field-cell">
-                  <label className="field-label">Customer turns greater than</label>
-                  <input type="number" className="fi-input" min="0"
-                    value={c.minCustomerTurns}
-                    onChange={e => set("minCustomerTurns", parseInt(e.target.value || 0))}/>
-                  <div style={{ marginTop: 4, font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)" }}>Help text</div>
-                </div>
-                <div className="field-cell">
-                  <label className="field-label">Agent turns greater than</label>
-                  <input type="number" className="fi-input" min="0"
-                    value={c.minAgentTurns}
-                    onChange={e => set("minAgentTurns", parseInt(e.target.value || 0))}/>
-                  <div style={{ marginTop: 4, font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)" }}>Help text</div>
-                </div>
-              </div>
-            </div>
-
-          </FormSection>
-
-          {/* Section 4 — Intelligence & Survey (combined) */}
-          <FormSection num={4} title="Intelligence & Survey"
-            sub="Choose the AI model and survey design for this campaign."
-            id="sec-4" complete={!!c.aiModelId && !!c.surveyDesignId}>
-
-            {/* ── Topic AI Model sub-section ── */}
-            <div className="intel-sub-section">
-              {(() => {
-                const activeModel = AI_MODELS.find(m => m.id === c.aiModelId);
-                if (!activeModel) {
-                  return (
+              <div className="intel-sub-section">
+                {(() => {
+                  const activeModel = AI_MODELS.find(m => m.id === c.aiModelId);
+                  if (!activeModel) return (
                     <header className="form-section-head no-border" style={{ cursor: "default" }}>
                       <span className="step-num" style={{ display: "flex", fontSize: 0 }}>
                         <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42"/></svg>
                       </span>
-                      <div style={{ flex: 1 }}>
-                        <h3>Topic AI Model</h3>
-                        <div className="sub">Select an AI model to power your campaign intelligence</div>
-                      </div>
-                      <button className="btn primary" onClick={() => setModelDrawerOpen(true)}>
-                        Choose model →
-                      </button>
+                      <div style={{ flex: 1 }}><h3>Topic AI Model</h3><div className="sub">Select an AI model to power your campaign intelligence</div></div>
+                      <button className="btn" onClick={() => setModelDrawerOpen(true)}>Choose Topic AI Model →</button>
                     </header>
                   );
-                }
-                return (
-                  <div className="selected-model-summary">
-                    <div className="selected-model-summary-inner">
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-3)" }}>
-                          <span style={{ font: "600 15px/22px var(--font-sans)", color: "var(--color-fg-default)", letterSpacing: "-0.01rem" }}>{activeModel.name}</span>
-                          {activeModel.badge && <span className="model-badge">{activeModel.badge}</span>}
-                        </div>
-                        {activeModel.whenToUse && (
-                          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)", marginBottom: "var(--space-2)" }}>
-                            <svg viewBox="0 0 14 14" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ flexShrink: 0, marginTop: 2, color: "var(--color-fg-action)" }}><circle cx="7" cy="7" r="6"/><path d="M7 4.5v3l1.8 1.2"/></svg>
-                            <div>
-                              <span style={{ font: "500 11px/15px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>When to use  </span>
-                              <span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{activeModel.whenToUse}</span>
-                            </div>
-                          </div>
-                        )}
-                        {activeModel.industry && (
-                          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)" }}>
-                            <svg viewBox="0 0 14 14" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2, color: "var(--color-fg-action)" }}><rect x="1" y="6" width="12" height="7" rx="1"/><path d="M5 6V4.5a2.5 2.5 0 0 1 5 0V6"/></svg>
-                            <div>
-                              <span style={{ font: "500 11px/15px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Industry  </span>
-                              <span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{activeModel.industry}</span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      <button className="btn" style={{ flexShrink: 0 }} onClick={() => setModelDrawerOpen(true)}>
-                        Change model
-                      </button>
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-
-            {/* ── Survey Template sub-section ── */}
-            <div className="intel-sub-section">
-              {(() => {
-                const activeSurvey = SURVEY_DESIGNS.find(s => s.id === c.surveyDesignId);
-                if (!activeSurvey) {
                   return (
+                    <div className="selected-model-summary">
+                      <div className="selected-model-summary-inner">
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-3)" }}>
+                            <span style={{ font: "600 15px/22px var(--font-sans)", color: "var(--color-fg-default)", letterSpacing: "-0.01rem" }}>{activeModel.name}</span>
+                            {activeModel.badge && <span className="model-badge">{activeModel.badge}</span>}
+                          </div>
+                          {activeModel.whenToUse && <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)", marginBottom: "var(--space-2)" }}><svg viewBox="0 0 14 14" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ flexShrink: 0, marginTop: 2, color: "var(--color-fg-action)" }}><circle cx="7" cy="7" r="6"/><path d="M7 4.5v3l1.8 1.2"/></svg><div><span style={{ font: "500 11px/15px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>When to use  </span><span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{activeModel.whenToUse}</span></div></div>}
+                          {activeModel.industry && <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)" }}><svg viewBox="0 0 14 14" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 2, color: "var(--color-fg-action)" }}><rect x="1" y="6" width="12" height="7" rx="1"/><path d="M5 6V4.5a2.5 2.5 0 0 1 5 0V6"/></svg><div><span style={{ font: "500 11px/15px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Industry  </span><span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{activeModel.industry}</span></div></div>}
+                        </div>
+                        <div style={{ display: "flex", gap: "var(--space-2)", flexShrink: 0 }}>
+                          <button className="btn btn-ghost btn-icon-only" title="Remove model" onClick={() => set("aiModelId", "")} style={{ color: "var(--color-fg-secondary)" }}>
+                            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>
+                          </button>
+                          <button className="btn" onClick={() => setModelDrawerOpen(true)}>Change model</button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+              <div className="intel-sub-section">
+                {(() => {
+                  const activeSurvey = SURVEY_DESIGNS.find(s => s.id === c.surveyDesignId);
+                  if (!activeSurvey) return (
                     <header className="form-section-head no-border" style={{ cursor: "default" }}>
                       <span className="step-num" style={{ display: "flex", fontSize: 0 }}>
                         <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="1" width="12" height="14" rx="1.5"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="9" y2="11"/></svg>
                       </span>
-                      <div style={{ flex: 1 }}>
-                        <h3>Survey Template</h3>
-                        <div className="sub">Pick the survey design that will be sent to customers</div>
-                      </div>
-                      <button className="btn primary" onClick={() => setSurveyDrawerOpen(true)}>
-                        Choose survey →
-                      </button>
+                      <div style={{ flex: 1 }}><h3>Survey Template</h3><div className="sub">Pick the survey design that will be sent to customers</div></div>
+                      <button className="btn" onClick={() => setSurveyDrawerOpen(true)}>Choose Survey Template →</button>
                     </header>
                   );
-                }
-                return (
-                  <div className="selected-model-summary">
-                    <div className="selected-model-summary-inner">
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-3)" }}>
-                          <span style={{ font: "600 15px/22px var(--font-sans)", color: "var(--color-fg-default)", letterSpacing: "-0.01rem" }}>{activeSurvey.name}</span>
-                          <span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>· {activeSurvey.category}</span>
-                        </div>
-                        {activeSurvey.why && (
-                          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)" }}>
-                            <svg viewBox="0 0 14 14" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ flexShrink: 0, marginTop: 2, color: "var(--color-fg-action)" }}><circle cx="7" cy="7" r="6"/><path d="M7 4.5v3l1.8 1.2"/></svg>
-                            <div>
-                              <span style={{ font: "500 11px/15px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>When to use  </span>
-                              <span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{activeSurvey.why}</span>
-                            </div>
+                  return (
+                    <div className="selected-model-summary">
+                      <div className="selected-model-summary-inner">
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-3)" }}>
+                            <span style={{ font: "600 15px/22px var(--font-sans)", color: "var(--color-fg-default)", letterSpacing: "-0.01rem" }}>{activeSurvey.name}</span>
+                            <span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>· {activeSurvey.category}</span>
                           </div>
-                        )}
+                          {activeSurvey.why && <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)" }}><svg viewBox="0 0 14 14" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ flexShrink: 0, marginTop: 2, color: "var(--color-fg-action)" }}><circle cx="7" cy="7" r="6"/><path d="M7 4.5v3l1.8 1.2"/></svg><div><span style={{ font: "500 11px/15px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>When to use  </span><span style={{ font: "400 12px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{activeSurvey.why}</span></div></div>}
+                        </div>
+                        <div style={{ display: "flex", gap: "var(--space-2)", flexShrink: 0 }}>
+                          <button className="btn btn-ghost btn-icon-only" title="Remove survey" onClick={() => set("surveyDesignId", "")} style={{ color: "var(--color-fg-secondary)" }}>
+                            <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><line x1="4" y1="4" x2="12" y2="12"/><line x1="12" y1="4" x2="4" y2="12"/></svg>
+                          </button>
+                          <button className="btn" onClick={() => setSurveyDrawerOpen(true)}>Change survey</button>
+                        </div>
                       </div>
-                      <button className="btn" style={{ flexShrink: 0 }} onClick={() => setSurveyDrawerOpen(true)}>
-                        Change survey
-                      </button>
                     </div>
-                  </div>
-                );
-              })()}
+                  );
+                })()}
+              </div>
+              </div>
             </div>
+          )}
 
-          </FormSection>
+          {/* ── Step 4: Summary & Review ── */}
+          {activeStep === 4 && (() => {
+            const CHANNEL_LABEL = { digital: "Digital", voice: "Voice", email: "Email", sms: "SMS" };
+            const aiModel = AI_MODELS?.find(m => m.id === c.aiModelId);
+            const survey  = SURVEY_DESIGNS?.find(s => s.id === c.surveyDesignId);
+            const SRSection = ({ title, num, onEdit, children }) => (
+              <div className="sr-section">
+                <div className="sr-section-head">
+                  <span className="sr-section-num">{num}</span>
+                  <span className="sr-section-title">{title}</span>
+                  <button className="btn btn-ghost" style={{ marginLeft: "auto", font: "var(--text-body-sm)", color: "var(--color-fg-action)" }}
+                    onClick={() => setActiveStep(num - 1)}>
+                    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M12 20h9"/><path d="M11 3.5a2 2 0 0 1 2.8 2.8L5 15l-3.5.8.8-3.5z"/></svg>
+                    Edit
+                  </button>
+                </div>
+                <div className="sr-section-body">{children}</div>
+              </div>
+            );
+            const SRRow = ({ label, children }) => (
+              <div className="sr-row">
+                <div className="sr-row-label">{label}</div>
+                <div className="sr-row-value">{children || <span style={{ color: "var(--color-fg-secondary)" }}>—</span>}</div>
+              </div>
+            );
+            const missingRequired = !c.name || !c.channels?.length || !c.queues?.length;
+            return (
+              <div className="wz-step-content">
+                {/* Header */}
+                <div style={{ marginBottom: "var(--space-5)" }}>
+                  <h2 className="setup-section-title">Summary &amp; Review</h2>
+                  <p className="setup-section-sub">Review every setting before activating. Click Edit on any section to go back.</p>
+                </div>
 
-        </div>
+                {missingRequired && (
+                  <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", padding: "var(--space-3) var(--space-4)", background: "#fff0f0", border: "1px solid var(--color-status-error)", borderRadius: "var(--radius-md)", marginBottom: "var(--space-4)", font: "var(--text-body-sm)", color: "var(--color-status-error)" }}>
+                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
+                    Some required fields are incomplete. Return to the relevant steps to fill them in before activating.
+                  </div>
+                )}
 
-        {/* Right side: Campaign Summary side panel (per Lyra Full Page layout) */}
-        <aside className="summary-pane">
-          <FloatingMetrics campaign={c}/>
-        </aside>
+                {selectedTemplate && (
+                  <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", padding: "var(--space-2) var(--space-4)", background: "var(--color-bg-active-subtle)", border: "1px solid var(--lyra-brand-200)", borderRadius: "var(--radius-md)", marginBottom: "var(--space-4)", font: "var(--text-body-sm)", color: "var(--lyra-brand-700)" }}>
+                    <svg viewBox="0 0 16 16" width="13" height="13" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="1" width="12" height="14" rx="1.5"/><line x1="5" y1="5" x2="11" y2="5"/><line x1="5" y1="8" x2="11" y2="8"/><line x1="5" y1="11" x2="9" y2="11"/></svg>
+                    <span><strong>Template applied:</strong> {selectedTemplate.name}</span>
+                  </div>
+                )}
+
+                <SRSection title="Template & Identity" num={1}>
+                  <SRRow label="Campaign Name">{c.name || <span style={{ color: "var(--color-status-error)" }}>Required</span>}</SRRow>
+                  {c.description && <SRRow label="Description">{c.description}</SRRow>}
+                  <SRRow label="Active Date Range">
+                    {c.startDate ? (c.ongoing ? `Ongoing from ${c.startDate}` : c.endDate ? `${c.startDate} — ${c.endDate}` : c.startDate) : "Not set"}
+                  </SRRow>
+                  <SRRow label="Channels">
+                    {c.channels?.length
+                      ? <div style={{ display: "flex", gap: "var(--space-3)", flexWrap: "wrap" }}>
+                          {c.channels.map(ch => <span key={ch} style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><ChannelChip kind={ch}/>{CHANNEL_LABEL[ch] || ch}</span>)}
+                        </div>
+                      : <span style={{ color: "var(--color-status-error)" }}>Required</span>}
+                  </SRRow>
+                  <SRRow label="Agent Teams">{c.queues?.length ? c.queues.join(", ") : <span style={{ color: "var(--color-status-error)" }}>Required</span>}</SRRow>
+                  <SRRow label="Agent Groups">{c.teams?.length ? c.teams.join(", ") : "All groups"}</SRRow>
+                  <SRRow label="Language">English</SRRow>
+                </SRSection>
+
+                <SRSection title="Suppression Rules" num={2}>
+                  <SRRow label="Opt-out tag">{c.suppressOptOut !== false ? "Enabled" : "Disabled"}</SRRow>
+                  <SRRow label="Recency window">{c.suppressRecent !== false ? `Enabled · ${c.recentDays ?? 30} days` : "Disabled"}</SRRow>
+                </SRSection>
+
+                <SRSection title="Volume & Sampling" num={3}>
+                  <SRRow label="Sampling Rate">{c.samplingPct ? `${c.samplingPct}%` : <span style={{ color: "var(--color-fg-secondary)" }}>Not set</span>}</SRRow>
+                </SRSection>
+
+                <SRSection title="Intelligence & Survey" num={4}>
+                  <SRRow label="Topic AI Model">{aiModel ? aiModel.name : <span style={{ color: "var(--color-fg-secondary)" }}>Not configured</span>}</SRRow>
+                  <SRRow label="Survey Template">{survey ? survey.name : <span style={{ color: "var(--color-fg-secondary)" }}>Not configured</span>}</SRRow>
+                </SRSection>
+              </div>
+            );
+          })()}
+
+          </div>{/* /form-pane */}
+
+          {/* Right rail summary */}
+          <aside className="summary-pane">
+            <FloatingMetrics campaign={c}/>
+          </aside>
+        </div>{/* /wz-body */}
+      </div>{/* /wz-scroll-area */}
+
+      {/* ── Back / Next footer — outside scroll area, always visible ── */}
+      <div className="wz-footer">
+        {activeStep > 0 && (
+          <button className="btn" onClick={goBack}>← Back</button>
+        )}
+        <span style={{ flex: 1 }}/>
+        {activeStep < 4 ? (
+          <button className="btn primary" onClick={goNext}>
+            {activeStep === 3 ? "Review →" : "Next →"}
+          </button>
+        ) : (
+          <>
+            <button className="btn" onClick={() => onSave({ ...c, status: "draft" })}>Save as draft</button>
+            <button className="btn primary" disabled={!canActivate}
+              onClick={() => onSave({ ...c, status: "active" })}>
+              Activate Campaign →
+            </button>
+          </>
+        )}
       </div>
 
       {/* Template drawer */}
@@ -1523,9 +1620,6 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
                   );
                 })}
               </div>
-            </div>
-            <div className="tmpl-drawer-footer">
-              <button className="clear-link" onClick={goScratch}>Start from scratch →</button>
             </div>
           </div>
         </div>,
@@ -1937,8 +2031,6 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
   return (
     <div className="pane" style={{ overflow: "hidden" }}>
       <div className="crumbs">
-        <a href="#" onClick={e => { e.preventDefault(); onBack(); }}>Feedback Intelligence</a>
-        <span className="sep">/</span>
         <a href="#" onClick={e => { e.preventDefault(); onBack(); }}>Survey Campaigns</a>
         <span className="sep">/</span>
         <span className="last">{c.name}</span>
@@ -1969,7 +2061,7 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
       {/* Meta row — info dot-separated on left, status badges on right */}
       <div style={{
         display: "flex", alignItems: "center", gap: "var(--space-3)",
-        padding: "0 var(--space-8) var(--space-4)",
+        padding: "var(--space-3) var(--space-8) var(--space-4)",
       }}>
         <div style={{
           flex: 1,
@@ -2022,9 +2114,13 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
         </div>
       ) : null}
 
-      <div style={{ flex: 1, overflow: "auto", padding: "0 var(--space-8) var(--space-6)", background: "var(--lyra-white)" }}>
-        <CampaignSummaryCard campaign={c}/>
-        <ConfigurationView campaign={c}/>
+      <div className="detail-layout">
+        <div className="detail-main">
+          <ConfigurationView campaign={c}/>
+        </div>
+        <aside className="detail-sidebar">
+          <CampaignSummaryCard campaign={c}/>
+        </aside>
       </div>
       {toast ? (
         <div className="toast">
@@ -2036,46 +2132,85 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
   );
 }
 
-/* Campaign Summary horizontal card — sits between meta row and config sections */
+/* Campaign Summary sidebar card */
 function CampaignSummaryCard({ campaign: c }) {
-  const CHANNEL_LABEL = { digital: "Digital", voice: "Voice", email: "Email", sms: "SMS" };
+  const isLive = c.status === "active" || c.status === "paused";
 
-  const dateRange = c.startDate
-    ? (c.ongoing ? `${c.startDate} — Ongoing` : c.endDate ? `${c.startDate} — ${c.endDate}` : `${c.startDate} — No end date`)
-    : "Not set";
-
-  const channels = c.channels?.length
-    ? c.channels.map(ch => CHANNEL_LABEL[ch] || ch).join(", ")
-    : "Not set";
-
-  const teams = c.teams?.length ? c.teams.join(", ") : "All teams";
-
-  const interactions = c.samplingPct
-    ? `${c.samplingPct}% of interactions sampled`
-    : "Not configured";
-
-  const rows = [
-    { icon: "calendar", label: "Active date range", value: dateRange },
-    { icon: "channel",  label: "Channel",           value: channels },
-    { icon: "agents",   label: "Agent teams",        value: teams },
-    { icon: "survey",   label: "Interactions surveyed", value: interactions },
+  /* ── Live metrics (active / paused campaigns) ── */
+  const metricRows = [
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><polyline points="2 10 6 6 9 9 14 4"/></svg>,
+      label: "Response Rate", value: c.responseRate || "31%", highlight: true,
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="1.5" width="10" height="13" rx="1.5"/><line x1="6" y1="5" x2="10" y2="5"/><line x1="6" y1="8" x2="10" y2="8"/><line x1="6" y1="11" x2="8.5" y2="11"/></svg>,
+      label: "Total Surveys Sent", value: c.totalSurveys ? c.totalSurveys.toLocaleString() : "2,847",
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><polyline points="2 11 6 7 9 10 14 5"/><line x1="14" y1="5" x2="14" y2="9"/><line x1="14" y1="5" x2="10" y2="5"/></svg>,
+      label: "Completed Responses", value: c.completedResponses ? c.completedResponses.toLocaleString() : "882",
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>,
+      label: "Avg. Completion Time", value: c.avgCompletionTime || "1m 42s",
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 2l1.8 3.6L14 6.3l-3 2.9.7 4.1L8 11.2l-3.7 2.1.7-4.1-3-2.9 4.2-.7z"/></svg>,
+      label: "Avg. CSAT Score", value: c.avgCsat || "4.2 / 5",
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="12" height="11" rx="1.5"/><line x1="5" y1="1.5" x2="5" y2="4.5"/><line x1="11" y1="1.5" x2="11" y2="4.5"/><line x1="2" y1="7" x2="14" y2="7"/></svg>,
+      label: "Last Survey Sent", value: c.lastSurveySent || "Today, 9:41 AM",
+    },
   ];
 
+  /* ── Config info (draft / ended campaigns) ── */
+  const CHANNEL_LABEL = { digital: "Digital", voice: "Voice", email: "Email", sms: "SMS" };
+  const channels = c.channels?.length ? c.channels.map(ch => CHANNEL_LABEL[ch] || ch).join(", ") : "Not set";
+  const teams = c.queues?.length ? c.queues.join(", ") : "All teams";
+  const dateRange = c.startDate
+    ? (c.ongoing ? `Ongoing from ${c.startDate}` : c.endDate ? `${c.startDate} — ${c.endDate}` : `${c.startDate} — No end date`)
+    : "Not set";
+
+  const configRows = [
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="12" height="11" rx="1.5"/><line x1="5" y1="1.5" x2="5" y2="4.5"/><line x1="11" y1="1.5" x2="11" y2="4.5"/><line x1="2" y1="7" x2="14" y2="7"/></svg>,
+      label: "Active Date Range", value: dateRange,
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M2 11.5C2 9.5 3.5 8 5.5 8h5C12.5 8 14 9.5 14 11.5"/><circle cx="8" cy="4.5" r="2.5"/></svg>,
+      label: "Channel", value: channels,
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="6" cy="5" r="2"/><path d="M1 13c0-2.2 1.8-4 4-4h2"/><circle cx="11.5" cy="6" r="2"/><path d="M8 13.5c0-1.9 1.6-3.5 3.5-3.5s3.5 1.6 3.5 3.5"/></svg>,
+      label: "Agent Teams", value: teams,
+    },
+    {
+      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>,
+      label: "Sampling Rate", value: c.samplingPct ? `${c.samplingPct}%` : "—",
+    },
+  ];
+
+  const rows = isLive ? metricRows : configRows;
+  const headLabel = isLive ? "Live Metrics" : "Campaign Summary";
+
   return (
-    <div className="summary-card">
-      <div className="summary-card-head">Campaign Summary</div>
-      <div className="summary-card-rows">
+    <div className="detail-summary-card">
+      <div className="detail-summary-head">
+        {isLive
+          ? <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><polyline points="2 10 6 6 9 9 14 4"/></svg>
+          : <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
+        }
+        {headLabel}
+        {isLive && <span className="detail-summary-live-dot"/>}
+      </div>
+      <div className="detail-summary-rows">
         {rows.map(r => (
-          <div key={r.label} className="summary-card-row">
-            <div className="summary-card-icon">
-              {r.icon === "calendar" && <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="12" height="11" rx="1.5"/><line x1="5" y1="1.5" x2="5" y2="4.5"/><line x1="11" y1="1.5" x2="11" y2="4.5"/><line x1="2" y1="7" x2="14" y2="7"/></svg>}
-              {r.icon === "channel"  && <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M2 11.5C2 9.5 3.5 8 5.5 8h5C12.5 8 14 9.5 14 11.5"/><circle cx="8" cy="4.5" r="2.5"/></svg>}
-              {r.icon === "agents"   && <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="6" cy="5" r="2"/><path d="M1 13c0-2.2 1.8-4 4-4h2"/><circle cx="11.5" cy="6" r="2"/><path d="M8 13.5c0-1.9 1.6-3.5 3.5-3.5s3.5 1.6 3.5 3.5"/></svg>}
-              {r.icon === "survey"   && <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="1.5" width="10" height="13" rx="1.5"/><line x1="6" y1="5" x2="10" y2="5"/><line x1="6" y1="8" x2="10" y2="8"/><line x1="6" y1="11" x2="8.5" y2="11"/></svg>}
-            </div>
-            <div className="summary-card-row-body">
-              <div className="summary-card-label">{r.label}</div>
-              <div className="summary-card-value">{r.value}</div>
+          <div key={r.label} className={`detail-summary-row${r.highlight ? " highlight" : ""}`}>
+            <div className="detail-summary-ico">{r.icon}</div>
+            <div className="detail-summary-body">
+              <div className="detail-summary-label">{r.label}</div>
+              <div className="detail-summary-value">{r.value}</div>
             </div>
           </div>
         ))}
@@ -2089,86 +2224,85 @@ function CampaignSummaryCard({ campaign: c }) {
    regular Lyra Body-md weight; rows separated by border/subtle. */
 function DefRow({ label, children }) {
   return (
-    <div style={{
-      display: "flex", alignItems: "flex-start",
-      padding: "var(--space-3) 0",
-      borderTop: "1px solid var(--color-border-subtle)",
-      fontFamily: "var(--font-sans)",
-      fontSize: 14, fontWeight: 400, lineHeight: "20px", letterSpacing: 0,
-      color: "var(--color-fg-default)",
-    }}>
-      <div style={{
-        flex: "0 0 200px",
-        fontWeight: 500,
-        color: "var(--color-fg-default)",
-      }}>
-        {label}:
-      </div>
-      <div style={{ flex: 1, fontWeight: 400 }}>{children}</div>
+    <div className="def-row">
+      <div className="def-row-label">{label}</div>
+      <div className="def-row-value">{children}</div>
     </div>
   );
 }
 
-/* ConfigGroup — collapsible Lyra form-section card for read-only display. */
+/* ConfigGroup — collapsible accordion card for read-only display. */
 function ConfigGroup({ title, num, children, defaultOpen = true }) {
   const [open, setOpen] = React.useState(defaultOpen);
   return (
-    <section className={`form-section ${open ? "" : "collapsed"}`} style={{ marginBottom: "var(--space-3)" }}>
-      <header className="form-section-head" onClick={() => setOpen(!open)}>
-        <span className="step-num">{num}</span>
-        <h3 style={{ margin: 0 }}>{title}</h3>
-        <svg className="chev" viewBox="0 0 16 16">
+    <section className={`cfg-group${open ? "" : " cfg-group--closed"}`}>
+      <header className="cfg-group-head" onClick={() => setOpen(!open)}>
+        <span className="cfg-group-num">{num}</span>
+        <span className="cfg-group-title">{title}</span>
+        <svg className="cfg-group-chev" viewBox="0 0 16 16">
           <path d="M3.5 6 8 10.5 12.5 6" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </header>
-      <div className="form-section-body">{children}</div>
+      {open && <div className="cfg-group-body">{children}</div>}
     </section>
   );
 }
 
-function ConfigurationView({ campaign }) {
-  /* Read-only summary of the campaign config — matches the design exactly. */
-  const routing = CAMPAIGNS.filter(x => x.status === "active" || x.status === "paused");
-  const routingIdx = routing.findIndex(x => x.id === campaign.id);
-  const routingText = (campaign.status === "active" || campaign.status === "paused") && routingIdx >= 0
-    ? `Position ${routingIdx + 1} of ${routing.length} · You Can Reorder On The Campaigns List`
-    : "—";
+function ConfigurationView({ campaign: c }) {
+  const CHANNEL_LABEL = { digital: "Digital", voice: "Voice", email: "Email", sms: "SMS" };
+  const channels = c.channels?.length ? c.channels : ["digital", "voice"];
+  const dateRange = c.startDate
+    ? (c.ongoing ? `Ongoing from ${c.startDate}` : c.endDate ? `${c.startDate} — ${c.endDate}` : `${c.startDate} — No end date`)
+    : "Ongoing from " + c.created;
+
+  const aiModel = AI_MODELS?.find(m => m.id === c.aiModelId);
+  const survey  = SURVEY_DESIGNS?.find(s => s.id === c.surveyDesignId);
 
   return (
-    <div>
+    <div className="cfg-group-stack">
+      {/* Step 0 mirror: Template & Identity */}
       <ConfigGroup num="1" title="Campaign Identity & Scope">
-        <DefRow label="Campaign Name">{campaign.name}</DefRow>
-        <DefRow label="Active Date Range">Ongoing from {campaign.created}</DefRow>
+        <DefRow label="Campaign Name">{c.name}</DefRow>
+        {c.description && <DefRow label="Description">{c.description}</DefRow>}
+        <DefRow label="Active Date Range">{dateRange}</DefRow>
         <DefRow label="Channels">
           <div className="channel-stack" style={{ gap: "var(--space-3)" }}>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              <ChannelChip kind="digital"/> Digital
-            </span>
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-              <ChannelChip kind="voice"/> Voice
-            </span>
+            {channels.map(ch => (
+              <span key={ch} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <ChannelChip kind={ch}/> {CHANNEL_LABEL[ch] || ch}
+              </span>
+            ))}
           </div>
         </DefRow>
-        <DefRow label="Agent Teams">All Teams</DefRow>
-        <DefRow label="Agents Groups">All Groups</DefRow>
-        <DefRow label="Routing Priority">{routingText}</DefRow>
+        <DefRow label="Agent Teams">{c.queues?.length ? c.queues.join(", ") : "All teams"}</DefRow>
+        <DefRow label="Agent Groups">{c.teams?.length ? c.teams.join(", ") : "All groups"}</DefRow>
         <DefRow label="Language">English</DefRow>
       </ConfigGroup>
 
-      <ConfigGroup num="2" title="Volume & Sampling">
-        <DefRow label="Sampling">{campaign.sampling}% (Daily 20 Interactions Would Be Surveyed)</DefRow>
-        <DefRow label="Per-agent cap">3 surveys / day</DefRow>
+      {/* Step 1 mirror: Suppression Rules */}
+      <ConfigGroup num="2" title="Suppression Rules">
+        <DefRow label="Opt-out tag">{c.suppressOptOut !== false ? "Enabled" : "Disabled"}</DefRow>
+        <DefRow label="Recency window">
+          {c.suppressRecent !== false ? `Enabled · ${c.recentDays ?? 30} days` : "Disabled"}
+        </DefRow>
       </ConfigGroup>
 
-      <ConfigGroup num="3" title="Suppression Rules">
-        <DefRow label="Opt-out tag">Enabled</DefRow>
-        <DefRow label="Recency window">Enabled • 30 Days</DefRow>
-        <DefRow label="Internal / test">Always on (hard-coded)</DefRow>
+      {/* Step 2 mirror: Volume & Sampling */}
+      <ConfigGroup num="3" title="Volume & Sampling">
+        <DefRow label="Sampling Rate">
+          {c.samplingPct ? `${c.samplingPct}%` : "Not set"}
+          {c.samplingPct ? ` — approx. ${Math.round(c.samplingPct * 0.4)} interactions / day` : ""}
+        </DefRow>
       </ConfigGroup>
 
-      <ConfigGroup num="4" title="Trigger Rules">
-        <DefRow label="Trigger event">Post-digital interaction</DefRow>
-        <DefRow label="Delay">Immediate</DefRow>
+      {/* Step 3 mirror: Intelligence & Survey */}
+      <ConfigGroup num="4" title="Intelligence & Survey">
+        <DefRow label="Topic AI Model">
+          {aiModel ? aiModel.name : <span style={{ color: "var(--color-fg-secondary)" }}>Not configured</span>}
+        </DefRow>
+        <DefRow label="Survey Template">
+          {survey ? survey.name : <span style={{ color: "var(--color-fg-secondary)" }}>Not configured</span>}
+        </DefRow>
       </ConfigGroup>
     </div>
   );
