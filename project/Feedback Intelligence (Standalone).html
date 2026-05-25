@@ -2996,7 +2996,7 @@ button,input,select,textarea,table,th,td{font-family:inherit;font-size:inherit;f
 .pane-head{
   display: flex; align-items: center;
   min-height: 80px;                                                  /* Lyra spec */
-  padding: var(--space-4) var(--space-8);                            /* Lyra: 16px / 32px */
+  padding: var(--space-4) var(--space-6);                            /* Lyra: 16px / 24px */
   gap: 40px;                                                         /* Lyra: gap between title slot and actions */
   border-bottom: 1px solid var(--color-border-subtle);               /* Lyra: subtle divider */
 }
@@ -3024,7 +3024,7 @@ button,input,select,textarea,table,th,td{font-family:inherit;font-size:inherit;f
   line-height: 16px;
   letter-spacing: 0.01rem;
   color: var(--color-fg-secondary);
-  padding: var(--space-3) var(--space-8) 0;            /* 12px / 32px (matches pane-head padding) */
+  padding: var(--space-3) var(--space-6) 0;            /* 12px / 24px (matches pane-head padding) */
 }
 .crumbs .sep{ opacity: 0.5 }
 .crumbs .last{
@@ -3087,7 +3087,9 @@ button,input,select,textarea,table,th,td{font-family:inherit;font-size:inherit;f
 /* ----- Filter toolbar ----- */
 .toolbar{
   display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap;
-  padding:0 var(--space-6) 14px;
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-bg-surface-shell, #f5f7f9);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 /* ----- Lyra Search input (node 16926:20974): 32px h, white bg, border/strong ----- */
 .search{ position:relative; flex:0 0 240px; height:32px; }
@@ -3260,7 +3262,7 @@ thead th{
   text-align: left;
   padding: var(--space-5) var(--space-4);                      /* 20px top/bottom, 16px sides */
   background: var(--lyra-white);
-  border-bottom: 1px solid var(--color-border-soft);           /* Lyra: border/soft */
+  border-bottom: 1px solid var(--color-border-subtle);         /* Lyra: border/subtle */
   /* Lyra Body-md-emphasis: Inter Medium 14/20 */
   font-weight: 500;
   color: var(--color-fg-default);                              /* Lyra: fg/default */
@@ -3268,15 +3270,28 @@ thead th{
   white-space: nowrap;
   vertical-align: middle;
 }
+thead th:first-child { padding-left: var(--space-6); }
+thead th:last-child  { padding-right: var(--space-6); }
+thead th[onClick]:hover, thead th[onclick]:hover { background: var(--color-state-bg-hover); }
 /* GridCell — comfortable density: 20px vertical padding for visual rest between rows */
 tbody td{
   padding: var(--space-5) var(--space-4);                      /* 20px top/bottom, 16px sides */
-  border-bottom: 1px solid var(--color-border-subtle);         /* Lyra: border/subtle */
   color: var(--color-fg-default);
   vertical-align: middle;
 }
+tbody td:first-child { padding-left: var(--space-6); }
+tbody td:last-child  { padding-right: var(--space-6); }
 /* Row state colors (Lyra GridRow) */
 tbody tr{ position: relative; }
+tbody tr::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: var(--space-6);
+  right: var(--space-6);
+  height: 1px;
+  background: var(--color-border-subtle);
+}
 tbody tr:hover td{ background: var(--color-state-bg-hover); }  /* Lyra: state/bg/hover */
 tbody tr.selected td{
   background: var(--color-bg-active-subtle);                                         /* Lyra: bg/active/subtle */
@@ -6125,7 +6140,17 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
   const hasAnyFilter = !!(search || statusFilter || ownerFilter);
   const clearAllFilters = () => { setSearch(""); setStatusFilter(null); setOwnerFilter(null); };
 
-  const rows = orderedAll.filter(c => {
+  const [sortKey, setSortKey] = React.useState(null);
+  const [sortDir, setSortDir] = React.useState("asc");
+
+  function toggleSort(key) {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
+    else { setSortKey(key); setSortDir("asc"); }
+  }
+
+  const STATUS_ORDER = { active: 0, paused: 1, draft: 2, ended: 3 };
+
+  const filteredRows = orderedAll.filter(c => {
     if (deletedIds.has(c.id)) return false;
     const s = statusOf(c);
     if (statusFilter && s !== statusFilter.toLowerCase()) return false;
@@ -6133,8 +6158,34 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
     if (search && !c.name.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
+
+  const rows = sortKey ? [...filteredRows].sort((a, b) => {
+    let av, bv;
+    if (sortKey === "name")     { av = a.name.toLowerCase();              bv = b.name.toLowerCase(); }
+    if (sortKey === "status")   { av = STATUS_ORDER[statusOf(a)] ?? 9;    bv = STATUS_ORDER[statusOf(b)] ?? 9; }
+    if (sortKey === "channels") { av = a.channels.join();                 bv = b.channels.join(); }
+    if (sortKey === "sampling") { av = a.sampling;                        bv = b.sampling; }
+    if (sortKey === "owner")    { av = a.owner.toLowerCase();             bv = b.owner.toLowerCase(); }
+    if (sortKey === "updated")  { av = a.updated;                         bv = b.updated; }
+    if (sortKey === "priority") { av = priorityMap[a.id] ?? 999;          bv = priorityMap[b.id] ?? 999; }
+    if (av < bv) return sortDir === "asc" ? -1 : 1;
+    if (av > bv) return sortDir === "asc" ? 1 : -1;
+    return 0;
+  }) : filteredRows;
+
   const allRowsSelected = rows.length > 0 && rows.every(r => selectedIds.has(r.id));
   const someRowsSelected = rows.some(r => selectedIds.has(r.id)) && !allRowsSelected;
+
+  const SortIcon = ({ k }) => {
+    const active = sortKey === k;
+    return (
+      <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+        style={{ marginLeft: 4, verticalAlign: "-1px", opacity: active ? 1 : 0.3, color: active ? "var(--color-fg-action)" : "currentColor", flexShrink: 0 }}>
+        {(!active || sortDir === "asc")  && <polyline points="4 10 8 6 12 10" style={{ opacity: active && sortDir === "asc" ? 1 : 0.4 }}/>}
+        {(!active || sortDir === "desc") && <polyline points="4 6 8 10 12 6"  style={{ opacity: active && sortDir === "desc" ? 1 : 0.4 }}/>}
+      </svg>
+    );
+  };
 
   return (
     <div className="pane">
@@ -6167,26 +6218,31 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
         )}
       </div>
 
-      <div className="info-banner">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M12 16v-4M12 8h.01"/>
-        </svg>
-        <span>When an interaction matches multiple campaigns, the lower-numbered campaign wins. Use <strong>Campaign Priority</strong> to reorder. Draft and ended campaigns don't participate.</span>
-      </div>
       <div className="table-wrap">
         <table>
           <thead>
             <tr>
-              <th style={{ width: 110 }}>
-                Campaign priority
+              <th style={{ width: 110, cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("priority")}>
+                <span style={{ display: "inline-flex", alignItems: "center" }}>Priority<SortIcon k="priority"/></span>
               </th>
-              <th>Campaign</th>
-              <th>Status</th>
-              <th style={{ minWidth: 200 }}>Channels</th>
-              <th>Sampling</th>
-              <th>Owner</th>
-              <th>Last updated</th>
+              <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("name")}>
+                <span style={{ display: "inline-flex", alignItems: "center" }}>Campaign<SortIcon k="name"/></span>
+              </th>
+              <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("status")}>
+                <span style={{ display: "inline-flex", alignItems: "center" }}>Status<SortIcon k="status"/></span>
+              </th>
+              <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("channels")}>
+                <span style={{ display: "inline-flex", alignItems: "center" }}>Channels<SortIcon k="channels"/></span>
+              </th>
+              <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("sampling")}>
+                <span style={{ display: "inline-flex", alignItems: "center" }}>Sampling<SortIcon k="sampling"/></span>
+              </th>
+              <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("owner")}>
+                <span style={{ display: "inline-flex", alignItems: "center" }}>Owner<SortIcon k="owner"/></span>
+              </th>
+              <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("updated")}>
+                <span style={{ display: "inline-flex", alignItems: "center" }}>Last updated<SortIcon k="updated"/></span>
+              </th>
               <th style={{ width: 48 }}></th>
             </tr>
           </thead>
@@ -6221,25 +6277,25 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                     </div>
                   </td>
                   <td>
-                    <div style={{ display: "inline-flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "var(--space-3)" }}>
                       <StatusPill s={statusOf(c)}/>
                       {c.hasWorkingCopy ? <WorkingCopyChip/> : null}
                     </div>
                   </td>
                   <td>
-                    <div className="channel-stack">
-                      {c.channels.map(k => (
-                        <span key={k} className="channel-label-item">
-                          <ChannelChip kind={k}/>
-                          <span className="channel-label-text">{k === "voice" ? "Voice" : "Digital"}</span>
-                        </span>
-                      ))}
-                    </div>
+                    <span style={{ font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>
+                      {c.channels.map(k => k === "voice" ? "Voice" : "Digital").join(", ")}
+                    </span>
                   </td>
                   <td>{c.sampling}%</td>
                   <td>{c.owner}</td>
-                  <td>{c.updated}</td>
-                  <td style={{ textAlign: "right", paddingRight: "var(--space-3)" }}>
+                  <td>
+                    <div>{c.updated}</div>
+                    <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 4 }}>
+                      by {c.owner}
+                    </div>
+                  </td>
+                  <td style={{ textAlign: "right", paddingRight: "var(--space-6)" }}>
                     <RowActions
                       campaign={c}
                       statusOf={statusOf}
@@ -6274,7 +6330,7 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                 <thead>
                   <tr>
                     <th style={{ width: 36, padding: 0 }}></th>
-                    <th style={{ width: 130 }}>Campaign priority</th>
+                    <th style={{ width: 130 }}>Priority</th>
                     <th>Campaign</th>
                     <th>Channels</th>
                   </tr>
