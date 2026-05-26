@@ -174,9 +174,9 @@
   white-space: nowrap;
 }
 .fi-pill.active   { background: var(--lyra-green-50);   color: var(--lyra-green-700);   border-color: rgba(28,94,37,0.18); }
-.fi-pill.paused   { background: var(--lyra-orange-50);  color: var(--lyra-orange-700);  border-color: rgba(166,79,0,0.18); }
+.fi-pill.inactive { background: var(--lyra-orange-50);  color: var(--lyra-orange-700);  border-color: rgba(166,79,0,0.18); }
 .fi-pill.draft    { background: var(--lyra-slate-100);  color: var(--lyra-slate-700);   border-color: rgba(0,0,0,0.10); }
-.fi-pill.ended    { background: var(--lyra-slate-100);  color: var(--lyra-slate-500);   border-color: rgba(0,0,0,0.10); }
+.fi-pill.expired  { background: var(--lyra-slate-100);  color: var(--lyra-slate-500);   border-color: rgba(0,0,0,0.10); }
 .fi-pill .dot {
   width: 5px; height: 5px; border-radius: 50%;
   background: currentColor; flex-shrink: 0;
@@ -1366,6 +1366,16 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 .working-banner-actions {
   display: flex; gap: var(--space-2); flex-shrink: 0; align-items: center;
 }
+
+/* Campaign State — inline dot + label */
+@keyframes state-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.cs-dot {
+  display: inline-block; width: 6px; height: 6px;
+  border-radius: 50%; flex-shrink: 0; vertical-align: middle; margin-top: -1px;
+}
+.cs-dot.live    { background: var(--lyra-green-700); }
+.cs-dot.draft   { background: var(--lyra-slate-400); }
+.cs-dot.working { background: var(--lyra-purple-500); animation: state-pulse 2.4s ease-in-out infinite; }
 
 
 /* Nav-leaf becomes a flex row so isNew dot floats right */
@@ -3654,28 +3664,23 @@ tbody tr.selected td:first-child::before{
 }
 /* Lyra semantic status tokens → primitive mapping from lyra-tokens.json */
 .fi-pill.active   { background: var(--lyra-green-50);   color: var(--lyra-green-700);   border-color: rgba(28,94,37,0.18); }
-.fi-pill.paused   { background: var(--lyra-orange-50);  color: var(--lyra-orange-700);  border-color: rgba(166,79,0,0.18); }
+.fi-pill.inactive { background: var(--lyra-orange-50);  color: var(--lyra-orange-700);  border-color: rgba(166,79,0,0.18); }
 .fi-pill.draft    { background: var(--lyra-slate-100);  color: var(--lyra-slate-700);   border-color: rgba(0,0,0,0.10); }
-.fi-pill.ended    { background: var(--lyra-slate-100);  color: var(--lyra-slate-500);   border-color: rgba(0,0,0,0.10); }
+.fi-pill.expired  { background: var(--lyra-slate-100);  color: var(--lyra-slate-500);   border-color: rgba(0,0,0,0.10); }
 .fi-pill .dot {
   width: 5px; height: 5px; border-radius: 50%;
   background: currentColor; flex-shrink: 0;
 }
 
-/* Campaign State badge — pill, same Lyra bodySm-medium scale as fi-pill */
-.ss-badge {
-  position: relative;
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 2px 8px; border-radius: var(--radius-round);
-  font-family: var(--font-sans); font-size: 12px; font-weight: 500;
-  line-height: 16px; letter-spacing: 0.01rem;
-  border: 1px solid transparent;
-  cursor: default; flex-shrink: 0; white-space: nowrap;
+/* Campaign State — inline dot + label (no background, no border) */
+@keyframes state-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.cs-dot {
+  display: inline-block; width: 6px; height: 6px;
+  border-radius: 50%; flex-shrink: 0; vertical-align: middle; margin-top: -1px;
 }
-/* success-subtle/strong → Live, warning-subtle/strong → Draft (neutral), ai → Working Copy */
-.ss-badge.live    { background: var(--lyra-green-50);  color: var(--lyra-green-700);  border-color: rgba(28,94,37,0.18); }
-.ss-badge.draft   { background: var(--lyra-slate-100); color: var(--lyra-slate-600);  border-color: rgba(0,0,0,0.10); }
-.ss-badge.working { background: var(--color-bg-ai);    color: var(--lyra-purple-700); border-color: rgba(77,58,122,0.18); }
+.cs-dot.live    { background: var(--lyra-green-700); }
+.cs-dot.draft   { background: var(--lyra-slate-400); }
+.cs-dot.working { background: var(--lyra-purple-500); animation: state-pulse 2.4s ease-in-out infinite; }
 /* CSS tooltip — Lyra bg-inverse surface */
 .ss-badge::after {
   content: attr(data-tip);
@@ -5882,15 +5887,15 @@ const CAMPAIGNS = [
     sampling: 80, sent: 6122, completion: 19.7, vu: 54,
     owner: "Tomás Reyes", created: "Mar 30, 2026", updated: "May 09, 2026", endDate: null },
   { id: 5, name: "Social DM — Brand Health Pulse",
-    status: "paused", channels: ["digital"], surveyDesignId: "brand-pulse",
+    status: "inactive", channels: ["digital"], surveyDesignId: "brand-pulse",
     sampling: 100, sent: 1840, completion: 14.1, vu: 62,
     owner: "Aisha Khan", created: "Dec 01, 2025", updated: "Apr 12, 2026", endDate: "May 31, 2026" },
   { id: 6, name: "VIP Escalation Follow-Up",
-    status: "draft", channels: ["digital", "voice"], surveyDesignId: "vip-followup",
+    status: "inactive", channels: ["digital", "voice"], surveyDesignId: "vip-followup",
     sampling: 100, sent: 0, completion: 0, vu: null,
     owner: "Maria Cohen", created: "May 06, 2026", updated: "May 06, 2026", endDate: null },
   { id: 7, name: "Holiday Returns — Email",
-    status: "ended", channels: ["digital"], surveyDesignId: "csat-quick",
+    status: "expired", channels: ["digital"], surveyDesignId: "csat-quick",
     sampling: 100, sent: 21450, completion: 26.8, vu: 71,
     owner: "Dev Patel", created: "Nov 12, 2025", updated: "Jan 15, 2026", endDate: "Dec 31, 2025" },
   { id: 8, name: "NPS Quarterly — Enterprise Clients",
@@ -5910,7 +5915,7 @@ const CAMPAIGNS = [
     sampling: 100, sent: 1920, completion: 42.6, vu: 88,
     owner: "Maria Cohen", created: "Apr 02, 2026", updated: "Apr 30, 2026", endDate: "Jun 30, 2026" },
   { id: 12, name: "Escalation Recovery Survey",
-    status: "paused", channels: ["digital", "voice"], surveyDesignId: "vip-followup",
+    status: "inactive", channels: ["digital", "voice"], surveyDesignId: "vip-followup",
     sampling: 90, sent: 4100, completion: 18.9, vu: 55,
     owner: "Dev Patel", created: "Nov 20, 2025", updated: "Apr 25, 2026", endDate: null },
   { id: 13, name: "Chatbot Deflection — Self Service",
@@ -5918,7 +5923,7 @@ const CAMPAIGNS = [
     sampling: 50, sent: 9340, completion: 22.3, vu: 61,
     owner: "Tomás Reyes", created: "Feb 18, 2026", updated: "Apr 22, 2026", endDate: null },
   { id: 14, name: "Product Feedback — Beta Testers",
-    status: "draft", channels: ["digital"], surveyDesignId: "brand-pulse",
+    status: "inactive", channels: ["digital"], surveyDesignId: "brand-pulse",
     sampling: 100, sent: 0, completion: 0, vu: null,
     owner: "Aisha Khan", created: "May 10, 2026", updated: "May 10, 2026", endDate: "Aug 31, 2026" },
   { id: 15, name: "Complaint Resolution Follow-Up",
@@ -5927,7 +5932,7 @@ const CAMPAIGNS = [
     sampling: 85, sent: 6720, completion: 31.8, vu: 72,
     owner: "Maria Cohen", created: "Mar 12, 2026", updated: "Apr 20, 2026", endDate: null },
   { id: 16, name: "Seasonal Campaign — Q1 2026",
-    status: "ended", channels: ["digital"], surveyDesignId: "csat-quick",
+    status: "expired", channels: ["digital"], surveyDesignId: "csat-quick",
     sampling: 100, sent: 18900, completion: 24.5, vu: 65,
     owner: "Dev Patel", created: "Jan 01, 2026", updated: "Mar 31, 2026", endDate: "Mar 31, 2026" },
   { id: 17, name: "IVR Experience Survey",
@@ -5939,7 +5944,7 @@ const CAMPAIGNS = [
     sampling: 65, sent: 11200, completion: 26.7, vu: 70,
     owner: "Aisha Khan", created: "Jan 28, 2026", updated: "Apr 15, 2026", endDate: null },
   { id: 19, name: "Renewal Intent — Premium Tier",
-    status: "paused", channels: ["digital"], surveyDesignId: "nps-pulse",
+    status: "inactive", channels: ["digital"], surveyDesignId: "nps-pulse",
     sampling: 100, sent: 2340, completion: 38.1, vu: 79,
     owner: "Maria Cohen", created: "Oct 15, 2025", updated: "Apr 10, 2026", endDate: null },
   { id: 20, name: "Post-Installation Survey",
@@ -5947,7 +5952,7 @@ const CAMPAIGNS = [
     sampling: 70, sent: 4560, completion: 28.9, vu: 67,
     owner: "Dev Patel", created: "Mar 05, 2026", updated: "Apr 08, 2026", endDate: "Sep 30, 2026" },
   { id: 21, name: "Social Media Response Quality",
-    status: "draft", channels: ["digital"], surveyDesignId: "email-quality",
+    status: "inactive", channels: ["digital"], surveyDesignId: "email-quality",
     sampling: 100, sent: 0, completion: 0, vu: null,
     owner: "Tomás Reyes", created: "May 08, 2026", updated: "May 08, 2026", endDate: null },
   { id: 22, name: "Long-Term Relationship NPS",
@@ -5959,7 +5964,7 @@ const CAMPAIGNS = [
     sampling: 55, sent: 3280, completion: 21.6, vu: 63,
     owner: "Maria Cohen", created: "Feb 25, 2026", updated: "Apr 02, 2026", endDate: null },
   { id: 24, name: "Knowledge Base Effectiveness",
-    status: "ended", channels: ["digital"], surveyDesignId: "fcr-check",
+    status: "expired", channels: ["digital"], surveyDesignId: "fcr-check",
     sampling: 100, sent: 14600, completion: 22.8, vu: 60,
     owner: "Dev Patel", created: "Sep 01, 2025", updated: "Mar 28, 2026", endDate: "Mar 28, 2026" },
   { id: 25, name: "Agent Soft Skills Feedback",
@@ -5971,11 +5976,11 @@ const CAMPAIGNS = [
     sampling: 80, sent: 5020, completion: 36.8, vu: 85,
     owner: "Maria Cohen", created: "Feb 05, 2026", updated: "Mar 20, 2026", endDate: "Jul 31, 2026" },
   { id: 27, name: "After-Hours Support Survey",
-    status: "paused", channels: ["voice"], surveyDesignId: "csat-quick",
+    status: "inactive", channels: ["voice"], surveyDesignId: "csat-quick",
     sampling: 100, sent: 1680, completion: 16.4, vu: 52,
     owner: "Aisha Khan", created: "Dec 20, 2025", updated: "Mar 15, 2026", endDate: null },
   { id: 28, name: "Proactive Outreach Feedback",
-    status: "draft", channels: ["digital", "voice"], surveyDesignId: "brand-pulse",
+    status: "inactive", channels: ["digital", "voice"], surveyDesignId: "brand-pulse",
     sampling: 100, sent: 0, completion: 0, vu: null,
     owner: "Dev Patel", created: "May 05, 2026", updated: "May 05, 2026", endDate: null },
   { id: 29, name: "SLA Compliance Feedback",
@@ -6043,7 +6048,7 @@ function InfoTooltip({ children }) {
 }
 
 function StatusPill({ s }) {
-  const label = { active: "Active", paused: "Inactive", draft: "Draft", ended: "Ended", working: "Working Copy" }[s] || s;
+  const label = { active: "Active", inactive: "Inactive", expired: "Expired", working: "Working Copy" }[s] || s;
   return <span className={`fi-pill ${s}`}><span className="dot"/>{label}</span>;
 }
 
@@ -6052,6 +6057,24 @@ function WorkingCopyChip() {
     <span className="fi-pill working" title="This campaign has unpublished changes">
       <svg viewBox="0 0 24 24" width="10" height="10" stroke="currentColor" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
       Working Copy
+    </span>
+  );
+}
+
+function CampaignStateInline({ status, hasWorkingCopy }) {
+  if (status === "expired") return null;
+  let dotClass, label;
+  if (status === "inactive") {
+    dotClass = "draft"; label = "Draft";
+  } else if (hasWorkingCopy) {
+    dotClass = "working"; label = "Working Copy";
+  } else {
+    dotClass = "live"; label = "Live";
+  }
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 2 }}>
+      <span className={`cs-dot ${dotClass}`}/>
+      {label}
     </span>
   );
 }
@@ -6225,7 +6248,7 @@ function RowActions({ campaign, statusOf, onActivate, onDeactivate, onDelete, on
             </svg>
             Edit
           </button>
-          {s !== "active" && s !== "ended" && (
+          {s !== "active" && s !== "expired" && (
             <button className="row-action-item" onClick={() => { onActivate(campaign.id); setOpen(false); }}>
               <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12"/>
@@ -6280,14 +6303,14 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
   const clearSelection = () => setSelectedIds(new Set());
   const selCount = selectedIds.size;
   const selectedRows = () => [...selectedIds].map(id => CAMPAIGNS.find(c => c.id === id)).filter(Boolean);
-  const canActivate = selCount > 0 && selectedRows().some(c => statusOf(c) !== "active" && statusOf(c) !== "ended");
+  const canActivate = selCount > 0 && selectedRows().some(c => statusOf(c) !== "active" && statusOf(c) !== "expired");
   const canDeactivate = selCount > 0 && selectedRows().some(c => statusOf(c) === "active");
   const canDelete = selCount > 0;
   const bulkSetStatus = (status) => {
     setStatusOverride(prev => {
       const next = { ...prev };
       selectedRows().forEach(c => {
-        if (status === "active" && statusOf(c) === "ended") return;
+        if (status === "active" && statusOf(c) === "expired") return;
         next[c.id] = status;
       });
       return next;
@@ -6304,7 +6327,7 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
   };
 
   const rowActivate = (id) => setStatusOverride(prev => ({ ...prev, [id]: "active" }));
-  const rowDeactivate = (id) => setStatusOverride(prev => ({ ...prev, [id]: "paused" }));
+  const rowDeactivate = (id) => setStatusOverride(prev => ({ ...prev, [id]: "inactive" }));
   const rowDelete = (id) => {
     const c = CAMPAIGNS.find(x => x.id === id);
     if (!window.confirm(`Delete "${c?.name}"? This cannot be undone.`)) return;
@@ -6316,7 +6339,7 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
   const isRouting = c => {
     if (deletedIds.has(c.id)) return false;
     const s = statusOf(c);
-    return s === "active" || s === "paused";
+    return s === "active" || s === "inactive";
   };
   const orderedAll = order.map(id => CAMPAIGNS.find(c => c.id === id)).filter(Boolean);
   const priorityMap = {};
@@ -6341,7 +6364,7 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
   }
 
   const liveCampaigns = CAMPAIGNS.filter(c => !deletedIds.has(c.id));
-  const statusOptions = ["Active", "Inactive", "Draft", "Ended"];
+  const statusOptions = ["Active", "Inactive", "Expired"];
   const hasAnyFilter = !!(search || statusFilter);
   const clearAllFilters = () => { setSearch(""); setStatusFilter(null); };
 
@@ -6353,12 +6376,12 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
     else { setSortKey(key); setSortDir("asc"); }
   }
 
-  const STATUS_ORDER = { active: 0, paused: 1, draft: 2, ended: 3 };
+  const STATUS_ORDER = { active: 0, inactive: 1, expired: 2 };
 
   const filteredRows = orderedAll.filter(c => {
     if (deletedIds.has(c.id)) return false;
     const s = statusOf(c);
-    const filterVal = statusFilter === "Inactive" ? "paused" : statusFilter?.toLowerCase();
+    const filterVal = statusFilter === "Inactive" ? "inactive" : statusFilter === "Expired" ? "expired" : statusFilter?.toLowerCase();
     if (filterVal && s !== filterVal) return false;
     if (search && !c.name.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
@@ -6438,20 +6461,6 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
               <th style={{ width: 110, cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("priority")}>
                 <span style={{ display: "inline-flex", alignItems: "center" }}>Priority<SortIcon k="priority"/></span>
               </th>
-              <th style={{ paddingRight: "var(--space-2)" }}>
-                <span style={{ display: "inline-flex", alignItems: "center", gap: "var(--space-1)" }}>
-                  Campaign State
-                  <InfoTooltip>
-                    <div className="info-tooltip-card-title">What is Campaign State?</div>
-                    <div className="info-tooltip-card-body">
-                      It tells you the current condition of the survey attached to this campaign.
-                      <div className="info-tooltip-card-row"><b>Live</b> The survey is published and actively collecting responses.</div>
-                      <div className="info-tooltip-card-row"><b>Draft</b> The survey is still being set up and hasn't gone live yet.</div>
-                      <div className="info-tooltip-card-row"><b>Working Copy</b> The survey is live, but there are unpublished changes waiting to go out.</div>
-                    </div>
-                  </InfoTooltip>
-                </span>
-              </th>
               <th>Campaign Name / Details</th>
               <th>Channels</th>
               <th>Sampling</th>
@@ -6470,8 +6479,6 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
               const routing = isRouting(c);
               const showPriority = routing && statusOf(c) === "active";
               const s = statusOf(c);
-              const surveyState = c.hasWorkingCopy ? "working" : s === "draft" ? "draft" : "live";
-              const surveyStateLabel = { live: "Live", draft: "Draft", working: "Working Copy" }[surveyState];
               return (
                 <tr key={c.id}>
                   <td>
@@ -6491,11 +6498,6 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                       <span style={{ color: "var(--lyra-slate-400)", font: "600 14px/20px var(--font-sans)" }}>—</span>
                     )}
                   </td>
-                  <td style={{ paddingRight: "var(--space-2)" }}>
-                    <span className={`ss-badge ${surveyState}`} data-tip={`Campaign State: ${surveyStateLabel}`}>
-                      {surveyStateLabel}
-                    </span>
-                  </td>
                   <td>
                     <a className="agent-link" href="#" onClick={e => { e.preventDefault(); onOpen && onOpen(c); }}>
                       {c.name}
@@ -6503,6 +6505,7 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                     <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 4 }}>
                       Created {c.created}, {c.owner}
                     </div>
+                    <CampaignStateInline status={s} hasWorkingCopy={c.hasWorkingCopy}/>
                   </td>
                   <td>
                     <span style={{ font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>
@@ -8185,7 +8188,7 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
   };
 
   const routingPos = (() => {
-    const routing = CAMPAIGNS.filter(x => x.status === "active" || x.status === "paused");
+    const routing = CAMPAIGNS.filter(x => x.status === "active" || x.status === "inactive");
     const idx = routing.findIndex(x => x.id === c.id);
     return idx >= 0 ? { pos: idx + 1, total: routing.length } : null;
   })();
@@ -8237,12 +8240,12 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
             <span style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)" }}>Campaign Status</span>
             <StatusPill s={c.status}/>
           </div>
-          {c.hasWorkingCopy && (
+          {c.status !== "expired" && (
             <>
               <div style={{ width: 1, height: 20, background: "var(--color-border-soft)", flexShrink: 0 }}/>
               <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
                 <span style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)" }}>Campaign State</span>
-                <WorkingCopyChip/>
+                <CampaignStateInline status={c.status} hasWorkingCopy={c.hasWorkingCopy}/>
               </div>
             </>
           )}
@@ -8374,7 +8377,7 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
 
 /* Campaign Summary sidebar card */
 function CampaignSummaryCard({ campaign: c }) {
-  const isLive = c.status === "active" || c.status === "paused";
+  const isLive = c.status === "active" || c.status === "inactive";
 
   /* ── Live metrics (active / paused campaigns) ── */
   const metricRows = [
@@ -9066,7 +9069,7 @@ function SurveyDesignsGrid({ onCreate, onOpen }) {
                 </td>
                 <td>{d.surveyType}</td>
                 <td>
-                  <span className={`fi-pill ${d.aiQuestions ? "active" : "ended"}`}>
+                  <span className={`fi-pill ${d.aiQuestions ? "active" : "draft"}`}>
                     <span className="dot"/>{d.aiQuestions ? "On" : "Off"}
                   </span>
                 </td>
@@ -9710,11 +9713,11 @@ function LinkedCampaignsTable({ linkedIds, currentDesignId, onToggle }) {
                   </td>
                   <td style={{ padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
                     <div style={{ font: "500 14px/20px Inter", color: "var(--lyra-slate-900)" }}>{c.name}</div>
-                    {c.hasWorkingCopy ? (
+                    {c.status !== "expired" && (
                       <div style={{ marginTop: 4 }}>
-                        <WorkingCopyChip/>
+                        <CampaignStateInline status={c.status} hasWorkingCopy={c.hasWorkingCopy}/>
                       </div>
-                    ) : null}
+                    )}
                   </td>
                   <td style={{ padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
                     <StatusPill s={c.status}/>
