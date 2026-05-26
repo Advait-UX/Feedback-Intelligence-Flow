@@ -8018,15 +8018,10 @@ function FloatingMetrics({ campaign: c }) {
   const agentTeams = c.queues?.length ? c.queues.join(", ") : "Not set";
   const agentGroups = c.teams?.length ? c.teams.join(", ") : "All groups";
 
-  const interactions = c.samplingPct
-    ? `${c.samplingPct}% of interactions`
-    : "Not configured";
-
   const rows = [
     { icon: "calendar", label: "Active date range",      value: dateRange },
     { icon: "agents",   label: "Agent teams",            value: agentTeams },
     { icon: "agents",   label: "Agent groups",           value: agentGroups },
-    { icon: "survey",   label: "Interactions surveyed",  value: interactions },
   ];
 
   return (
