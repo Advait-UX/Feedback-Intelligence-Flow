@@ -6464,7 +6464,7 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
               <th>Campaign Name / Details</th>
               <th>Channels</th>
               <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("endDate")}>
-                <span style={{ display: "inline-flex", alignItems: "center" }}>Date range<SortIcon k="endDate"/></span>
+                <span style={{ display: "inline-flex", alignItems: "center" }}>Period<SortIcon k="endDate"/></span>
               </th>
               <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("updated")}>
                 <span style={{ display: "inline-flex", alignItems: "center" }}>Last updated<SortIcon k="updated"/></span>
@@ -6512,17 +6512,9 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                     </span>
                   </td>
                   <td>
-                    <span style={{ font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>{c.created}</span>
-                    <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 2 }}>
-                      <svg viewBox="0 0 16 8" width="16" height="8" fill="none" aria-hidden="true">
-                        <line x1="0" y1="4" x2="13" y2="4" stroke="var(--lyra-slate-400)" strokeWidth="1.2"/>
-                        <polyline points="10,1 13,4 10,7" stroke="var(--lyra-slate-400)" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-                      </svg>
-                      {c.endDate
-                        ? <span style={{ font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>{c.endDate}</span>
-                        : <span style={{ font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-secondary)", fontStyle: "italic" }}>Ongoing</span>
-                      }
-                    </div>
+                    <span style={{ font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)", whiteSpace: "nowrap" }}>
+                      {c.created} – {c.endDate || <span style={{ color: "var(--color-fg-secondary)", fontStyle: "italic" }}>Ongoing</span>}
+                    </span>
                   </td>
                   <td>
                     <div>{c.updated}</div>
