@@ -7185,11 +7185,11 @@ function CreateCampaign({ template: initialTemplate, editCampaign, onCancel, onS
       <div className="crumbs">
         <a href="#" onClick={e => { e.preventDefault(); onCancel(); }}>Survey Campaigns</a>
         <span className="sep">/</span>
-        <span className="last">Create New Survey Campaign</span>
+        <span className="last">{editCampaign ? editCampaign.name : "Create New Survey Campaign"}</span>
       </div>
 
       <div className="pane-head" style={{ paddingTop: 6 }}>
-        <h1>Create New Survey Campaign</h1>
+        <h1>{editCampaign ? editCampaign.name : "Create New Survey Campaign"}</h1>
         <div className="head-actions">
           <button className="ai-sparkle-btn">
             <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42"/></svg>
@@ -7197,6 +7197,33 @@ function CreateCampaign({ template: initialTemplate, editCampaign, onCancel, onS
           </button>
         </div>
       </div>
+
+      {/* ── Meta bar — only shown when editing an existing campaign ── */}
+      {editCampaign && (
+        <div style={{
+          display: "flex", alignItems: "center", gap: "var(--space-3)",
+          padding: "var(--space-4) var(--space-8)",
+          borderBottom: "1px solid var(--color-border-subtle)",
+        }}>
+          <div style={{ flex: 1, font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-secondary)" }}>
+            <strong style={{ color: "var(--color-fg-default)", fontWeight: 500 }}>Owner:</strong> {editCampaign.owner}
+            <span style={{ margin: "0 var(--space-2)" }}>•</span>
+            <strong style={{ color: "var(--color-fg-default)", fontWeight: 500 }}>Created:</strong> {editCampaign.created}
+            <span style={{ margin: "0 var(--space-2)" }}>•</span>
+            <strong style={{ color: "var(--color-fg-default)", fontWeight: 500 }}>Last Updated:</strong> {editCampaign.updated}
+            {editCampaign.status !== "expired" && (
+              <>
+                <span style={{ margin: "0 var(--space-2)" }}>•</span>
+                <CampaignStateInline status={editCampaign.status} hasWorkingCopy={editCampaign.hasWorkingCopy}/>
+              </>
+            )}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+            <span style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)" }}>Campaign Status</span>
+            <StatusPill s={editCampaign.status}/>
+          </div>
+        </div>
+      )}
 
       {/* ── Horizontal Wizard Bar ── */}
       <div className="wz-bar">
