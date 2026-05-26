@@ -7148,8 +7148,8 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
               <SRow label="Description" value={c.description || null}/>
               <SRow label="Start Date" value={c.startDate}/>
               <SRow label="End Date" value={c.ongoing ? "Ongoing" : (c.endDate || null)}/>
-              <SRow label="Agent Teams" value={(c.queues || []).join(", ") || "Not set"}/>
-              <SRow label="Agent Groups" value={(c.teams || []).join(", ") || "All groups"}/>
+              <SRow label="Teams" value={(c.queues || []).join(", ") || "Not set"}/>
+              <SRow label="Groups" value={(c.teams || []).join(", ") || "All groups"}/>
               <SRow label="Language" value="English (Default)"/>
             </SummarySection>
             <SummarySection title="Suppression Rules">
@@ -7326,7 +7326,7 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
                 <div className="section-heading" style={{ paddingTop: "var(--space-6)", paddingBottom: "var(--space-2)" }}>Agents</div>
                 <div className="field-grid-2" style={{ borderTop: "none", paddingTop: 0, paddingBottom: 0 }}>
                   <div className="field-cell">
-                    <label className="field-label">Agent Teams<span className="req">*</span></label>
+                    <label className="field-label">Teams<span className="req">*</span></label>
                     <MultiSelectField
                       options={["Tier 1 Billing", "Tier 2 Support", "Sales", "Retention"]}
                       value={c.queues || []}
@@ -7550,8 +7550,8 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
                       ? (c.ongoing ? `Ongoing from ${c.startDate}` : c.endDate ? `${c.startDate} — ${c.endDate}` : <span style={{ color: "var(--color-status-error)" }}>End date required</span>)
                       : <span style={{ color: "var(--color-status-error)" }}>Required</span>}
                   </SRRow>
-                  <SRRow label="Agent Teams">{c.queues?.length ? c.queues.join(", ") : <span style={{ color: "var(--color-status-error)" }}>Required</span>}</SRRow>
-                  <SRRow label="Agent Groups">{c.teams?.length ? c.teams.join(", ") : "All groups"}</SRRow>
+                  <SRRow label="Teams">{c.queues?.length ? c.queues.join(", ") : <span style={{ color: "var(--color-status-error)" }}>Required</span>}</SRRow>
+                  <SRRow label="Groups">{c.teams?.length ? c.teams.join(", ") : "All groups"}</SRRow>
                   <SRRow label="Language">English (Default)</SRRow>
                 </SRSection>
 
@@ -8413,8 +8413,8 @@ function ConfigurationView({ campaign: c }) {
         <DefRow label="Campaign Name">{c.name}</DefRow>
         {c.description && <DefRow label="Description">{c.description}</DefRow>}
         <DefRow label="Active Date Range">{dateRange}</DefRow>
-        <DefRow label="Agent Teams">{c.queues?.length ? c.queues.join(", ") : <span style={{ color: "var(--color-fg-secondary)" }}>Not set</span>}</DefRow>
-        <DefRow label="Agent Groups">{c.teams?.length ? c.teams.join(", ") : "All groups"}</DefRow>
+        <DefRow label="Teams">{c.queues?.length ? c.queues.join(", ") : <span style={{ color: "var(--color-fg-secondary)" }}>Not set</span>}</DefRow>
+        <DefRow label="Groups">{c.teams?.length ? c.teams.join(", ") : "All groups"}</DefRow>
         <DefRow label="Language">English (Default)</DefRow>
       </ConfigGroup>
 
