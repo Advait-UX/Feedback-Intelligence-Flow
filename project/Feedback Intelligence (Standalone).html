@@ -1370,11 +1370,11 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
 /* Campaign State — inline dot + label */
 @keyframes state-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 .cs-dot {
-  display: inline-block; width: 6px; height: 6px;
+  display: inline-block; width: 8px; height: 8px;
   border-radius: 50%; flex-shrink: 0; vertical-align: middle; margin-top: -1px;
 }
-.cs-dot.live    { background: var(--lyra-green-700); }
-.cs-dot.draft   { background: var(--lyra-slate-400); }
+.cs-dot.live    { background: #278a33; }
+.cs-dot.draft   { background: var(--lyra-slate-500); }
 .cs-dot.working { background: var(--lyra-purple-500); animation: state-pulse 2.4s ease-in-out infinite; }
 
 
@@ -3675,11 +3675,11 @@ tbody tr.selected td:first-child::before{
 /* Campaign State — inline dot + label (no background, no border) */
 @keyframes state-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 .cs-dot {
-  display: inline-block; width: 6px; height: 6px;
+  display: inline-block; width: 8px; height: 8px;
   border-radius: 50%; flex-shrink: 0; vertical-align: middle; margin-top: -1px;
 }
-.cs-dot.live    { background: var(--lyra-green-700); }
-.cs-dot.draft   { background: var(--lyra-slate-400); }
+.cs-dot.live    { background: #278a33; }
+.cs-dot.draft   { background: var(--lyra-slate-500); }
 .cs-dot.working { background: var(--lyra-purple-500); animation: state-pulse 2.4s ease-in-out infinite; }
 /* CSS tooltip — Lyra bg-inverse surface */
 .ss-badge::after {
@@ -5928,9 +5928,9 @@ const CAMPAIGNS = [
     owner: "Aisha Khan", created: "May 10, 2026", updated: "May 10, 2026", endDate: "Aug 31, 2026" },
   { id: 15, name: "Complaint Resolution Follow-Up",
     status: "active", channels: ["digital", "voice"], surveyDesignId: "fcr-check",
-    hasWorkingCopy: true, workingCopyVersion: 2, publishedVersion: 1, publishedAt: "Mar 15, 2026", workingCopyEditedBy: "Maria Cohen", workingCopyEditedAt: "Apr 20, 2026",
+    hasWorkingCopy: true, workingCopyVersion: 2, publishedVersion: 1, publishedAt: "Mar 15, 2026", workingCopyEditedBy: "Maria Cohen", workingCopyEditedAt: "May 12, 2026",
     sampling: 85, sent: 6720, completion: 31.8, vu: 72,
-    owner: "Maria Cohen", created: "Mar 12, 2026", updated: "Apr 20, 2026", endDate: null },
+    owner: "Maria Cohen", created: "Mar 12, 2026", updated: "May 12, 2026", endDate: null },
   { id: 16, name: "Seasonal Campaign — Q1 2026",
     status: "expired", channels: ["digital"], surveyDesignId: "csat-quick",
     sampling: 100, sent: 18900, completion: 24.5, vu: 65,
@@ -6063,16 +6063,16 @@ function WorkingCopyChip() {
 
 function CampaignStateInline({ status, hasWorkingCopy }) {
   if (status === "expired") return null;
-  let dotClass, label;
+  let dotClass, label, color;
   if (status === "inactive") {
-    dotClass = "draft"; label = "Draft";
+    dotClass = "draft"; label = "Draft"; color = "var(--lyra-slate-600)";
   } else if (hasWorkingCopy) {
-    dotClass = "working"; label = "Working Copy";
+    dotClass = "working"; label = "Working Copy"; color = "var(--lyra-purple-700)";
   } else {
-    dotClass = "live"; label = "Live";
+    dotClass = "live"; label = "Live"; color = "var(--lyra-green-700)";
   }
   return (
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 2 }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, font: "500 12px/16px var(--font-sans)", color, marginTop: 3 }}>
       <span className={`cs-dot ${dotClass}`}/>
       {label}
     </span>
