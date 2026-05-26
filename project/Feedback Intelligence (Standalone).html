@@ -8179,12 +8179,6 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
     setToast({ msg: `Working copy discarded. v${c.publishedVersion} remains active.` });
   };
 
-  const routingPos = (() => {
-    const routing = CAMPAIGNS.filter(x => x.status === "active" || x.status === "inactive");
-    const idx = routing.findIndex(x => x.id === c.id);
-    return idx >= 0 ? { pos: idx + 1, total: routing.length } : null;
-  })();
-
   return (
     <div className="pane" style={{ overflow: "hidden" }}>
       <div className="crumbs">
@@ -8220,10 +8214,10 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
           <strong style={{ color: "var(--color-fg-default)", fontWeight: 500 }}>Created:</strong> {c.created}
           <span style={{ margin: "0 var(--space-2)" }}>•</span>
           <strong style={{ color: "var(--color-fg-default)", fontWeight: 500 }}>Last Updated:</strong> {c.updated}
-          {routingPos && (
+          {c.status !== "expired" && (
             <>
               <span style={{ margin: "0 var(--space-2)" }}>•</span>
-              <strong style={{ color: "var(--color-fg-default)", fontWeight: 500 }}>Routing Position:</strong> {routingPos.pos} out of {routingPos.total}
+              <CampaignStateInline status={c.status} hasWorkingCopy={c.hasWorkingCopy}/>
             </>
           )}
         </div>
@@ -8232,15 +8226,6 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
             <span style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)" }}>Campaign Status</span>
             <StatusPill s={c.status}/>
           </div>
-          {c.status !== "expired" && (
-            <>
-              <div style={{ width: 1, height: 20, background: "var(--color-border-soft)", flexShrink: 0 }}/>
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-                <span style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)" }}>Campaign State</span>
-                <CampaignStateInline status={c.status} hasWorkingCopy={c.hasWorkingCopy}/>
-              </div>
-            </>
-          )}
         </div>
       </div>
 
@@ -8369,7 +8354,7 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
 
 /* Campaign Summary sidebar card */
 function CampaignSummaryCard({ campaign: c }) {
-  const isLive = c.status === "active" || c.status === "inactive";
+  const isLive = c.status === "active";
 
   /* ── Live metrics (active / paused campaigns) ── */
   const metricRows = [
