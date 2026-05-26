@@ -6463,7 +6463,6 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
               </th>
               <th>Campaign Name / Details</th>
               <th>Channels</th>
-              <th>Sampling</th>
               <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("endDate")}>
                 <span style={{ display: "inline-flex", alignItems: "center" }}>End date<SortIcon k="endDate"/></span>
               </th>
@@ -6512,7 +6511,6 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                       {c.channels.map(k => k === "voice" ? "Voice" : "Digital").join(", ")}
                     </span>
                   </td>
-                  <td>{c.sampling}%</td>
                   <td>
                     {c.endDate
                       ? <span style={{ font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>{c.endDate}</span>
