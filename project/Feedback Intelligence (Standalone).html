@@ -677,6 +677,11 @@ select.fi-input {
   font-weight: 500;
   box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 }
+.seg button:disabled {
+  color: var(--lyra-slate-400);
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
 /* Toggle */
 .switch {
@@ -6880,11 +6885,11 @@ function FieldRow({ label, hint, req, tooltip, children }) {
   );
 }
 
-function Segmented({ options, value, onChange }) {
+function Segmented({ options, value, onChange, disabled = [] }) {
   return (
     <div className="seg">
       {options.map(o => (
-        <button key={o} className={value === o ? "on" : ""} onClick={() => onChange(o)}>{o}</button>
+        <button key={o} className={value === o ? "on" : ""} disabled={disabled.includes(o)} onClick={() => onChange(o)}>{o}</button>
       ))}
     </div>
   );
@@ -9174,7 +9179,8 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
                     <div className="sc-group-label">Channel</div>
                     <div className="field-cell">
                       <label className="field-label">Survey Channel<span className="req">*</span></label>
-                      <Segmented options={["Digital", "IVR", "Both"]}
+                      <Segmented options={["Digital", "IVR", "All"]}
+                        disabled={["IVR", "All"]}
                         value={d.channel} onChange={v => set("channel", v)}/>
                       <div className="help">
                         {d.channel === "Digital" ? "Delivered on chat, AI sessions, social & email." :
