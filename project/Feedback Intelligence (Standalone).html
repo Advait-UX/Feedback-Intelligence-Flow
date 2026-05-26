@@ -7045,15 +7045,17 @@ function FiDatePicker({ value, onChange, disabled, placeholder = "Select date", 
   );
 }
 
-function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
+function CreateCampaign({ template: initialTemplate, editCampaign, onCancel, onSave }) {
   const [selectedTemplate, setSelectedTemplate] = React.useState(initialTemplate || null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [modelDrawerOpen, setModelDrawerOpen] = React.useState(false);
   const [surveyDrawerOpen, setSurveyDrawerOpen] = React.useState(false);
   const [c, setC] = React.useState(() =>
-    initialTemplate
-      ? { ...DEFAULT_CAMPAIGN, channels: initialTemplate.channels || DEFAULT_CAMPAIGN.channels }
-      : DEFAULT_CAMPAIGN
+    editCampaign
+      ? { ...DEFAULT_CAMPAIGN, ...editCampaign }
+      : initialTemplate
+        ? { ...DEFAULT_CAMPAIGN, channels: initialTemplate.channels || DEFAULT_CAMPAIGN.channels }
+        : DEFAULT_CAMPAIGN
   );
   const [activeStep, setActiveStep] = React.useState(0);
   const [visitedSteps, setVisitedSteps] = React.useState(new Set());
@@ -10189,16 +10191,17 @@ function App() {
       if (route.view === "create") {
         content = <CreateCampaign
           template={route.template || null}
-          onCancel={() => setRoute({ ...route, view: "list" })}
+          editCampaign={route.editCampaign || null}
+          onCancel={() => setRoute({ ...route, view: "list", editCampaign: null })}
           onSave={(c) => {
             setToast({ icon: "check", msg: c.status === "active" ? `Campaign "${c.name}" is now live.` : `Campaign "${c.name}" saved as draft.` });
-            setRoute({ ...route, view: "list" });
+            setRoute({ ...route, view: "list", editCampaign: null });
           }}/>;
       } else if (route.view === "detail" && route.campaign) {
         content = <CampaignDetail
           campaign={route.campaign}
           onBack={() => setRoute({ ...route, view: "list", campaign: null })}
-          onEdit={() => setRoute({ ...route, view: "create" })}/>;
+          onEdit={(c) => setRoute({ ...route, view: "create", editCampaign: c })}/>;
       } else {
         content = <SurveyCampaignsGrid
           onCreate={() => setRoute({ ...route, view: "create" })}
