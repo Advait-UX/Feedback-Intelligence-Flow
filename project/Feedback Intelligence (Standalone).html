@@ -7047,13 +7047,12 @@ function FiDatePicker({ value, onChange, disabled, placeholder = "Select date", 
 
 function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
   const [selectedTemplate, setSelectedTemplate] = React.useState(initialTemplate || null);
-  const [samplingAutofilled, setSamplingAutofilled] = React.useState(!!initialTemplate);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [modelDrawerOpen, setModelDrawerOpen] = React.useState(false);
   const [surveyDrawerOpen, setSurveyDrawerOpen] = React.useState(false);
   const [c, setC] = React.useState(() =>
     initialTemplate
-      ? { ...DEFAULT_CAMPAIGN, samplingPct: initialTemplate.suggestedSampling, channels: initialTemplate.channels || DEFAULT_CAMPAIGN.channels }
+      ? { ...DEFAULT_CAMPAIGN, channels: initialTemplate.channels || DEFAULT_CAMPAIGN.channels }
       : DEFAULT_CAMPAIGN
   );
   const [activeStep, setActiveStep] = React.useState(0);
@@ -7063,24 +7062,20 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
 
   function pickTemplate(t) {
     setSelectedTemplate(t);
-    setSamplingAutofilled(true);
     setDrawerOpen(false);
-    set("samplingPct", t.suggestedSampling);
     set("channels", t.channels || DEFAULT_CAMPAIGN.channels);
   }
 
   function goScratch() {
     setSelectedTemplate(null);
-    setSamplingAutofilled(false);
     setDrawerOpen(false);
   }
 
   const ALL_STEPS = [
     { n: 0, label: "Template, Identity & Scope",   done: !!c.name },
     { n: 1, label: "Suppression Rules",     done: true },
-    { n: 2, label: "Volume & Sampling",     done: c.samplingPct > 0 },
-    { n: 3, label: "Topic AI Model & Survey Template", done: !!c.aiModelId && !!c.surveyDesignId },
-    { n: 4, label: "Summary & Review",      done: false },
+    { n: 2, label: "Topic AI Model & Survey Template", done: !!c.aiModelId && !!c.surveyDesignId },
+    { n: 3, label: "Summary & Review",      done: false },
   ];
 
   function stepState(s) {
@@ -7157,11 +7152,6 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
               <SRow label="Agent Groups" value={(c.teams || []).join(", ") || "All groups"}/>
               <SRow label="Language" value="English (Default)"/>
             </SummarySection>
-            <SummarySection title="Volume & Sampling">
-              <SRow label="Sampling %" value={`${c.samplingPct}%`}/>
-              <SRow label="Min. customer turns" value={c.minCustomerTurns}/>
-              <SRow label="Min. agent turns" value={c.minAgentTurns}/>
-            </SummarySection>
             <SummarySection title="Suppression Rules">
               <SRow label="Opt-out suppression" value={c.suppressOptOut ? "Enabled" : "Disabled"}/>
               <SRow label="Recency window" value={c.suppressRecent ? `${c.recentDays} days` : "Disabled"}/>
@@ -7185,7 +7175,7 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
   }
 
   const datesValid  = !!(c.startDate && (c.ongoing || c.endDate));
-  const canDraft    = !!(c.name && c.samplingPct && datesValid);
+  const canDraft    = !!(c.name && datesValid);
   const canActivate = !!(c.name && c.queues?.length && datesValid);
 
   return (
@@ -7425,50 +7415,9 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
             </div>
           )}
 
-          {/* ── Step 2: Volume & Sampling ── */}
-          {activeStep === 2 && (
-            <div className="wz-step-content">
-              <div className="wz-content-card">
-              <div className="wz-step-head">
-                <h2>Volume & Sampling</h2>
-                <p>How many interactions get a survey, & which ones.</p>
-              </div>
-              <FieldRow label="Sampling %" hint="">
-                <div>
-                  <input type="range" min="10" max="100" step="5" value={c.samplingPct}
-                    style={{ width: "100%", accentColor: "var(--color-fg-active-strong)" }}
-                    onChange={e => { set("samplingPct", parseInt(e.target.value)); setSamplingAutofilled(false); }}/>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, font: "400 11px/16px var(--font-sans)", letterSpacing: "0.2px", color: "var(--color-fg-secondary)" }}>
-                    {[10,20,30,40,50,60,65,70,75,80,85,90,95,100].map(n => <span key={n}>{n}</span>)}
-                  </div>
-                </div>
-              </FieldRow>
-              <div style={{ paddingTop: "var(--space-4)" }}>
-                <div className="section-heading" style={{ marginBottom: "var(--space-4)", display: "flex", alignItems: "center", gap: 4 }}>
-                  Interaction Length Filter
-                  <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" style={{ color: "var(--color-fg-secondary)", flexShrink: 0 }}><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .5c0 1.5-2 2.2-2.5 3.2"/><circle cx="12" cy="16.5" r=".6" fill="currentColor"/></svg>
-                </div>
-                <div className="field-grid-2" style={{ borderTop: "none", paddingTop: 0 }}>
-                  <div className="field-cell">
-                    <label className="field-label">Customer turns greater than</label>
-                    <input type="number" className="fi-input" min="0"
-                      value={c.minCustomerTurns}
-                      onChange={e => set("minCustomerTurns", parseInt(e.target.value || 0))}/>
-                  </div>
-                  <div className="field-cell">
-                    <label className="field-label">Agent turns greater than</label>
-                    <input type="number" className="fi-input" min="0"
-                      value={c.minAgentTurns}
-                      onChange={e => set("minAgentTurns", parseInt(e.target.value || 0))}/>
-                  </div>
-                </div>
-              </div>
-              </div>
-            </div>
-          )}
 
-          {/* ── Step 3: Topic AI Model &amp; Survey Template ── */}
-          {activeStep === 3 && (
+          {/* ── Step 2: Topic AI Model & Survey Template ── */}
+          {activeStep === 2 && (
             <div className="wz-step-content">
               <div className="wz-content-card">
               <div className="wz-step-head">
@@ -7547,7 +7496,7 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
           )}
 
           {/* ── Step 4: Summary & Review ── */}
-          {activeStep === 4 && (() => {
+          {activeStep === 3 && (() => {
             const CHANNEL_LABEL = { digital: "Digital", voice: "Voice", email: "Email", sms: "SMS" };
             const aiModel = AI_MODELS?.find(m => m.id === c.aiModelId);
             const survey  = SURVEY_DESIGNS?.find(s => s.id === c.surveyDesignId);
@@ -7611,11 +7560,8 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
                   <SRRow label="Recency window">{c.suppressRecent !== false ? `Enabled · ${c.recentDays ?? 30} days` : "Disabled"}</SRRow>
                 </SRSection>
 
-                <SRSection title="Volume & Sampling" num={3}>
-                  <SRRow label="Sampling Rate">{c.samplingPct ? `${c.samplingPct}%` : <span style={{ color: "var(--color-fg-secondary)" }}>Not set</span>}</SRRow>
-                </SRSection>
 
-                <SRSection title="Topic AI Model &amp; Survey Template" num={4}>
+                <SRSection title="Topic AI Model &amp; Survey Template" num={3}>
                   <SRRow label="Topic AI Model">{aiModel ? aiModel.name : <span style={{ color: "var(--color-fg-secondary)" }}>Not configured</span>}</SRRow>
                   <SRRow label="Survey Template">{survey ? survey.name : <span style={{ color: "var(--color-fg-secondary)" }}>Not configured</span>}</SRRow>
                 </SRSection>
@@ -7644,7 +7590,7 @@ function CreateCampaign({ template: initialTemplate, onCancel, onSave }) {
               <button className="btn" onClick={goBack}>← Back</button>
             )}
             <button className="btn primary" onClick={goNext}>
-              {activeStep === 3 ? "Review →" : "Next →"}
+              {activeStep === 2 ? "Review →" : "Next →"}
             </button>
           </>
         ) : (
@@ -8488,16 +8434,9 @@ function ConfigurationView({ campaign: c }) {
         </DefRow>
       </ConfigGroup>
 
-      {/* Step 2 mirror: Volume & Sampling */}
-      <ConfigGroup num="3" title="Volume & Sampling">
-        <DefRow label="Sampling Rate">
-          {c.samplingPct ? `${c.samplingPct}%` : "Not set"}
-          {c.samplingPct ? ` — approx. ${Math.round(c.samplingPct * 0.4)} interactions / day` : ""}
-        </DefRow>
-      </ConfigGroup>
 
-      {/* Step 3 mirror: Topic AI Model &amp; Survey Template */}
-      <ConfigGroup num="4" title="Topic AI Model &amp; Survey Template">
+      {/* Step 2 mirror: Topic AI Model & Survey Template */}
+      <ConfigGroup num="3" title="Topic AI Model &amp; Survey Template">
         <DefRow label="Topic AI Model">
           {aiModel ? aiModel.name : <span style={{ color: "var(--color-fg-secondary)" }}>Not configured</span>}
         </DefRow>
