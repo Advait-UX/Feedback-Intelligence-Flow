@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Feedback Intelligence — Version Notes · May 26, 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand-600: #166cca;
+      --brand-700: #185ba4;
+      --brand-50:  #e9f1fc;
+      --slate-50:  #fbfcfe;
+      --slate-100: #f5f7f9;
+      --slate-200: #eef0f2;
+      --slate-300: #d2d8db;
+      --slate-600: #526b7a;
+      --slate-700: #3f5e69;
+      --slate-900: #1d2630;
+      --green-50:  #e6f7e8;
+      --green-700: #1c5e25;
+      --purple-50: #f4eefb;
+      --purple-700: #4d3a7a;
+      --orange-50: #fff2e2;
+      --orange-700: #a64f00;
+      --fg-default: rgba(0,0,0,0.80);
+      --fg-secondary: rgba(0,0,0,0.64);
+      --border-subtle: rgba(0,0,0,0.10);
+      --border-soft: rgba(0,0,0,0.16);
+      --font: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 20px;
+      color: var(--fg-default);
+      background: var(--slate-100);
+      min-height: 100vh;
+      padding: 40px 24px 80px;
+    }
+
+    .page { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+
+    /* Header card */
+    .header-card {
+      background: var(--brand-700);
+      border-radius: 12px;
+      padding: 40px 48px;
+      color: #fff;
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 24px;
+    }
+    .header-card .product { font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7; margin-bottom: 8px; }
+    .header-card h1 { font-size: 28px; font-weight: 600; line-height: 32px; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .header-card .subtitle { font-size: 14px; font-weight: 400; opacity: 0.80; line-height: 20px; }
+    .version-badge {
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 9999px;
+      padding: 6px 16px;
+      font-size: 13px; font-weight: 500; color: #fff;
+      white-space: nowrap;
+    }
+
+    /* Section card */
+    .card {
+      background: #fff;
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.06);
+    }
+    .card-head {
+      padding: 20px 28px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .card-head-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .card-head-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .card-head h2 { font-size: 15px; font-weight: 600; line-height: 20px; color: var(--fg-default); }
+    .card-head .card-desc { font-size: 12px; font-weight: 400; color: var(--fg-secondary); margin-top: 1px; }
+    .card-body { padding: 20px 28px 24px; display: flex; flex-direction: column; gap: 12px; }
+
+    /* Feature item */
+    .feature { display: flex; align-items: flex-start; gap: 12px; }
+    .feature-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--brand-600);
+      flex-shrink: 0; margin-top: 7px;
+    }
+    .feature-text { flex: 1; }
+    .feature-text strong { font-weight: 500; color: var(--fg-default); }
+    .feature-text span { color: var(--fg-secondary); }
+
+    /* Screen list */
+    .screen-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 20px 28px 24px; }
+    .screen-item {
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .screen-item svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; margin-top: 1px; }
+    .screen-item-label { font-size: 13px; font-weight: 500; color: var(--fg-default); line-height: 18px; }
+    .screen-item-sub { font-size: 11px; font-weight: 400; color: var(--fg-secondary); margin-top: 2px; }
+
+    /* Status badge */
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 2px 10px; border-radius: 9999px;
+      font-size: 12px; font-weight: 500; line-height: 16px;
+      border: 1px solid transparent;
+    }
+    .badge.new      { background: var(--green-50);  color: var(--green-700);  border-color: rgba(28,94,37,0.20); }
+    .badge.updated  { background: var(--brand-50);  color: var(--brand-700);  border-color: rgba(24,91,164,0.20); }
+    .badge.ai       { background: var(--purple-50); color: var(--purple-700); border-color: rgba(77,58,122,0.20); }
+    .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+    /* How to open */
+    .steps { display: flex; flex-direction: column; gap: 16px; padding: 20px 28px 24px; }
+    .step { display: flex; align-items: flex-start; gap: 14px; }
+    .step-num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--brand-50); color: var(--brand-700);
+      font-size: 12px; font-weight: 600; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step-text { flex: 1; padding-top: 2px; }
+    .step-text strong { font-weight: 500; display: block; margin-bottom: 2px; }
+    .step-text span { color: var(--fg-secondary); font-size: 13px; }
+    code {
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 12px; background: var(--slate-100);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px; padding: 1px 6px;
+      color: var(--slate-700);
+    }
+
+    /* Meta footer */
+    .meta-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 16px 28px;
+      background: var(--slate-50);
+      border-top: 1px solid var(--border-subtle);
+      font-size: 12px; color: var(--fg-secondary);
+      flex-wrap: wrap;
+    }
+    .meta-row strong { color: var(--fg-default); font-weight: 500; }
+    .meta-divider { width: 3px; height: 3px; border-radius: 50%; background: var(--slate-300); }
+
+    /* Page footer */
+    .page-footer { text-align: center; font-size: 12px; color: var(--fg-secondary); padding-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- Header -->
+    <div class="header-card">
+      <div>
+        <div class="product">NiCE CXone · Feedback Intelligence</div>
+        <h1>Prototype Handoff</h1>
+        <div class="subtitle">UX prototype for stakeholder review.<br/>Survey Campaigns, Templates &amp; VU Score Model flows.</div>
+      </div>
+      <div class="version-badge">v2 · May 26, 2026</div>
+    </div>
+
+    <!-- Screens covered -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-icon" style="background:#e9f1fc; color:#166cca;">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <div>
+          <h2>Screens Covered</h2>
+          <div class="card-desc">All interactive flows in this prototype build</div>
+        </div>
+      </div>
+      <div class="screen-grid">
+        <div class="screen-item" style="color:#166cca;">
+          <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+          <div>
+            <div class="screen-item-label">Survey Campaigns</div>
+            <div class="screen-item-sub">Grid, filtering, priority, status</div>
+          </div>
+        </div>
+        <div class="screen-item" style="color:#166cca;">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
+          <div>
+            <div class="screen-item-label">Campaign Detail</div>
+            <div class="screen-item-sub">Read-only view, working copy, actions</div>
+          </div>
+        </div>
+        <div class="screen-item" style="color:#166cca;">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <div>
+            <div class="screen-item-label">Create Campaign</div>
+            <div class="screen-item-sub">5-step wizard, validation, review</div>
+          </div>
+        </div>
+        <div class="screen-item" style="color:#166cca;">
+          <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg>
+          <div>
+            <div class="screen-item-label">Survey Templates</div>
+            <div class="screen-item-sub">Digital, Voice, Both channel types</div>
+          </div>
+        </div>
+        <div class="screen-item" style="color:#7856ba;">
+          <svg viewBox="0 0 24 24"><path d="M12 2a9 9 0 1 0 0 18A9 9 0 0 0 12 2z"/><path d="M12 8v4l3 3"/></svg>
+          <div>
+            <div class="screen-item-label">VU Score Model</div>
+            <div class="screen-item-sub">AI topic modelling configuration</div>
+          </div>
+        </div>
+        <div class="screen-item" style="color:#166cca;">
+          <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          <div>
+            <div class="screen-item-label">Edit Configuration</div>
+            <div class="screen-item-sub">Working copy diff &amp; discard flow</div>
+          </div>
+        </div>
+      </div>
+      <div class="meta-row">
+        <strong>Design system</strong><span>Lyra (NiCE CXone)</span>
+        <div class="meta-divider"></div>
+        <strong>Stack</strong><span>Single-file HTML · React 18 · Babel Standalone</span>
+        <div class="meta-divider"></div>
+        <strong>File</strong><code>Feedback Intelligence (Standalone).html</code>
+      </div>
+    </div>
+
+    <!-- What's new in v2 -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-icon" style="background:#e6f7e8; color:#1c5e25;">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div>
+          <h2>What's New in v2</h2>
+          <div class="card-desc">Changes since the May 14 handoff</div>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="feature">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            <strong>Survey Templates — Voice channel support &nbsp;<span class="badge new"><span class="badge-dot"></span>New</span></strong><br/>
+            <span>Added three Voice-only templates: Post-Call IVR CSAT, NPS IVR Phone Survey, and Agent Coaching — Call Quality. Channel column shows plain text (Digital / Voice / Digital, Voice).</span>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            <strong>Survey Templates — Visual consistency &nbsp;<span class="badge updated"><span class="badge-dot"></span>Updated</span></strong><br/>
+            <span>Templates page now matches Survey Campaigns styling: count badge in heading, "by owner" under Last Updated, Search by name placeholder, empty state row, and row actions kebab (Edit / Duplicate / Delete).</span>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            <strong>Survey Templates — Simplified columns &nbsp;<span class="badge updated"><span class="badge-dot"></span>Updated</span></strong><br/>
+            <span>Removed Digital style, Max Qs, Used by, Owner filter, and action column. Table now shows: Survey template · Channels · Type · AI questions · Last updated.</span>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            <strong>Info banner spacing &amp; scroll behaviour &nbsp;<span class="badge updated"><span class="badge-dot"></span>Updated</span></strong><br/>
+            <span>Info banner now has 24px top / 12px bottom margin and scrolls with table content (no longer pinned above the table).</span>
+          </div>
+        </div>
+
+        <div class="feature">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            <strong>Global header — waffle icon removed &nbsp;<span class="badge updated"><span class="badge-dot"></span>Updated</span></strong><br/>
+            <span>App-switcher (waffle/grid) icon removed from the top-right utility bar.</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- How to open -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-icon" style="background:#fff2e2; color:#a64f00;">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+        </div>
+        <div>
+          <h2>How to Open the Prototype</h2>
+          <div class="card-desc">No install or server required</div>
+        </div>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-text">
+            <strong>Download the file</strong>
+            <span>Save <code>Feedback Intelligence (Standalone).html</code> from the shared folder or Git repository.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-text">
+            <strong>Open in Chrome or Edge</strong>
+            <span>Double-click the file or drag it into a browser tab. No localhost needed — the prototype is fully self-contained.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-text">
+            <strong>Navigate using the left sidebar</strong>
+            <span>Use <strong>Survey Campaigns</strong>, <strong>Survey Templates</strong>, and <strong>VU Score Model</strong> to explore all flows. All buttons and actions are interactive.</span>
+          </div>
+        </div>
+      </div>
+      <div class="meta-row">
+        <strong>Git repo</strong>
+        <span>github.com/Advait-UX/Feedback-Intelligence-Flow</span>
+        <div class="meta-divider"></div>
+        <strong>Branch</strong><code>main</code>
+        <div class="meta-divider"></div>
+        <strong>Last commit</strong><span>May 26, 2026</span>
+      </div>
+    </div>
+
+    <div class="page-footer">Feedback Intelligence · NiCE CXone &nbsp;·&nbsp; For internal review only</div>
+
+  </div>
+</body>
+</html>
