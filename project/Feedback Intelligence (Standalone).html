@@ -8398,15 +8398,11 @@ function CampaignSummaryCard({ campaign: c }) {
     }] : []),
     {
       icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="6" cy="5" r="2"/><path d="M1 13c0-2.2 1.8-4 4-4h2"/><circle cx="11.5" cy="6" r="2"/><path d="M8 13.5c0-1.9 1.6-3.5 3.5-3.5s3.5 1.6 3.5 3.5"/></svg>,
-      label: "Agent Teams", value: agentTeams,
+      label: "Teams", value: agentTeams,
     },
     {
       icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="6" cy="5" r="2"/><path d="M1 13c0-2.2 1.8-4 4-4h2"/><circle cx="11.5" cy="6" r="2"/><path d="M8 13.5c0-1.9 1.6-3.5 3.5-3.5s3.5 1.6 3.5 3.5"/></svg>,
-      label: "Agent Groups", value: agentGroups,
-    },
-    {
-      icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 1.5"/></svg>,
-      label: "Sampling Rate", value: c.samplingPct ? `${c.samplingPct}%` : "—",
+      label: "Groups", value: agentGroups,
     },
   ];
 
