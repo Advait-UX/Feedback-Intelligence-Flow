@@ -8931,7 +8931,6 @@ function SurveyDesignsGrid({ onCreate, onOpen }) {
               <th>Survey template</th>
               <th>Channels</th>
               <th>Type</th>
-              <th>AI questions</th>
               <th>Last updated</th>
             </tr>
           </thead>
@@ -8958,11 +8957,6 @@ function SurveyDesignsGrid({ onCreate, onOpen }) {
                   </span>
                 </td>
                 <td>{d.surveyType}</td>
-                <td>
-                  <span className={`fi-pill ${d.aiQuestions ? "active" : "draft"}`}>
-                    <span className="dot"/>{d.aiQuestions ? "On" : "Off"}
-                  </span>
-                </td>
                 <td>
                   <div>{d.updated}</div>
                   <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 4 }}>
