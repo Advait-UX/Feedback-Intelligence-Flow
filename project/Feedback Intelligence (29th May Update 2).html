@@ -879,6 +879,15 @@ select.fi-input {
 .setup-section-body {
   padding: var(--space-5) var(--space-6);
 }
+/* Survey template form — constrain field content to 70% while cards stay full-width */
+.sv-form .setup-section-body {
+  max-width: 70%;
+}
+/* Survey template — no divider between section header and body */
+.sv-form .setup-section-head {
+  border-bottom: none;
+  padding-bottom: var(--space-2);
+}
 /* Survey wizard sub-groups within a step */
 .sc-group {
   margin-top: var(--space-6);
@@ -1306,34 +1315,49 @@ select.fi-input {
 
 /* === VU Score Model (Ontology page) === */
 .ont-table { width: 100%; border-collapse: collapse; }
-.ont-table th { text-align: left; font: var(--text-h-xs); letter-spacing: 0.04em; text-transform: uppercase;
-  color: var(--lyra-slate-500); padding: var(--space-2) 10px; border-bottom: 1px solid rgba(0,0,0,0.08); }
-.ont-table td { padding: 10px; border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: middle;
-  font: var(--text-body-md); color: var(--lyra-slate-900); }
+.ont-table th { text-align: left; font: 500 11px/16px var(--font-sans); letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--color-fg-secondary); padding: 12px 16px; border-bottom: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-surface-container-subtle); }
+.ont-table td { padding: 14px 12px; border-bottom: 1px solid rgba(0,0,0,0.04); vertical-align: middle;
+  font: var(--text-body-md); color: var(--color-fg-default); }
 .ont-table tr:last-child td { border-bottom: none; }
+.ont-table tbody tr:hover td { background: var(--color-bg-state-hover); }
 .ont-input { width: 100%; border: 1px solid transparent; background: transparent;
-  font: var(--text-h-sm); color: var(--lyra-slate-900); padding: 6px var(--space-2); border-radius: var(--radius-xs);
-  outline: none; box-sizing: border-box; }
-.ont-input:hover { background: rgba(0,0,0,0.025); }
-.ont-input:focus { background: var(--lyra-white); border-color: var(--fi-accent-strong);
-  box-shadow: 0 0 0 3px var(--fi-accent-bg); }
-select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%237b8a96' stroke-width='1.5' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 8px center; padding-right: 22px; }
+  font: var(--text-body-md); color: var(--color-fg-default); padding: 5px var(--space-2); border-radius: var(--radius-xs);
+  outline: none; box-sizing: border-box; transition: background 0.12s, border-color 0.12s; }
+.ont-input:hover { background: rgba(0,0,0,0.025); border-color: var(--color-border-soft); }
+.ont-input:focus { background: var(--lyra-white); border-color: var(--color-border-active);
+  box-shadow: 0 0 0 3px rgba(22,108,202,0.12); }
 .ont-iconbtn { background: transparent; border: none; padding: var(--space-1); border-radius: var(--radius-xs);
-  color: var(--lyra-slate-400); cursor: pointer; display: inline-flex; }
-.ont-iconbtn:hover { background: rgba(191,35,35,0.08); color: var(--fi-red); }
-.ont-iconbtn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8;
-  stroke-linecap: round; stroke-linejoin: round; }
-.ont-addbtn { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+  color: var(--color-fg-secondary); cursor: pointer; display: inline-flex; transition: background 0.12s, color 0.12s; }
+.ont-iconbtn:hover { background: rgba(191,35,35,0.08); color: var(--color-fg-destructive); }
+.ont-addbtn { display: inline-flex; align-items: center; gap: 6px;
   background: transparent; border: 1px dashed rgba(0,0,0,0.18); border-radius: var(--radius-sm);
-  padding: 6px var(--space-3); font: var(--text-h-sm); color: var(--lyra-slate-600); cursor: pointer; }
-.ont-addbtn:hover { background: var(--fi-accent-bg); border-color: var(--fi-accent-strong);
-  color: var(--fi-accent-strong); }
+  padding: 7px var(--space-4); font: 500 13px/18px var(--font-sans); color: var(--color-fg-secondary); cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s; }
+.ont-addbtn:hover { background: var(--color-bg-active-subtle); border-color: var(--color-border-active);
+  color: var(--color-fg-action); }
 .ont-addbtn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; }
-.cat-chip { display: inline-block; font: var(--text-h-xs); padding: 2px var(--space-2);
-  border: 1px solid; border-radius: 10px; letter-spacing: 0.01em; }
-.sent-table input[type="range"] { accent-color: var(--fi-accent-strong); }
+.cat-chip { display: inline-block; font: 500 11px/16px var(--font-sans); padding: 3px var(--space-2);
+  border: 1px solid; border-radius: var(--radius-round); letter-spacing: 0.01em; white-space: nowrap; }
+.ont-model-select { appearance: none; border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md); padding: 8px 36px 8px 14px; font: 400 14px/20px var(--font-sans);
+  color: var(--color-fg-default); background: var(--lyra-white); cursor: pointer; min-width: 260px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath fill='none' stroke='%2382959e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; transition: border-color 0.12s;
+  box-shadow: 0px 1px 2px 0px rgba(16,24,40,0.06); }
+.ont-model-select:hover { border-color: var(--color-border-strong); }
+.ont-model-select:focus { outline: none; border-color: var(--color-border-active); box-shadow: 0 0 0 3px rgba(22,108,202,0.12); }
+.ont-cat-card { position: relative; background: var(--lyra-white); border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg); padding: 20px 20px 16px; transition: box-shadow 0.15s, border-color 0.15s; }
+.ont-cat-card:hover { border-color: rgba(0,0,0,0.14); box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.07); }
+.ont-cat-card--inactive { opacity: 0.45; }
+.ont-cat-delete { position: absolute; bottom: 14px; right: 14px; opacity: 0; transition: opacity 0.12s; }
+.ont-cat-card:hover .ont-cat-delete { opacity: 1; }
+.ont-cat-add { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  border: 1.5px dashed rgba(0,0,0,0.16); border-radius: var(--radius-lg); padding: 28px 20px;
+  background: transparent; cursor: pointer; color: var(--color-fg-secondary); transition: background 0.12s, border-color 0.12s, color 0.12s; }
+.ont-cat-add:hover { background: var(--color-bg-active-subtle); border-color: var(--color-border-active); color: var(--color-fg-action); }
 
 
 /* === Working Copy pill + banner === */
@@ -1398,21 +1422,21 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   position: relative;
   display: flex;
   gap: 10px;
-  padding: 10px var(--space-3);
-  border: 1px solid rgba(0,0,0,0.10);
+  padding: 12px var(--space-3);
+  border: 1px solid var(--color-border-soft);
   border-radius: var(--radius-md);
   background: var(--lyra-white);
   cursor: pointer;
   align-items: flex-start;
-  transition: border-color 0.15s, background 0.15s;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
 .welcome-mode-option:hover {
-  border-color: rgba(22,108,202,0.40);
-  background: rgba(22,108,202,0.03);
+  border-color: var(--color-border-strong);
+  background: var(--color-bg-state-hover);
 }
 .welcome-mode-option.on {
   border-color: var(--color-border-active);
-  background: var(--color-bg-active-subtle);
+  background: var(--lyra-white);
   box-shadow: 0 0 0 1px var(--color-border-active);
 }
 .welcome-mode-option input[type="radio"] {
@@ -1425,39 +1449,39 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   flex-shrink: 0;
   width: 16px; height: 16px;
   border-radius: 50%;
-  border: 1.5px solid rgba(0,0,0,0.30);
+  border: 1.5px solid var(--color-border-strong);
   background: var(--lyra-white);
-  margin-top: 1px;
+  margin-top: 2px;
   position: relative;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background 0.15s;
 }
 .welcome-mode-option.on .dot {
-  border-color: var(--color-bg-active-strong);
+  border-color: var(--color-border-active);
   background: var(--color-bg-active-strong);
 }
 .welcome-mode-option.on .dot::after {
   content: "";
   position: absolute;
-  inset: 3px;
+  inset: 4px;
   border-radius: 50%;
   background: var(--lyra-white);
 }
 .welcome-mode-option .body {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
 }
 .welcome-mode-option .title {
   font: var(--text-h-sm);
-  color: var(--lyra-slate-900);
+  color: var(--color-fg-default);
   letter-spacing: 0;
 }
 .welcome-mode-option .desc {
   font: var(--text-body-sm);
-  color: var(--lyra-slate-500);
+  color: var(--color-fg-secondary);
 }
-.welcome-mode-option.on .title { color: var(--color-fg-active-strong); }
+.welcome-mode-option.on .title { color: var(--color-fg-default); }
 
 /* Kicker label inside invitation block */
 .kicker {
@@ -4423,34 +4447,49 @@ select.fi-input {
 
 /* === VU Score Model (Ontology page) === */
 .ont-table { width: 100%; border-collapse: collapse; }
-.ont-table th { text-align: left; font: var(--text-h-xs); letter-spacing: 0.04em; text-transform: uppercase;
-  color: var(--lyra-slate-500); padding: var(--space-2) 10px; border-bottom: 1px solid rgba(0,0,0,0.08); }
-.ont-table td { padding: 10px; border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: middle;
-  font: var(--text-body-md); color: var(--lyra-slate-900); }
+.ont-table th { text-align: left; font: 500 11px/16px var(--font-sans); letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--color-fg-secondary); padding: 12px 16px; border-bottom: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-surface-container-subtle); }
+.ont-table td { padding: 14px 12px; border-bottom: 1px solid rgba(0,0,0,0.04); vertical-align: middle;
+  font: var(--text-body-md); color: var(--color-fg-default); }
 .ont-table tr:last-child td { border-bottom: none; }
+.ont-table tbody tr:hover td { background: var(--color-bg-state-hover); }
 .ont-input { width: 100%; border: 1px solid transparent; background: transparent;
-  font: var(--text-h-sm); color: var(--lyra-slate-900); padding: 6px var(--space-2); border-radius: var(--radius-xs);
-  outline: none; box-sizing: border-box; }
-.ont-input:hover { background: rgba(0,0,0,0.025); }
-.ont-input:focus { background: var(--lyra-white); border-color: var(--fi-accent-strong);
-  box-shadow: 0 0 0 3px var(--fi-accent-bg); }
-select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%237b8a96' stroke-width='1.5' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 8px center; padding-right: 22px; }
+  font: var(--text-body-md); color: var(--color-fg-default); padding: 5px var(--space-2); border-radius: var(--radius-xs);
+  outline: none; box-sizing: border-box; transition: background 0.12s, border-color 0.12s; }
+.ont-input:hover { background: rgba(0,0,0,0.025); border-color: var(--color-border-soft); }
+.ont-input:focus { background: var(--lyra-white); border-color: var(--color-border-active);
+  box-shadow: 0 0 0 3px rgba(22,108,202,0.12); }
 .ont-iconbtn { background: transparent; border: none; padding: var(--space-1); border-radius: var(--radius-xs);
-  color: var(--lyra-slate-400); cursor: pointer; display: inline-flex; }
-.ont-iconbtn:hover { background: rgba(191,35,35,0.08); color: var(--fi-red); }
-.ont-iconbtn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8;
-  stroke-linecap: round; stroke-linejoin: round; }
-.ont-addbtn { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px;
+  color: var(--color-fg-secondary); cursor: pointer; display: inline-flex; transition: background 0.12s, color 0.12s; }
+.ont-iconbtn:hover { background: rgba(191,35,35,0.08); color: var(--color-fg-destructive); }
+.ont-addbtn { display: inline-flex; align-items: center; gap: 6px;
   background: transparent; border: 1px dashed rgba(0,0,0,0.18); border-radius: var(--radius-sm);
-  padding: 6px var(--space-3); font: var(--text-h-sm); color: var(--lyra-slate-600); cursor: pointer; }
-.ont-addbtn:hover { background: var(--fi-accent-bg); border-color: var(--fi-accent-strong);
-  color: var(--fi-accent-strong); }
+  padding: 7px var(--space-4); font: 500 13px/18px var(--font-sans); color: var(--color-fg-secondary); cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s; }
+.ont-addbtn:hover { background: var(--color-bg-active-subtle); border-color: var(--color-border-active);
+  color: var(--color-fg-action); }
 .ont-addbtn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2; }
-.cat-chip { display: inline-block; font: var(--text-h-xs); padding: 2px var(--space-2);
-  border: 1px solid; border-radius: 10px; letter-spacing: 0.01em; }
-.sent-table input[type="range"] { accent-color: var(--fi-accent-strong); }
+.cat-chip { display: inline-block; font: 500 11px/16px var(--font-sans); padding: 3px var(--space-2);
+  border: 1px solid; border-radius: var(--radius-round); letter-spacing: 0.01em; white-space: nowrap; }
+.ont-model-select { appearance: none; border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-md); padding: 8px 36px 8px 14px; font: 400 14px/20px var(--font-sans);
+  color: var(--color-fg-default); background: var(--lyra-white); cursor: pointer; min-width: 260px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath fill='none' stroke='%2382959e' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; transition: border-color 0.12s;
+  box-shadow: 0px 1px 2px 0px rgba(16,24,40,0.06); }
+.ont-model-select:hover { border-color: var(--color-border-strong); }
+.ont-model-select:focus { outline: none; border-color: var(--color-border-active); box-shadow: 0 0 0 3px rgba(22,108,202,0.12); }
+.ont-cat-card { position: relative; background: var(--lyra-white); border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg); padding: 20px 20px 16px; transition: box-shadow 0.15s, border-color 0.15s; }
+.ont-cat-card:hover { border-color: rgba(0,0,0,0.14); box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.07); }
+.ont-cat-card--inactive { opacity: 0.45; }
+.ont-cat-delete { position: absolute; bottom: 14px; right: 14px; opacity: 0; transition: opacity 0.12s; }
+.ont-cat-card:hover .ont-cat-delete { opacity: 1; }
+.ont-cat-add { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  border: 1.5px dashed rgba(0,0,0,0.16); border-radius: var(--radius-lg); padding: 28px 20px;
+  background: transparent; cursor: pointer; color: var(--color-fg-secondary); transition: background 0.12s, border-color 0.12s, color 0.12s; }
+.ont-cat-add:hover { background: var(--color-bg-active-subtle); border-color: var(--color-border-active); color: var(--color-fg-action); }
 
 
 /* === Working Copy pill + banner === */
@@ -4505,22 +4544,22 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   position: relative;
   display: flex;
   gap: 10px;
-  padding: 10px var(--space-3);
-  border: 1px solid rgba(0,0,0,0.10);
+  padding: 12px var(--space-3);
+  border: 1px solid var(--color-border-soft);
   border-radius: var(--radius-md);
   background: var(--lyra-white);
   cursor: pointer;
   align-items: flex-start;
-  transition: border-color 0.15s, background 0.15s;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
 .welcome-mode-option:hover {
-  border-color: rgba(13,138,138,0.40);
-  background: rgba(13,138,138,0.03);
+  border-color: var(--color-border-strong);
+  background: var(--color-bg-state-hover);
 }
 .welcome-mode-option.on {
-  border-color: var(--fi-accent-strong);
-  background: var(--fi-accent-bg);
-  box-shadow: 0 0 0 1px var(--fi-accent-strong);
+  border-color: var(--color-border-active);
+  background: var(--lyra-white);
+  box-shadow: 0 0 0 1px var(--color-border-active);
 }
 .welcome-mode-option input[type="radio"] {
   position: absolute;
@@ -4532,38 +4571,39 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   flex-shrink: 0;
   width: 16px; height: 16px;
   border-radius: 50%;
-  border: 1.5px solid rgba(0,0,0,0.30);
+  border: 1.5px solid var(--color-border-strong);
   background: var(--lyra-white);
-  margin-top: 1px;
+  margin-top: 2px;
   position: relative;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background 0.15s;
 }
 .welcome-mode-option.on .dot {
-  border-color: var(--fi-accent-strong);
+  border-color: var(--color-border-active);
+  background: var(--color-bg-active-strong);
 }
 .welcome-mode-option.on .dot::after {
   content: "";
   position: absolute;
-  inset: 3px;
+  inset: 4px;
   border-radius: 50%;
-  background: var(--fi-accent-strong);
+  background: var(--lyra-white);
 }
 .welcome-mode-option .body {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
 }
 .welcome-mode-option .title {
   font: var(--text-h-sm);
-  color: var(--lyra-slate-900);
+  color: var(--color-fg-default);
   letter-spacing: 0;
 }
 .welcome-mode-option .desc {
   font: var(--text-body-sm);
-  color: var(--lyra-slate-500);
+  color: var(--color-fg-secondary);
 }
-.welcome-mode-option.on .title { color: var(--fi-accent-strong); }
+.welcome-mode-option.on .title { color: var(--color-fg-default); }
 
 /* Kicker label inside invitation block */
 .kicker {
@@ -5452,7 +5492,82 @@ select.ont-input { background: rgba(0,0,0,0.025); appearance: none;
   color: var(--color-fg-secondary);
 }
 
+/* Dashboard card borders — Lyra border.soft token */
+.fi-dash-card { border: 1px solid rgba(0,0,0,0.10) !important; }
+
+/* Dashboard AI insight sections — Lyra brand.500 at low opacity */
+.fi-ai-section {
+  background: rgba(61,129,231,0.06) !important;   /* brand.500 @6% — very light blue wash */
+  border: none !important;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* New campaign row — highlight fades out after 2.5s */
+@keyframes newRowFade {
+  0%, 60% { background: var(--lyra-brand-50); }
+  100%     { background: transparent; }
+}
+.new-campaign-row { animation: newRowFade 3s ease 0.3s both; }
+
+/* Campaign activation success overlay */
+@keyframes overlayIn  { from { opacity: 0 } to { opacity: 1 } }
+@keyframes cardIn     { from { opacity: 0; transform: scale(0.88) translateY(12px) } to { opacity: 1; transform: scale(1) translateY(0) } }
+@keyframes ringPop    { 0% { transform: scale(0.6); opacity: 0 } 60% { transform: scale(1.08) } 100% { transform: scale(1); opacity: 1 } }
+@keyframes checkDraw  { from { stroke-dashoffset: 40 } to { stroke-dashoffset: 0 } }
+@keyframes labelIn    { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: translateY(0) } }
+.activate-overlay {
+  position: fixed; inset: 0; z-index: 1200;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.40);
+  animation: overlayIn 0.2s ease both;
+}
+.activate-card {
+  background: var(--lyra-white);
+  border-radius: 20px;
+  padding: 48px 56px;
+  text-align: center;
+  box-shadow: 0px 24px 48px -12px rgba(0,0,0,0.22);
+  animation: cardIn 0.35s cubic-bezier(0.22,1,0.36,1) 0.05s both;
+  min-width: 400px;
+}
+.activate-ring {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: var(--lyra-green-50);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+  animation: ringPop 0.45s cubic-bezier(0.22,1,0.36,1) 0.2s both;
+}
+.activate-check {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: checkDraw 0.4s ease 0.55s both;
+}
+.activate-title {
+  font: 600 20px/28px var(--font-sans);
+  color: var(--color-fg-default);
+  margin: 0 0 8px;
+  animation: labelIn 0.3s ease 0.45s both;
+}
+.activate-sub {
+  font: 400 14px/20px var(--font-sans);
+  color: var(--color-fg-secondary);
+  margin: 0;
+  animation: labelIn 0.3s ease 0.55s both;
+}
+
+@keyframes drawLine {
+  from { stroke-dashoffset: 1; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
 </style>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = { corePlugins: { preflight: false } }</script>
 </head>
 <body>
 <div id="root"></div>
@@ -5540,6 +5655,7 @@ const NAV_ICONS = {
   responses: <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z M8 9h8 M8 13h5"/>,
   alerts:    <path d="M6 9a6 6 0 0 1 12 0c0 5 2.5 7 2.5 7H3.5S6 14 6 9z M10 20a2 2 0 0 0 4 0"/>,
   settings:  <path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z M19 12a7 7 0 0 0-.1-1.2l2.1-1.6-2-3.5-2.5 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.5a7 7 0 0 0-2 1.2l-2.5-1-2 3.5L5.1 10.8A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2.1 1.6 2 3.5 2.5-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.5a7 7 0 0 0 2-1.2l2.5 1 2-3.5-2.1-1.6c.1-.4.1-.8.1-1.2z"/>,
+  dashboard: <path d="M4 4h7v7H4z M13 4h7v7h-7z M4 13h7v7H4z M13 13h7v7h-7z"/>,
 };
 
 function NavIcon({ name }) {
@@ -5875,12 +5991,12 @@ Object.assign(window, { Topbar, LeftNav, AppSwitcher, FIProductIcon, Chev, SMILE
 
 const CAMPAIGNS = [
   { id: 1, name: "Post-Chat CSAT — Tier 1 Billing",
-    status: "active", channels: ["voice"], surveyDesignId: "csat-quick",
+    status: "active", channels: ["voice"], surveyDesignId: "csat-quick", aiModelId: "vu-score",
     hasWorkingCopy: true, workingCopyVersion: 4, publishedVersion: 3, publishedAt: "May 04, 2026", workingCopyEditedBy: "Maria Cohen", workingCopyEditedAt: "May 10, 2026",
     sampling: 50, sent: 12480, completion: 31.2, vu: 76,
     owner: "Maria Cohen", created: "Mar 14, 2026", updated: "May 02, 2026", endDate: null },
   { id: 2, name: "Negative Sentiment Catcher — All Digital",
-    status: "active", channels: ["voice"], surveyDesignId: "csat-quick",
+    status: "active", channels: ["voice"], surveyDesignId: "csat-quick", aiModelId: "sentiment-pulse",
     sampling: 100, sent: 4220, completion: 28.6, vu: 41,
     owner: "Dev Patel", created: "Jan 22, 2026", updated: "May 08, 2026", endDate: null },
   { id: 3, name: "Email Support — Resolution Quality",
@@ -5888,7 +6004,7 @@ const CAMPAIGNS = [
     sampling: 25, sent: 8910, completion: 22.4, vu: 68,
     owner: "Maria Cohen", created: "Feb 04, 2026", updated: "Apr 28, 2026", endDate: "Jun 30, 2026" },
   { id: 4, name: "Cognigy AI Session — Bot Handoff Audit",
-    status: "active", channels: ["voice"], surveyDesignId: "bot-simple",
+    status: "active", channels: ["voice"], surveyDesignId: "bot-simple", aiModelId: "vu-score",
     sampling: 80, sent: 6122, completion: 19.7, vu: 54,
     owner: "Tomás Reyes", created: "Mar 30, 2026", updated: "May 09, 2026", endDate: null },
   { id: 5, name: "Social DM — Brand Health Pulse",
@@ -5904,19 +6020,19 @@ const CAMPAIGNS = [
     sampling: 100, sent: 21450, completion: 26.8, vu: 71,
     owner: "Dev Patel", created: "Nov 12, 2025", updated: "Jan 15, 2026", endDate: "Dec 31, 2025" },
   { id: 8, name: "NPS Quarterly — Enterprise Clients",
-    status: "active", channels: ["voice"], surveyDesignId: "nps-pulse",
+    status: "active", channels: ["voice"], surveyDesignId: "ivr-nps", aiModelId: "csat-predictor",
     sampling: 60, sent: 3410, completion: 34.2, vu: 82,
     owner: "Dev Patel", created: "Feb 10, 2026", updated: "May 07, 2026", endDate: null },
   { id: 9, name: "FCR Check — Tier 2 Support",
-    status: "active", channels: ["voice"], surveyDesignId: "fcr-check",
+    status: "active", channels: ["voice"], surveyDesignId: "ivr-postcall", aiModelId: "vu-score",
     sampling: 75, sent: 5880, completion: 27.1, vu: 69,
     owner: "Tomás Reyes", created: "Jan 05, 2026", updated: "May 05, 2026", endDate: null },
   { id: 10, name: "Agent Empathy — Voice Quality",
-    status: "active", channels: ["voice"], surveyDesignId: "csat-quick",
+    status: "active", channels: ["voice"], surveyDesignId: "csat-quick", aiModelId: "sentiment-pulse",
     sampling: 40, sent: 2760, completion: 29.4, vu: 74,
     owner: "Aisha Khan", created: "Mar 01, 2026", updated: "May 03, 2026", endDate: null },
   { id: 11, name: "Onboarding Feedback — New Users",
-    status: "active", channels: ["voice"], surveyDesignId: "email-quality",
+    status: "active", channels: ["voice"], surveyDesignId: "voice-coaching",
     sampling: 100, sent: 1920, completion: 42.6, vu: 88,
     owner: "Maria Cohen", created: "Apr 02, 2026", updated: "Apr 30, 2026", endDate: "Jun 30, 2026" },
   { id: 12, name: "Escalation Recovery Survey",
@@ -5932,7 +6048,7 @@ const CAMPAIGNS = [
     sampling: 100, sent: 0, completion: 0, vu: null,
     owner: "Aisha Khan", created: "May 10, 2026", updated: "May 10, 2026", endDate: "Aug 31, 2026" },
   { id: 15, name: "Complaint Resolution Follow-Up",
-    status: "active", channels: ["voice"], surveyDesignId: "fcr-check",
+    status: "active", channels: ["voice"], surveyDesignId: "ivr-postcall", aiModelId: "vu-score",
     hasWorkingCopy: true, workingCopyVersion: 2, publishedVersion: 1, publishedAt: "Mar 15, 2026", workingCopyEditedBy: "Maria Cohen", workingCopyEditedAt: "May 12, 2026",
     sampling: 85, sent: 6720, completion: 31.8, vu: 72,
     owner: "Maria Cohen", created: "Mar 12, 2026", updated: "May 12, 2026", endDate: null },
@@ -5949,19 +6065,19 @@ const CAMPAIGNS = [
     sampling: 65, sent: 11200, completion: 26.7, vu: 70,
     owner: "Aisha Khan", created: "Jan 28, 2026", updated: "Apr 15, 2026", endDate: null },
   { id: 19, name: "Renewal Intent — Premium Tier",
-    status: "inactive", channels: ["voice"], surveyDesignId: "nps-pulse",
+    status: "inactive", channels: ["voice"], surveyDesignId: "ivr-nps",
     sampling: 100, sent: 2340, completion: 38.1, vu: 79,
     owner: "Maria Cohen", created: "Oct 15, 2025", updated: "Apr 10, 2026", endDate: null },
   { id: 20, name: "Post-Installation Survey",
-    status: "active", channels: ["voice"], surveyDesignId: "fcr-check",
+    status: "active", channels: ["voice"], surveyDesignId: "ivr-postcall",
     sampling: 70, sent: 4560, completion: 28.9, vu: 67,
     owner: "Dev Patel", created: "Mar 05, 2026", updated: "Apr 08, 2026", endDate: "Sep 30, 2026" },
   { id: 21, name: "Social Media Response Quality",
-    status: "inactive", channels: ["voice"], surveyDesignId: "email-quality",
+    status: "inactive", channels: ["voice"], surveyDesignId: "voice-coaching",
     sampling: 100, sent: 0, completion: 0, vu: null,
     owner: "Tomás Reyes", created: "May 08, 2026", updated: "May 08, 2026", endDate: null },
   { id: 22, name: "Long-Term Relationship NPS",
-    status: "active", channels: ["voice"], surveyDesignId: "nps-pulse",
+    status: "active", channels: ["voice"], surveyDesignId: "ivr-nps",
     sampling: 45, sent: 8900, completion: 32.4, vu: 84,
     owner: "Aisha Khan", created: "Nov 05, 2025", updated: "Apr 05, 2026", endDate: null },
   { id: 23, name: "Callback Experience — Voice",
@@ -5969,7 +6085,7 @@ const CAMPAIGNS = [
     sampling: 55, sent: 3280, completion: 21.6, vu: 63,
     owner: "Maria Cohen", created: "Feb 25, 2026", updated: "Apr 02, 2026", endDate: null },
   { id: 24, name: "Knowledge Base Effectiveness",
-    status: "expired", channels: ["voice"], surveyDesignId: "fcr-check",
+    status: "expired", channels: ["voice"], surveyDesignId: "ivr-postcall",
     sampling: 100, sent: 14600, completion: 22.8, vu: 60,
     owner: "Dev Patel", created: "Sep 01, 2025", updated: "Mar 28, 2026", endDate: "Mar 28, 2026" },
   { id: 25, name: "Agent Soft Skills Feedback",
@@ -5977,7 +6093,7 @@ const CAMPAIGNS = [
     sampling: 35, sent: 6140, completion: 24.3, vu: 71,
     owner: "Tomás Reyes", created: "Jan 15, 2026", updated: "Mar 25, 2026", endDate: null },
   { id: 26, name: "Digital Onboarding — Web",
-    status: "active", channels: ["voice"], surveyDesignId: "email-quality",
+    status: "active", channels: ["voice"], surveyDesignId: "voice-coaching",
     sampling: 80, sent: 5020, completion: 36.8, vu: 85,
     owner: "Maria Cohen", created: "Feb 05, 2026", updated: "Mar 20, 2026", endDate: "Jul 31, 2026" },
   { id: 27, name: "After-Hours Support Survey",
@@ -5989,7 +6105,7 @@ const CAMPAIGNS = [
     sampling: 100, sent: 0, completion: 0, vu: null,
     owner: "Dev Patel", created: "May 05, 2026", updated: "May 05, 2026", endDate: null },
   { id: 29, name: "SLA Compliance Feedback",
-    status: "active", channels: ["voice"], surveyDesignId: "fcr-check",
+    status: "active", channels: ["voice"], surveyDesignId: "ivr-postcall",
     sampling: 60, sent: 7830, completion: 29.6, vu: 73,
     owner: "Maria Cohen", created: "Jan 10, 2026", updated: "Mar 10, 2026", endDate: null },
   { id: 30, name: "Brand Perception — Loyalty",
@@ -6115,9 +6231,7 @@ function DesignPreviewCard({ design, compact }) {
       <div style={{ padding: "10px 14px", display: "flex", flexWrap: "wrap", gap: 8 }}>
         <DesignChip label={design.surveyType}/>
         <DesignChip label={design.displayStyle}/>
-        <DesignChip label={`AI questions ${design.aiQuestions ? "on" : "off"}`} on={design.aiQuestions}/>
         <DesignChip label={`${design.maxQuestions} question${design.maxQuestions !== 1 ? "s" : ""}`}/>
-        <DesignChip label={`Free text: ${design.freeText}`}/>
         <DesignChip label={`${design.expiryMinutes} min expiry`}/>
         {design.realtimeAlerts ? <DesignChip label="Real-time alerts" on/> : null}
       </div>
@@ -6282,7 +6396,7 @@ function RowActions({ campaign, statusOf, onActivate, onDeactivate, onDelete, on
   );
 }
 
-function SurveyCampaignsGrid({ onCreate, onOpen }) {
+function SurveyCampaignsGrid({ onCreate, onOpen, newCampaigns = [] }) {
   const [search, setSearch] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState(null);   // null = no filter (show all)
   const [order, setOrder] = React.useState(() => CAMPAIGNS.map(c => c.id));
@@ -6341,7 +6455,8 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
     const s = statusOf(c);
     return s === "active" || s === "inactive";
   };
-  const orderedAll = order.map(id => CAMPAIGNS.find(c => c.id === id)).filter(Boolean);
+  const allCampaignPool = [...newCampaigns, ...CAMPAIGNS];
+  const orderedAll = [...order.map(id => CAMPAIGNS.find(c => c.id === id)).filter(Boolean), ...newCampaigns];
   const priorityMap = {};
   let p = 0;
   orderedAll.forEach(c => { if (isRouting(c)) { p++; priorityMap[c.id] = p; } });
@@ -6363,7 +6478,7 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
     setPriorityModalOpen(false);
   }
 
-  const liveCampaigns = CAMPAIGNS.filter(c => !deletedIds.has(c.id));
+  const liveCampaigns = [...newCampaigns, ...CAMPAIGNS].filter(c => !deletedIds.has(c.id));
   const statusOptions = ["Active", "Inactive", "Expired"];
   const hasAnyFilter = !!(search || statusFilter);
   const clearAllFilters = () => { setSearch(""); setStatusFilter(null); };
@@ -6461,8 +6576,7 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
               <th style={{ width: 110, cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("priority")}>
                 <span style={{ display: "inline-flex", alignItems: "center" }}>Priority<SortIcon k="priority"/></span>
               </th>
-              <th>Campaign Name / Details</th>
-              <th>Channels</th>
+              <th>Campaign Name</th>
               <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("endDate")}>
                 <span style={{ display: "inline-flex", alignItems: "center" }}>Period<SortIcon k="endDate"/></span>
               </th>
@@ -6479,7 +6593,7 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
               const showPriority = routing && statusOf(c) === "active";
               const s = statusOf(c);
               return (
-                <tr key={c.id}>
+                <tr key={c.id} className={c.isNew ? "new-campaign-row" : ""}>
                   <td>
                     {showPriority ? (
                       /* Priority badge — bold so it's recognizable as main grid text (per Lyra instructions).
@@ -6505,11 +6619,6 @@ function SurveyCampaignsGrid({ onCreate, onOpen }) {
                       Created {c.created}, {c.owner}
                     </div>
                     <CampaignStateInline status={s} hasWorkingCopy={c.hasWorkingCopy}/>
-                  </td>
-                  <td>
-                    <span style={{ font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>
-                      {c.channels.map(k => k === "voice" ? "Voice" : "Digital").join(", ")}
-                    </span>
                   </td>
                   <td>
                     <span style={{ font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-default)", whiteSpace: "nowrap" }}>
@@ -6834,10 +6943,10 @@ const AI_MODELS = [
 ];
 
 const DEFAULT_CAMPAIGN = {
-  name: "",
-  description: "",
+  name: "Post Interaction CSAT",
+  description: "Captures customer satisfaction immediately after each interaction to track quality and identify coaching opportunities.",
   ongoing: true,
-  startDate: "2026-05-12",
+  startDate: new Date().toISOString().slice(0, 10),
   endDate: "",
   channels: ["voice"],
   queues: [],
@@ -6858,7 +6967,9 @@ const DEFAULT_CAMPAIGN = {
   delayValue: 0,
 
   aiModelId: "",
-  surveyDesignId: "",
+  surveyDesignId: "csat-quick",
+  interactionLength: 2,
+  sendGenericQuestion: true,
 };
 
 function FieldRow({ label, hint, req, tooltip, children }) {
@@ -7085,14 +7196,22 @@ function CreateCampaign({ template: initialTemplate, editCampaign, onCancel, onS
     { n: 3, label: "Summary & Review",      done: false },
   ];
 
+  const [triedSteps, setTriedSteps] = React.useState(new Set());
+  const [activating, setActivating] = React.useState(false);
+
+  function handleActivate() {
+    setActivating(true);
+    setTimeout(() => { onSave({ ...c, status: "active" }); }, 2500);
+  }
+
   function stepState(s) {
     if (s.n === activeStep) return "active";
-    if (visitedSteps.has(s.n) && s.done) return "done";
-    if (visitedSteps.has(s.n) && !s.done) return "error";
+    if (visitedSteps.has(s.n)) return "done";
     return "default";
   }
 
   function goNext() {
+    setTriedSteps(prev => new Set([...prev, activeStep]));
     setVisitedSteps(prev => new Set([...prev, activeStep]));
     setActiveStep(prev => Math.min(prev + 1, 4));
   }
@@ -7195,12 +7314,6 @@ function CreateCampaign({ template: initialTemplate, editCampaign, onCancel, onS
 
       <div className="pane-head" style={{ paddingTop: 6 }}>
         <h1>{editCampaign ? editCampaign.name : "Create New Survey Campaign"}</h1>
-        <div className="head-actions">
-          <button className="ai-sparkle-btn">
-            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.42 1.42M11.53 11.53l1.42 1.42M3.05 12.95l1.42-1.42M11.53 4.47l1.42-1.42"/></svg>
-            AI Campaign Assistant
-          </button>
-        </div>
       </div>
 
       {/* ── Meta bar — only shown when editing an existing campaign ── */}
@@ -7261,7 +7374,7 @@ function CreateCampaign({ template: initialTemplate, editCampaign, onCancel, onS
 
           {/* ── Step 0: Template, Identity &amp; Scope ── */}
           {activeStep === 0 && (()=>{
-            const showErr      = visitedSteps.has(0);
+            const showErr      = triedSteps.has(0);
             const nameErr      = showErr && !c.name;
             const teamsErr     = showErr && !c.queues?.[0];
             const startDateErr = showErr && !c.startDate;
@@ -7273,8 +7386,8 @@ function CreateCampaign({ template: initialTemplate, editCampaign, onCancel, onS
                 <div className="setup-section-body">
                 <div className="field-grid-2">
                   <div className="field-cell">
-                    <label className="field-label">Campaign Name<span className="req">*</span></label>
-                    <input className={`fi-input${nameErr ? " error" : ""}`} placeholder="Type"
+                    <label className="field-label">Campaign Name<span className="req">*</span><span className="char-counter">{(c.name || "").length}/50</span></label>
+                    <input className={`fi-input${nameErr ? " error" : ""}`} placeholder="Type" maxLength={50}
                       aria-invalid={nameErr || undefined}
                       value={c.name} onChange={e => set("name", e.target.value)}/>
                     {nameErr && <div className="field-control"><span className="error-msg">
@@ -7285,9 +7398,9 @@ function CreateCampaign({ template: initialTemplate, editCampaign, onCancel, onS
                   <div className="field-cell">
                     <label className="field-label">
                       Description
-                      <span className="char-counter">{(c.description || "").length}/100</span>
+                      <span className="char-counter">{(c.description || "").length}/200</span>
                     </label>
-                    <input className="fi-input" maxLength={100} placeholder="Type"
+                    <input className="fi-input" maxLength={200} placeholder="Type"
                       value={c.description} onChange={e => set("description", e.target.value)}/>
                   </div>
                 </div>
@@ -7337,7 +7450,7 @@ function CreateCampaign({ template: initialTemplate, editCampaign, onCancel, onS
                     </span></div>}
                   </div>
                   <div className="field-cell">
-                    <label className="field-label">Agent Group</label>
+                    <label className="field-label">Group</label>
                     <MultiSelectField
                       options={["North America", "EMEA", "APAC"]}
                       value={c.teams || []}
@@ -7356,6 +7469,17 @@ function CreateCampaign({ template: initialTemplate, editCampaign, onCancel, onS
                       <input type="checkbox" checked readOnly disabled/>
                       <span>English (Default)</span>
                     </label>
+                  </FieldRow>
+                </div>
+
+                <div style={{ paddingTop: "var(--space-6)" }}>
+                  <FieldRow label="Interaction Length">
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, width: "50%" }}>
+                      <span style={{ color: "var(--color-fg-secondary)", fontSize: 13, flexShrink: 0 }}>Minimum</span>
+                      <input type="number" className="fi-input" min={1} value={c.interactionLength ?? 2} onChange={e => set("interactionLength", parseInt(e.target.value) || 1)} style={{ width: 72, textAlign: "center", flexShrink: 0 }}/>
+                      <span style={{ color: "var(--color-fg-secondary)", fontSize: 13, flexShrink: 0 }}>mins</span>
+                    </div>
+                    <div className="field-hint" style={{ marginTop: 6 }}>Only send survey if the interaction lasted at least this long.</div>
                   </FieldRow>
                 </div>
                 </div>{/* /setup-section-body */}
@@ -7550,6 +7674,7 @@ function CreateCampaign({ template: initialTemplate, editCampaign, onCancel, onS
                   <SRRow label="Teams">{c.queues?.length ? c.queues.join(", ") : <span style={{ color: "var(--color-status-error)" }}>Required</span>}</SRRow>
                   <SRRow label="Groups">{c.teams?.length ? c.teams.join(", ") : "All groups"}</SRRow>
                   <SRRow label="Language">English (Default)</SRRow>
+                  <SRRow label="Interaction Length">Minimum {c.interactionLength ?? 2} mins</SRRow>
                 </SRSection>
 
                 <SRSection title="Suppression Rules" num={2}>
@@ -7586,8 +7711,8 @@ function CreateCampaign({ template: initialTemplate, editCampaign, onCancel, onS
             {activeStep > 0 && (
               <button className="btn" onClick={goBack}>← Back</button>
             )}
-            <button className="btn primary" onClick={goNext}>
-              {activeStep === 2 ? "Review →" : "Next →"}
+            <button className="btn primary" onClick={activeStep === 3 ? handleActivate : goNext}>
+              {activeStep === 3 ? "✓ Activate Campaign" : activeStep === 2 ? "Review →" : "Next →"}
             </button>
           </>
         ) : (
@@ -7602,6 +7727,23 @@ function CreateCampaign({ template: initialTemplate, editCampaign, onCancel, onS
           </>
         )}
       </div>
+
+      {/* Activation success overlay */}
+      {activating && ReactDOM.createPortal(
+        <div className="activate-overlay">
+          <div className="activate-card">
+            <div className="activate-ring">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none"
+                stroke="var(--lyra-green-500)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="4 13 10 19 20 5" className="activate-check"/>
+              </svg>
+            </div>
+            <h2 className="activate-title">Campaign Activated!</h2>
+            <p className="activate-sub">"{c.name}" is now live and running.</p>
+          </div>
+        </div>,
+        document.body
+      )}
 
       {/* Template drawer */}
       {drawerOpen && ReactDOM.createPortal(
@@ -8017,8 +8159,8 @@ function FloatingMetrics({ campaign: c }) {
 
   const rows = [
     { icon: "calendar", label: "Active date range",      value: dateRange },
-    { icon: "agents",   label: "Agent teams",            value: agentTeams },
-    { icon: "agents",   label: "Agent groups",           value: agentGroups },
+    { icon: "agents",   label: "Teams",            value: agentTeams },
+    { icon: "agents",   label: "Groups",           value: agentGroups },
   ];
 
   return (
@@ -8125,12 +8267,9 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
         <span className="last">{c.name}</span>
       </div>
 
-      {/* Page header — title + kebab only */}
+      {/* Page header — title only */}
       <div className="pane-head" style={{ paddingTop: 6 }}>
         <h1 style={{ flex: 1, margin: 0 }}>{c.name}</h1>
-        <div className="head-actions">
-          <KebabMenu/>
-        </div>
       </div>
 
       {/* Scrollable body — meta row + banner + detail layout */}
@@ -8260,16 +8399,7 @@ function CampaignDetail({ campaign, onBack, onEdit }) {
 
       {/* Bottom action bar */}
       <div className="wz-footer">
-        <button className="btn" onClick={onBack}>Cancel</button>
-        <span style={{ flex: 1 }}/>
-        <button className="btn">
-          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
-          {c.status === "active" ? "Deactivate" : "Activate"}
-        </button>
-        <button className="btn primary" onClick={() => onEdit(c)}>
-          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
-          Edit Configuration
-        </button>
+        <button className="btn" onClick={onBack}>← Back</button>
       </div>
 
       {toast ? (
@@ -8319,13 +8449,13 @@ function CampaignSummaryCard({ campaign: c }) {
   const agentGroups = c.teams?.length ? c.teams.join(", ") : "All groups";
   const dateRange = c.startDate
     ? (c.ongoing ? `Ongoing from ${c.startDate}` : c.endDate ? `${c.startDate} — ${c.endDate}` : `${c.startDate} — No end date`)
-    : "Not set";
+    : c.endDate ? `${c.created} — ${c.endDate}` : `Ongoing from ${c.created}`;
 
   const configRows = [
-    ...(dateRange !== "Not set" ? [{
+    {
       icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="3" width="12" height="11" rx="1.5"/><line x1="5" y1="1.5" x2="5" y2="4.5"/><line x1="11" y1="1.5" x2="11" y2="4.5"/><line x1="2" y1="7" x2="14" y2="7"/></svg>,
       label: "Active Date Range", value: dateRange,
-    }] : []),
+    },
     {
       icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="6" cy="5" r="2"/><path d="M1 13c0-2.2 1.8-4 4-4h2"/><circle cx="11.5" cy="6" r="2"/><path d="M8 13.5c0-1.9 1.6-3.5 3.5-3.5s3.5 1.6 3.5 3.5"/></svg>,
       label: "Teams", value: agentTeams,
@@ -8336,18 +8466,14 @@ function CampaignSummaryCard({ campaign: c }) {
     },
   ];
 
-  const rows = isLive ? metricRows : configRows;
-  const headLabel = isLive ? "Live Metrics" : "Campaign Summary";
+  const rows = configRows;
+  const headLabel = "Campaign Summary";
 
   return (
     <div className="detail-summary-card">
       <div className="detail-summary-head">
-        {isLive
-          ? <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><polyline points="2 10 6 6 9 9 14 4"/></svg>
-          : <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
-        }
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>
         {headLabel}
-        {isLive && <span className="detail-summary-live-dot"/>}
       </div>
       <div className="detail-summary-rows">
         {rows.map(r => (
@@ -8364,10 +8490,22 @@ function CampaignSummaryCard({ campaign: c }) {
   );
 }
 
-function DefRow({ label, children }) {
+function DefRow({ label, tooltip, children }) {
   return (
     <div className="def-row">
-      <div className="def-row-label">{label}</div>
+      <div className="def-row-label" style={{ display: "flex", alignItems: "center", gap: 5 }}>
+        {label}
+        {tooltip && (
+          <span className="tooltip-wrap" style={{ display: "inline-flex" }}>
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--color-fg-secondary)", cursor: "default", flexShrink: 0 }}>
+              <circle cx="8" cy="8" r="6"/>
+              <path d="M8 11v-3"/>
+              <circle cx="8" cy="5.5" r=".5" fill="currentColor" stroke="none"/>
+            </svg>
+            <span className="tooltip-bubble" style={{ width: 240, textAlign: "left", whiteSpace: "normal" }}>{tooltip}</span>
+          </span>
+        )}
+      </div>
       <div className="def-row-value">{children}</div>
     </div>
   );
@@ -8396,7 +8534,7 @@ function ConfigurationView({ campaign: c }) {
     : "Ongoing from " + c.created;
 
   const aiModel = AI_MODELS?.find(m => m.id === c.aiModelId);
-  const survey  = SURVEY_DESIGNS?.find(s => s.id === c.surveyDesignId);
+  const survey  = (window.SEED_DESIGNS || SURVEY_DESIGNS)?.find(s => s.id === c.surveyDesignId);
 
   return (
     <div className="cfg-group-stack">
@@ -8408,12 +8546,15 @@ function ConfigurationView({ campaign: c }) {
         <DefRow label="Teams">{c.queues?.length ? c.queues.join(", ") : <span style={{ color: "var(--color-fg-secondary)" }}>Not set</span>}</DefRow>
         <DefRow label="Groups">{c.teams?.length ? c.teams.join(", ") : "All groups"}</DefRow>
         <DefRow label="Language">English (Default)</DefRow>
+        <DefRow label="Interaction Length">Minimum {c.interactionLength ?? 2} mins</DefRow>
       </ConfigGroup>
 
       {/* Step 1 mirror: Suppression Rules */}
       <ConfigGroup num="2" title="Suppression Rules">
-        <DefRow label="Opt-out tag">{c.suppressOptOut !== false ? "Enabled" : "Disabled"}</DefRow>
-        <DefRow label="Recency window">
+        <DefRow label="Opt-out tag" tooltip="When enabled, customers who have opted out of surveys are automatically excluded from receiving this campaign.">
+          {c.suppressOptOut !== false ? "Enabled" : "Disabled"}
+        </DefRow>
+        <DefRow label="Recency window" tooltip="Prevents a customer from receiving this survey if they were already surveyed within the defined number of days. Reduces survey fatigue.">
           {c.suppressRecent !== false ? `Enabled · ${c.recentDays ?? 30} days` : "Disabled"}
         </DefRow>
       </ConfigGroup>
@@ -8800,84 +8941,239 @@ Object.assign(window, { SurveyCampaignsGrid, CreateCampaign, CampaignDetail, Cha
    (Internal field names like `surveyDesignId` are kept for backward compatibility.) */
 
 const SEED_DESIGNS = [
-  { id: "csat-quick",     name: "Standard CSAT — Quick Reply",     description: "Default 1–5 star CSAT for digital channels. Quick-reply bubbles, AI questions on.", channel: "Digital", surveyType: "CSAT (1–5 star)", displayStyle: "Quick Reply", listPickerLabel: "", aiQuestions: true, maxQuestions: 2, freeText: "Conditional", welcomeMode: "with-optout", welcomeMessage: "{{First Name}}, we'd love to hear about your experience today. We have just a few quick questions, just two minutes of your time.", buttonToStart: "Get started", buttonToOptOut: "Not today", defaultScaleQuestion: "On a scale of 1 to 5, how would you rate your experience today?", defaultCommentQuestion: "What could we have done better?", expiryMinutes: 2880, realtimeAlerts: true, usedBy: 3, updated: "May 02, 2026", owner: "Maria Cohen" },
-  { id: "csat-list",      name: "CSAT — List Picker",              description: "Same questions as Standard CSAT, but renders as a list picker for desktop chat.",   channel: "Digital", surveyType: "CSAT (1–5 star)", displayStyle: "List Picker",  listPickerLabel: "Rate your experience", aiQuestions: true, maxQuestions: 2, freeText: "Conditional", welcomeMode: "without-optout", welcomeMessage: "{{First Name}}, we'd love your quick feedback. Just two minutes of your time.", buttonToStart: "Get started", buttonToOptOut: "Not today", defaultScaleQuestion: "On a scale of 1 to 5, how would you rate your experience today?", defaultCommentQuestion: "What could we have done better?", expiryMinutes: 2880, realtimeAlerts: true, usedBy: 1, updated: "Apr 28, 2026", owner: "Maria Cohen" },
-  { id: "bot-simple",     name: "Bot Handoff — 1 Question",         description: "Minimal one-question survey for AI bot deflection audits. No AI questions, no welcome.", channel: "Digital", surveyType: "Like / Dislike", displayStyle: "Quick Reply", listPickerLabel: "", aiQuestions: false, maxQuestions: 1, freeText: "Always off", welcomeMode: "none", welcomeMessage: "", buttonToStart: "Get started", buttonToOptOut: "Not today", defaultScaleQuestion: "Did the assistant solve your problem?", defaultCommentQuestion: "Anything we should know?", expiryMinutes: 1440, realtimeAlerts: false, usedBy: 1, updated: "Mar 30, 2026", owner: "Tomás Reyes" },
-  { id: "vip-followup",   name: "VIP Escalation Follow-Up",         description: "Longer survey for high-value customer escalations. Comment always on, no expiry pressure.", channel: "Digital", surveyType: "Both",            displayStyle: "List Picker",  listPickerLabel: "How are we doing?", aiQuestions: true, maxQuestions: 3, freeText: "Always on", welcomeMode: "with-optout", welcomeMessage: "{{First Name}}, thank you for your patience. Your feedback shapes how we serve our VIP customers.", buttonToStart: "Share feedback", buttonToOptOut: "Maybe later", defaultScaleQuestion: "Overall, how would you rate your experience?", defaultCommentQuestion: "Tell us what went well — and what didn't.", expiryMinutes: 4320, realtimeAlerts: true, usedBy: 1, updated: "May 06, 2026", owner: "Maria Cohen" },
-  { id: "brand-pulse",    name: "Brand Health Pulse",               description: "Two-question brand-affinity survey for social DMs. Like/dislike + open comment.",       channel: "Digital", surveyType: "Like / Dislike", displayStyle: "Quick Reply", listPickerLabel: "", aiQuestions: false, maxQuestions: 2, freeText: "Always on", welcomeMode: "without-optout", welcomeMessage: "Quick pulse check — how are we doing?", buttonToStart: "Tell us", buttonToOptOut: "Not today", defaultScaleQuestion: "How do you feel about us today?", defaultCommentQuestion: "Tell us why in a few words.", expiryMinutes: 4320, realtimeAlerts: false, usedBy: 1, updated: "Apr 12, 2026", owner: "Aisha Khan" },
-  { id: "ivr-postcall",   name: "Post-Call IVR — CSAT",             description: "Single-question IVR survey triggered immediately after a voice call ends. Keypad input, no agent involvement.", channel: "Digital", surveyType: "CSAT (1–5 star)", displayStyle: "IVR Keypad", listPickerLabel: "", aiQuestions: false, maxQuestions: 1, freeText: "Always off", welcomeMode: "with-optout", welcomeMessage: "Thank you for calling. We'd love your feedback — this will only take 30 seconds.", buttonToStart: "Press 1 to continue", buttonToOptOut: "Press 9 to skip", defaultScaleQuestion: "On a scale of 1 to 5, how would you rate your call today? Press the corresponding number.", defaultCommentQuestion: "", expiryMinutes: 60, realtimeAlerts: true, usedBy: 2, updated: "May 10, 2026", owner: "Tomás Reyes" },
-  { id: "ivr-nps",        name: "NPS — IVR Phone Survey",           description: "10-point NPS survey delivered via IVR after voice interactions. Keypad input, AI categorisation off.", channel: "Digital", surveyType: "NPS (0–10)", displayStyle: "IVR Keypad", listPickerLabel: "", aiQuestions: false, maxQuestions: 2, freeText: "Always off", welcomeMode: "with-optout", welcomeMessage: "Hi {{First Name}}, this is a quick two-question survey about your recent call. Press 1 to start or 9 to skip.", buttonToStart: "Press 1 to start", buttonToOptOut: "Press 9 to skip", defaultScaleQuestion: "On a scale of 0 to 10, how likely are you to recommend us to a friend or colleague? Press the number now.", defaultCommentQuestion: "", expiryMinutes: 120, realtimeAlerts: true, usedBy: 1, updated: "Apr 22, 2026", owner: "Maria Cohen" },
-  { id: "voice-coaching", name: "Agent Coaching — Call Quality",    description: "Post-call quality check for voice interactions. Used by QA team; 3-question rating with optional comment via speech-to-text.", channel: "Digital", surveyType: "CSAT (1–5 star)", displayStyle: "IVR Keypad", listPickerLabel: "", aiQuestions: true, maxQuestions: 3, freeText: "Conditional", welcomeMode: "with-optout", welcomeMessage: "Thank you for speaking with us today. We have three short questions about your call.", buttonToStart: "Press 1 to continue", buttonToOptOut: "Press 9 to opt out", defaultScaleQuestion: "How would you rate the overall quality of your call? Press 1 for poor, 5 for excellent.", defaultCommentQuestion: "If you'd like to leave a comment, please speak after the tone.", expiryMinutes: 240, realtimeAlerts: false, usedBy: 0, updated: "May 14, 2026", owner: "Aisha Khan" },
+  { id: "csat-quick", name: "Post Interaction CSAT Survey", description: "Captures customer satisfaction immediately after each interaction to track quality and identify coaching opportunities.", channel: "Digital", surveyType: "CSAT (1–5 star)", displayStyle: "Quick Reply", listPickerLabel: "", aiQuestions: true, maxQuestions: 2, freeText: "Conditional", welcomeMode: "with-optout", welcomeMessage: "We'd love to hear about your experience today. We have just a few quick questions, just two minutes of your time.", buttonToStart: "Get started", buttonToOptOut: "Not today", defaultScaleQuestion: "On a scale of 1 to 5, how would you rate your experience today?", defaultCommentQuestion: "What could we have done better?", expiryMinutes: 2880, realtimeAlerts: true, usedBy: 3, updated: "", owner: "Maria Cohen", isDefault: true },
 ];
 
 function designById(id) {
   return SEED_DESIGNS.find(d => d.id === id) || SEED_DESIGNS[0];
 }
 
-function DesignRowActions({ design, onEdit }) {
+function DesignRowActions({ design, onEdit, onDelete, deleteDisabled }) {
   const [open, setOpen] = React.useState(false);
   const ref = React.useRef(null);
   React.useEffect(() => {
     if (!open) return;
-    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    function onDocClick(e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
   }, [open]);
-  const actions = [
-    { label: "Edit", icon: <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>, onClick: () => { onEdit(design); setOpen(false); } },
-    { label: "Delete", icon: <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>, onClick: () => setOpen(false), danger: true },
-  ];
   return (
-    <div ref={ref} style={{ position: "relative", display: "inline-block" }}>
-      <div className="kebab" onClick={() => setOpen(o => !o)}>
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="5" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg>
-      </div>
+    <div ref={ref} style={{ position: "relative", display: "inline-flex" }} onClick={e => e.stopPropagation()}>
+      <button className="kebab" onClick={() => setOpen(o => !o)} title="Actions">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" stroke="none">
+          <circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>
+        </svg>
+      </button>
       {open && (
-        <div style={{
-          position: "absolute", top: "calc(100% + 6px)", right: 0, zIndex: 9999,
-          minWidth: 160, background: "var(--lyra-white)",
-          border: "1px solid var(--color-border-soft)",
-          borderRadius: "var(--radius-md)",
-          boxShadow: "0px 4px 8px 0px rgba(0,0,0,0.08)",
-          overflow: "hidden",
-        }}>
-          {actions.map(a => (
-            <button key={a.label} onClick={a.onClick} style={{
-              display: "flex", alignItems: "center", gap: "var(--space-2)",
-              width: "100%", padding: "var(--space-2) var(--space-3)",
-              background: "none", border: "none", cursor: "pointer", textAlign: "left",
-              font: "400 14px/20px var(--font-sans)",
-              color: a.danger ? "var(--color-fg-destructive)" : "var(--color-fg-default)",
-            }}
-              onMouseEnter={e => e.currentTarget.style.background = "var(--color-state-bg-hover)"}
-              onMouseLeave={e => e.currentTarget.style.background = "none"}
-            >
-              {a.icon}{a.label}
-            </button>
-          ))}
+        <div className="row-action-menu">
+          <button className="row-action-item" onClick={() => { onEdit(design); setOpen(false); }}>
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>
+            </svg>
+            Edit
+          </button>
+          <div className="row-action-divider"/>
+          <button className="row-action-item danger" disabled={deleteDisabled}
+            style={deleteDisabled ? { opacity: 0.4, cursor: "not-allowed", pointerEvents: "none" } : {}}
+            onClick={() => { if (!deleteDisabled) { onDelete(design.id); setOpen(false); } }}>
+            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/>
+            </svg>
+            Delete
+          </button>
         </div>
       )}
     </div>
   );
 }
 
-function SurveyDesignsGrid({ onCreate, onOpen }) {
+function SurveyTemplateDetail({ design: initial, onBack, onEdit }) {
+  const d = initial;
+  const linkedCampaigns = (window.CAMPAIGNS || []).filter(c => c.surveyDesignId === d.id && c.status !== "draft" && c.status !== "inactive");
+
+  const welcomeLabel = { "with-optout": "Invitation with Opt Out", "without-optout": "Invitation without Opt Out", "none": "None" };
+
+  return (
+    <div className="pane" style={{ overflow: "hidden" }}>
+      {/* Breadcrumb */}
+      <div className="crumbs">
+        <a href="#" onClick={e => { e.preventDefault(); onBack(); }}>Survey Templates</a>
+        <span className="sep">/</span>
+        <span className="last">{d.name}</span>
+      </div>
+
+      {/* Page header */}
+      <div className="pane-head" style={{ paddingTop: 6 }}>
+        <h1 style={{ flex: 1, margin: 0 }}>{d.name}</h1>
+      </div>
+
+      {/* Scrollable body */}
+      <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+
+        {/* Meta row */}
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", padding: "var(--space-6) var(--space-8)" }}>
+          <div style={{ flex: 1, fontFamily: "var(--font-sans)", fontSize: 14, fontWeight: 400, lineHeight: "20px", color: "var(--color-fg-secondary)" }}>
+            <strong style={{ color: "var(--color-fg-default)", fontWeight: 500 }}>Owner:</strong> {d.owner}
+            <span style={{ margin: "0 var(--space-2)" }}>•</span>
+            <strong style={{ color: "var(--color-fg-default)", fontWeight: 500 }}>Last Updated:</strong> {d.updated}
+          </div>
+        </div>
+
+        {/* Detail layout */}
+        <div style={{ flex: 1, padding: "0 var(--space-8) var(--space-8)" }}>
+          <div className="cfg-group-stack">
+
+              {/* 1 — Identity */}
+              <TemplateConfigGroup title="Identity" num={1}>
+                <DefRow label="Template Name">{d.name}</DefRow>
+                <DefRow label="Description">{d.description || <span style={{ color: "var(--color-fg-secondary)", fontStyle: "italic" }}>Not set</span>}</DefRow>
+              </TemplateConfigGroup>
+
+              {/* 2 — Survey Content */}
+              <TemplateConfigGroup title="Survey Content" num={2}>
+
+                {/* Channel */}
+                <div style={{ marginBottom: "var(--space-5)" }}>
+                  <div style={{ font: "500 11px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--space-1)" }}>Channel</div>
+                  <DefRow label="Survey Channel">{d.channel || "Digital"}</DefRow>
+                </div>
+
+                {/* Welcome Message */}
+                <div style={{ borderTop: "1px solid var(--color-border-subtle)", paddingTop: "var(--space-5)", marginBottom: "var(--space-5)" }}>
+                  <div style={{ font: "500 11px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--space-1)" }}>Welcome Message</div>
+                  <DefRow label="Message Mode">{welcomeLabel[d.welcomeMode] || d.welcomeMode}</DefRow>
+                  {d.welcomeMode !== "none" && d.welcomeMessage && (
+                    <DefRow label="Invitation Text">{d.welcomeMessage}</DefRow>
+                  )}
+                  {d.welcomeMode !== "none" && (
+                    <>
+                      <DefRow label="Start Button Label">{d.buttonToStart}</DefRow>
+                      {d.welcomeMode === "with-optout" && <DefRow label="Opt-out Button Label">{d.buttonToOptOut}</DefRow>}
+                    </>
+                  )}
+                </div>
+
+                {/* Rating Format */}
+                <div style={{ borderTop: "1px solid var(--color-border-subtle)", paddingTop: "var(--space-5)", marginBottom: "var(--space-5)" }}>
+                  <div style={{ font: "500 11px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--space-1)" }}>Rating Format</div>
+                  <DefRow label="Display Style">{d.displayStyle}</DefRow>
+                  {d.listPickerLabel && <DefRow label="List Picker Label">{d.listPickerLabel}</DefRow>}
+                </div>
+
+
+              </TemplateConfigGroup>
+
+              {/* 3 — Linked Campaigns */}
+              <TemplateConfigGroup title="Linked Campaigns" num={3}>
+                {d.isDefault ? (
+                  <div style={{
+                    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                    padding: "var(--space-10) var(--space-8)", textAlign: "center",
+                    background: "var(--lyra-slate-50)", borderRadius: "var(--radius-md)",
+                    border: "1px dashed var(--color-border-soft)"
+                  }}>
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--lyra-slate-400)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 12 }}>
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                    </svg>
+                    <p style={{ font: "500 14px/20px var(--font-sans)", color: "var(--color-fg-default)", margin: "0 0 6px" }}>
+                      No campaigns linked yet
+                    </p>
+                    <p style={{ font: "400 13px/18px var(--font-sans)", color: "var(--color-fg-secondary)", margin: 0, maxWidth: 400 }}>
+                      Save this template first, then go to a Campaign and select this template to link it. Linked campaigns will appear here automatically.
+                    </p>
+                  </div>
+                ) : linkedCampaigns.length === 0 ? (
+                  <div style={{ padding: "var(--space-3) 0", font: "400 14px/20px var(--font-sans)", color: "var(--color-fg-secondary)", fontStyle: "italic" }}>
+                    No campaigns are linked to this template.
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", border: "1px solid var(--color-border-subtle)", borderRadius: "var(--radius-md)", overflow: "hidden", marginTop: "var(--space-2)" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 140px", padding: "var(--space-2) var(--space-4)", background: "var(--lyra-slate-50)", borderBottom: "1px solid var(--color-border-subtle)" }}>
+                      {["Campaign", "Status"].map(h => (
+                        <span key={h} style={{ font: "500 11px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.06em" }}>{h}</span>
+                      ))}
+                    </div>
+                    {linkedCampaigns.map((c, i) => (
+                      <div key={c.id} style={{ display: "grid", gridTemplateColumns: "1fr 140px", alignItems: "center", padding: "var(--space-3) var(--space-4)", borderBottom: i < linkedCampaigns.length - 1 ? "1px solid var(--color-border-subtle)" : "none", background: "var(--lyra-white)" }}>
+                        <div>
+                          <div style={{ font: "500 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>{c.name}</div>
+                          <div style={{ marginTop: 3 }}><window.CampaignStateInline status={c.status} hasWorkingCopy={c.hasWorkingCopy}/></div>
+                        </div>
+                        <div><window.StatusPill s={c.status}/></div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </TemplateConfigGroup>
+
+          </div>
+        </div>
+
+      </div>{/* /scrollable body */}
+
+      {/* Footer */}
+      <div className="wz-footer">
+        <button className="btn" onClick={onBack}>← Back</button>
+      </div>
+    </div>
+  );
+}
+
+/* Collapsible accordion group for template detail — mirrors ConfigGroup */
+function TemplateConfigGroup({ title, num, children, defaultOpen = true }) {
+  const [open, setOpen] = React.useState(defaultOpen);
+  return (
+    <section className={`cfg-group${open ? "" : " cfg-group--closed"}`}>
+      <header className="cfg-group-head" onClick={() => setOpen(!open)}>
+        <span className="cfg-group-num">{num}</span>
+        <span className="cfg-group-title">{title}</span>
+        <svg className="cfg-group-chev" viewBox="0 0 16 16">
+          <path d="M3.5 6 8 10.5 12.5 6" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </header>
+      {open && <div className="cfg-group-body">{children}</div>}
+    </section>
+  );
+}
+
+function SurveyDesignsGrid({ onCreate, onOpen, onEdit, newDesigns = [] }) {
   const [search, setSearch] = React.useState("");
-  const [channelFilter, setChannelFilter] = React.useState(null);
   const [typeFilter, setTypeFilter] = React.useState(null);
-  /* Filter options derived from the data so they stay in sync. */
-  const channelOptions = Array.from(new Set(SEED_DESIGNS.map(d => d.channel))).sort();
+  const [deletedIds, setDeletedIds] = React.useState([]);
+  const [sortKey, setSortKey] = React.useState("updated");
+  const [sortDir, setSortDir] = React.useState("desc");
   const typeOptions = Array.from(new Set(SEED_DESIGNS.map(d => d.surveyType))).sort();
-  const hasAnyFilter = !!(search || channelFilter || typeFilter);
-  const clearAllFilters = () => {
-    setSearch(""); setChannelFilter(null); setTypeFilter(null);
+  const hasAnyFilter = !!search;
+  const clearAllFilters = () => { setSearch(""); setTypeFilter(null); };
+
+  function toggleSort(key) {
+    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
+    else { setSortKey(key); setSortDir("desc"); }
+  }
+
+  const SortIcon = ({ k }) => {
+    const active = sortKey === k;
+    return (
+      <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+        style={{ marginLeft: 4, verticalAlign: "-1px", opacity: active ? 1 : 0.3, color: active ? "var(--color-fg-action)" : "currentColor", flexShrink: 0 }}>
+        {(!active || sortDir === "asc")  && <polyline points="4 10 8 6 12 10" style={{ opacity: active && sortDir === "asc" ? 1 : 0.4 }}/>}
+        {(!active || sortDir === "desc") && <polyline points="4 6 8 10 12 6"  style={{ opacity: active && sortDir === "desc" ? 1 : 0.4 }}/>}
+      </svg>
+    );
   };
 
-  const rows = SEED_DESIGNS.filter(d => {
+  const allDesigns = [...newDesigns, ...SEED_DESIGNS];
+  const rows = allDesigns.filter(d => {
+    if (deletedIds.includes(d.id)) return false;
     if (search && !d.name.toLowerCase().includes(search.toLowerCase())) return false;
-    if (channelFilter && d.channel !== channelFilter) return false;
     if (typeFilter && d.surveyType !== typeFilter) return false;
     return true;
+  }).sort((a, b) => {
+    const av = a.updated ?? ""; const bv = b.updated ?? "";
+    if (av < bv) return sortDir === "asc" ? -1 : 1;
+    if (av > bv) return sortDir === "asc" ? 1 : -1;
+    return 0;
   });
 
   const channelText = (channel) => {
@@ -8913,10 +9209,6 @@ function SurveyDesignsGrid({ onCreate, onOpen }) {
           <input placeholder="Search by name"
             value={search} onChange={e => setSearch(e.target.value)}/>
         </div>
-        <window.FilterChip label="Channel" value={channelFilter} options={channelOptions}
-          onSelect={setChannelFilter} onClear={() => setChannelFilter(null)}/>
-        <window.FilterChip label="Type" value={typeFilter} options={typeOptions}
-          onSelect={setTypeFilter} onClear={() => setTypeFilter(null)}/>
         {hasAnyFilter && (
           <button className="clear-link" onClick={clearAllFilters}>Clear</button>
         )}
@@ -8935,13 +9227,15 @@ function SurveyDesignsGrid({ onCreate, onOpen }) {
             <tr>
               <th>Survey template</th>
               <th>Channels</th>
-              <th>Type</th>
-              <th>Last updated</th>
+              <th style={{ cursor: "pointer", userSelect: "none" }} onClick={() => toggleSort("updated")}>
+                <span style={{ display: "inline-flex", alignItems: "center" }}>Last updated<SortIcon k="updated"/></span>
+              </th>
+              <th style={{ width: 52 }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {rows.map(d => (
-              <tr key={d.id}>
+              <tr key={d.id} className={d.isNew ? "new-campaign-row" : ""}>
                 <td style={{ maxWidth: 360 }}>
                   <a className="agent-link" href="#" onClick={e => { e.preventDefault(); onOpen(d); }}>
                     {d.name}
@@ -8961,18 +9255,23 @@ function SurveyDesignsGrid({ onCreate, onOpen }) {
                     {channelText(d.channel)}
                   </span>
                 </td>
-                <td>{d.surveyType}</td>
                 <td>
-                  <div>{d.updated}</div>
-                  <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 4 }}>
-                    by {d.owner}
-                  </div>
+                  <div>{d.updated || <span style={{ color: "var(--color-fg-secondary)" }}>—</span>}</div>
+                  {d.updated && <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 4 }}>by {d.owner}</div>}
+                </td>
+                <td style={{ textAlign: "center" }}>
+                  <DesignRowActions
+                    design={d}
+                    onEdit={(design) => onEdit(design)}
+                    onDelete={(id) => setDeletedIds(prev => [...prev, id])}
+                    deleteDisabled={!!d.isDefault}
+                  />
                 </td>
               </tr>
             ))}
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={5} style={{ padding: "var(--space-6)", textAlign: "center", color: "var(--lyra-slate-400)", font: "400 14px/20px Inter" }}>
+                <td colSpan={6} style={{ padding: "var(--space-6)", textAlign: "center", color: "var(--lyra-slate-400)", font: "400 14px/20px Inter" }}>
                   No templates match the current filter.
                 </td>
               </tr>
@@ -8985,17 +9284,18 @@ function SurveyDesignsGrid({ onCreate, onOpen }) {
 }
 
 const DEFAULT_DESIGN = {
-  name: "",
-  description: "",
+  name: "Post Interaction CSAT",
+  description: "Captures customer satisfaction immediately after each interaction to track quality and identify coaching opportunities.",
   channel: "Digital",
   surveyType: "CSAT (1–5 Star)",
   displayStyle: "Quick Reply",
   listPickerLabel: "Rate your experience",
   welcomeMode: "with-optout",
-  welcomeMessage: "{{First Name}}, we'd love to hear about your experience today. We have just a few quick questions, just two minutes of your time.",
+  welcomeMessage: "We'd love to hear about your experience today. We have just a few quick questions, just two minutes of your time.",
   buttonToStart: "Get started",
   buttonToOptOut: "Not today",
   aiQuestions: true,
+  sendGenericQuestion: true,
   defaultScaleQuestion: "On a scale of 1 to 5, how would you rate your experience today?",
   defaultCommentQuestion: "What could we have done better?",
   maxQuestions: 2,
@@ -9010,10 +9310,18 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
   const isEdit = !!initial;
   const [activeStep, setActiveStep] = React.useState(0);
   const [visitedSteps, setVisitedSteps] = React.useState(new Set());
+  const [saving, setSaving] = React.useState(false);
+  const [showPreview, setShowPreview] = React.useState(false);
+
+  function handleSaveTemplate() {
+    setSaving(true);
+    setTimeout(() => { onSave(d); }, 2500);
+  }
 
   const initialLinkedIds = React.useMemo(() => {
-    if (!initial || !window.CAMPAIGNS) return [];
-    return window.CAMPAIGNS.filter(c => c.surveyDesignId === initial.id).map(c => c.id);
+    if (!window.CAMPAIGNS) return [];
+    if (initial) return window.CAMPAIGNS.filter(c => c.surveyDesignId === initial.id).map(c => c.id);
+    return [1, 2, 7, 10, 5]; // default preview: 3 active, 1 expired, 1 inactive
   }, [initial]);
   const [linkedIds, setLinkedIds] = React.useState(initialLinkedIds);
   const toggleLink = (id) => setLinkedIds(prev =>
@@ -9023,9 +9331,8 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
   const STEPS = [
     { n: 0, label: "Identity",         done: !!d.name },
     { n: 1, label: "Survey Content",   done: !!d.defaultScaleQuestion },
-    { n: 2, label: "Delivery",         done: true },
-    { n: 3, label: "Linked Campaigns", done: linkedIds.length > 0 },
-    { n: 4, label: "Summary & Review", done: false },
+    { n: 2, label: "Linked Campaigns", done: linkedIds.length > 0 },
+    { n: 3, label: "Summary & Review", done: false },
   ];
 
   function stepState(s) {
@@ -9046,38 +9353,6 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
 
   const canSave = !!d.name;
 
-  function TemplateFloatingSummary() {
-    const rows = [
-      {
-        icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><rect x="3" y="1.5" width="10" height="13" rx="1.5"/><line x1="6" y1="5" x2="10" y2="5"/><line x1="6" y1="8" x2="10" y2="8"/><line x1="6" y1="11" x2="8.5" y2="11"/></svg>,
-        label: "Name",
-        value: d.name || <span style={{ color: "var(--color-fg-disabled)", fontStyle: "italic" }}>Not set</span>,
-      },
-      {
-        icon: <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M2 11.5C2 9.5 3.5 8 5.5 8h5C12.5 8 14 9.5 14 11.5"/><circle cx="8" cy="4.5" r="2.5"/></svg>,
-        label: "Channel",
-        value: d.channel || "Digital",
-      },
-    ];
-
-    return (
-      <div className="summary-card">
-        <div className="summary-card-head">Template Summary</div>
-        <div className="summary-card-rows">
-          {rows.map((r, i) => (
-            <div className="summary-card-row" key={i}>
-              <div className="summary-card-icon">{r.icon}</div>
-              <div className="summary-card-row-body">
-                <div className="summary-card-label">{r.label}</div>
-                <div className="summary-card-value">{r.value}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="pane" style={{ overflow: "hidden" }}>
       {/* Breadcrumb */}
@@ -9090,10 +9365,6 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
       {/* Page header */}
       <div className="pane-head" style={{ paddingTop: 6 }}>
         <h1>{isEdit ? d.name : "New Survey Template"}</h1>
-        <div className="head-actions">
-          <button className="btn" onClick={onCancel}>Cancel</button>
-          <button className="btn" disabled={!canSave} onClick={() => onSave({ ...d, status: "draft" })}>Save as draft</button>
-        </div>
       </div>
 
       {/* ── Horizontal Wizard Bar ── */}
@@ -9121,8 +9392,8 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
 
       {/* ── Wizard body ── */}
       <div className="wz-scroll-area">
-        <div className="wz-body">
-          <div className="form-pane">
+        <div className="wz-body" style={{ gridTemplateColumns: "1fr" }}>
+          <div className="form-pane sv-form">
 
           {/* ── Step 0: Identity ── */}
           {activeStep === 0 && (()=>{
@@ -9139,8 +9410,8 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
                 <div className="setup-section-body">
                   <div className="field-grid-2">
                     <div className="field-cell">
-                      <label className="field-label">Template Name<span className="req">*</span></label>
-                      <input className={`fi-input${nameErr ? " error" : ""}`} placeholder="e.g. Post-Chat CSAT"
+                      <label className="field-label">Template Name<span className="req">*</span><span className="char-counter">{(d.name || "").length}/50</span></label>
+                      <input className={`fi-input${nameErr ? " error" : ""}`} placeholder="e.g. Post-Chat CSAT" maxLength={50}
                         aria-invalid={nameErr || undefined}
                         value={d.name} onChange={e => set("name", e.target.value)}/>
                       {nameErr && <div className="field-control"><span className="error-msg">
@@ -9149,8 +9420,11 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
                       </span></div>}
                     </div>
                     <div className="field-cell">
-                      <label className="field-label">Description</label>
-                      <textarea className="fi-input" rows={3} placeholder="What this template is for and which campaigns should use it."
+                      <label className="field-label">
+                        Description
+                        <span className="char-counter">{(d.description || "").length}/200</span>
+                      </label>
+                      <textarea className="fi-input" rows={3} maxLength={200} placeholder="What this template is for and which campaigns should use it."
                         value={d.description} onChange={e => set("description", e.target.value)}/>
                       <div className="help">Help your team understand when to apply this template.</div>
                     </div>
@@ -9165,35 +9439,40 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
             const showErr = visitedSteps.has(1);
             const scaleErr = showErr && !d.defaultScaleQuestion;
             return <div className="wz-step-content">
-              <div className="setup-section">
-                <div className="setup-section-head">
+
+              {/* ── Card 1: Channel ── */}
+              <div className="setup-section" style={{ background: "var(--lyra-white)", borderColor: "rgba(0,0,0,0.08)" }}>
+                <div className="setup-section-head" style={{ background: "var(--lyra-white)" }}>
                   <div>
-                    <h2 className="setup-section-title">Survey Content</h2>
-                    <p className="setup-section-sub">Set the questions customers will see and how they will answer.</p>
+                    <h2 className="setup-section-title">Channel</h2>
+                    <p className="setup-section-sub">Choose how this survey is delivered to customers.</p>
                   </div>
                 </div>
                 <div className="setup-section-body">
-
-                  {/* ── Group 1: Channel ── */}
-                  <div className="sc-group">
-                    <div className="sc-group-label">Channel</div>
-                    <div className="field-cell">
+                  <div className="field-cell">
                       <label className="field-label">Survey Channel<span className="req">*</span></label>
                       <Segmented options={["Digital", "IVR", "All"]}
-                        disabled={["IVR", "All"]}
+                        disabled={["All"]}
                         value={d.channel} onChange={v => set("channel", v)}/>
                       <div className="help">
                         {d.channel === "Digital" ? "Delivered on chat, AI sessions, social & email." :
                          d.channel === "IVR"     ? "Sent after a phone call — customers respond using their keypad." :
                                                    "Delivered on both phone and digital channels."}
                       </div>
-                    </div>
                   </div>
+                </div>
+              </div>
 
-                  {/* ── Group 2: Welcome Message ── */}
-                  <div className="sc-group">
-                    <div className="sc-group-label">Welcome Message</div>
-                    <div className="field-cell">
+              {/* ── Card 2: Welcome Message ── */}
+              <div className="setup-section">
+                <div className="setup-section-head">
+                  <div>
+                    <h2 className="setup-section-title">Welcome Message</h2>
+                    <p className="setup-section-sub">Optionally introduce the survey before the first question.</p>
+                  </div>
+                </div>
+                <div className="setup-section-body">
+                  <div className="field-cell">
                       <label className="field-label">Message Mode<span className="req">*</span></label>
                       <div className="welcome-mode-radio">
                         {(d.channel === "IVR" ? [
@@ -9232,9 +9511,6 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
                             placeholder={`"{{First Name}}", we'd love to hear about your experience today. Just two minutes of your time.`}
                             value={d.welcomeMessage}
                             onChange={e => set("welcomeMessage", e.target.value)}/>
-                          <div className="help" style={{ marginTop: "var(--space-2)" }}>
-                            Use <code style={{ background: "var(--lyra-white)", padding: "1px 5px", border: "1px solid rgba(0,0,0,0.08)", borderRadius: 3, font: "500 12px/16px var(--font-sans)", color: "var(--lyra-slate-700)" }}>{"{{First Name}}"}</code> to personalise.
-                          </div>
                           {(d.channel === "Digital" || d.channel === "Both") && (
                             <div style={{ display: "grid", gridTemplateColumns: d.welcomeMode === "with-optout" ? "1fr 1fr" : "1fr", gap: "var(--space-3)", marginTop: "var(--space-4)", paddingTop: "var(--space-3)", borderTop: "1px solid var(--color-border-subtle)" }}>
                               <div>
@@ -9259,20 +9535,31 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
                         </div>
                       </div>
                     )}
-                  </div>
+                </div>
+              </div>
 
-                  {/* ── Group 3: Rating Format ── */}
-                  <div className="sc-group">
-                    <div className="sc-group-label">Rating Format</div>
-                    <div className="field-cell" style={{ marginBottom: "var(--space-5)" }}>
-                      <label className="field-label">Survey Type<span className="req">*</span></label>
-                      <Segmented options={["CSAT (1–5 Star)", "Like / Dislike", "Both"]}
-                        value={d.surveyType} onChange={v => set("surveyType", v)}/>
-                    </div>
+              {/* ── Card 3: Rating Format ── */}
+              <div className="setup-section">
+                <div className="setup-section-head">
+                  <div>
+                    <h2 className="setup-section-title">Rating Format</h2>
+                    <p className="setup-section-sub">Choose the rating scale and how answer options are displayed.</p>
+                  </div>
+                </div>
+                <div className="setup-section-body">
                     {(d.channel === "Digital" || d.channel === "Both") && (
                       <>
                         <div className="field-cell" style={{ marginBottom: d.displayStyle === "List Picker" ? "var(--space-5)" : 0 }}>
-                          <label className="field-label">Digital Display Style<span className="req">*</span></label>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "var(--space-2)" }}>
+                            <label className="field-label" style={{ margin: 0 }}>Digital Display Style<span className="req">*</span></label>
+                            <button className="clear-link" style={{ fontSize: 13, color: "var(--color-fg-action)", display: "flex", alignItems: "center", gap: 5 }}
+                              onClick={() => setShowPreview(true)}>
+                              <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z"/><circle cx="8" cy="8" r="2"/>
+                              </svg>
+                              Preview
+                            </button>
+                          </div>
                           <Segmented options={["Quick Reply", "List Picker"]}
                             value={d.displayStyle} onChange={v => set("displayStyle", v)}/>
                           <div className="help">
@@ -9284,170 +9571,129 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
                         {d.displayStyle === "List Picker" && (
                           <div className="field-cell">
                             <label className="field-label">List Picker Label<span className="req">*</span></label>
-                            <input className="fi-input" maxLength={48}
+                            <input className="fi-input" maxLength={20}
                               placeholder="Rate your experience"
                               value={d.listPickerLabel}
                               onChange={e => set("listPickerLabel", e.target.value)}/>
-                            <div className="help">{(d.listPickerLabel || "").length}/48 characters</div>
+                            <div className="help">{(d.listPickerLabel || "").length}/20 characters</div>
                           </div>
                         )}
                       </>
                     )}
-                  </div>
-
-                  {/* ── Group 4: Questions ── */}
-                  <div className="sc-group">
-                    <div className="sc-group-label">Questions</div>
-
-                    {/* AI toggle */}
-                    <div className="field-cell" style={{ marginBottom: "var(--space-5)" }}>
-                      <label className="field-label">AI-Generated Contextual Questions</label>
-                      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", padding: "var(--space-3) var(--space-4)", borderRadius: "var(--radius-md)", border: "1px solid var(--color-border-subtle)", background: d.aiQuestions ? "var(--color-bg-active-subtle)" : "var(--lyra-white)" }}>
-                        <label className="switch" style={{ flexShrink: 0 }}>
-                          <input type="checkbox" checked={d.aiQuestions} onChange={e => set("aiQuestions", e.target.checked)}/>
-                          <span className="slider" style={{ background: d.aiQuestions ? "var(--lyra-brand-600)" : undefined }}/>
-                        </label>
-                        <div>
-                          <div style={{ font: "500 14px/20px var(--font-sans)", color: d.aiQuestions ? "var(--lyra-brand-700)" : "var(--color-fg-default)" }}>
-                            {d.aiQuestions ? "On — Question adapts to each interaction" : "Off — Same questions for every customer"}
-                          </div>
-                          <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 2 }}>
-                            When on, the AI writes questions based on what happened in each call or chat.
-                          </div>
-                        </div>
-                      </div>
-                      {d.aiQuestions && (
-                        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)", padding: "var(--space-3) var(--space-4)", borderRadius: "var(--radius-md)", background: "var(--lyra-slate-50)", border: "1px solid var(--color-border-subtle)", marginTop: "var(--space-2)" }}>
-                          {[
-                            { dot: "var(--fi-green)",      text: "Configured category found → AI writes questions specific to that category." },
-                            { dot: "var(--fi-purple)",      text: "Unmatched category found → AI still writes questions; new category flagged for review." },
-                            { dot: "var(--lyra-slate-400)", text: "No category identified → falls back to the default questions below." },
-                          ].map((item, i) => (
-                            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)" }}>
-                              <span style={{ width: 6, height: 6, borderRadius: "50%", background: item.dot, flexShrink: 0, marginTop: 7 }}/>
-                              <span style={{ font: "400 13px/20px var(--font-sans)", color: "var(--color-fg-secondary)" }}>{item.text}</span>
+                    {showPreview && ReactDOM.createPortal(
+                      <div style={{ position: "fixed", inset: 0, zIndex: 900, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.40)" }}
+                        onClick={() => setShowPreview(false)}>
+                        <div style={{ background: "var(--lyra-white)", borderRadius: 16, padding: "28px 28px 24px", width: 380, boxShadow: "0px 12px 24px rgba(0,0,0,0.12)" }}
+                          onClick={e => e.stopPropagation()}>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                            <div>
+                              <div style={{ font: "600 15px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>
+                                {d.displayStyle === "Quick Reply" ? "Quick Reply" : "List Picker"} Preview
+                              </div>
+                              <div style={{ font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", marginTop: 2 }}>How customers will see the survey</div>
                             </div>
-                          ))}
+                            <button onClick={() => setShowPreview(false)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--color-fg-secondary)", padding: 4 }}>
+                              <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><line x1="12" y1="4" x2="4" y2="12"/><line x1="4" y1="4" x2="12" y2="12"/></svg>
+                            </button>
+                          </div>
+                          <div style={{ background: "#f5f7f9", borderRadius: 12, padding: "16px 14px", border: "1px solid rgba(0,0,0,0.08)" }}>
+                            <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+                              <div style={{ width: 28, height: 28, borderRadius: "50%", background: "var(--lyra-brand-500)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                <svg viewBox="0 0 16 16" width="14" height="14" fill="white"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="white"/></svg>
+                              </div>
+                              <div style={{ background: "var(--lyra-white)", borderRadius: "4px 12px 12px 12px", padding: "10px 12px", font: "400 13px/18px var(--font-sans)", color: "var(--color-fg-default)", boxShadow: "0 1px 2px rgba(0,0,0,0.06)", maxWidth: 260 }}>
+                                {d.defaultScaleQuestion || "On a scale of 1 to 5, how would you rate your experience today?"}
+                              </div>
+                            </div>
+                            {d.displayStyle === "Quick Reply" ? (
+                              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, paddingLeft: 36 }}>
+                                {["1", "2", "3", "4", "5"].map(n => (
+                                  <div key={n} style={{ background: "var(--lyra-white)", border: "1px solid var(--lyra-brand-500)", borderRadius: 20, padding: "6px 14px", font: "500 13px/18px var(--font-sans)", color: "var(--lyra-brand-600)", cursor: "pointer" }}>{n}</div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div style={{ paddingLeft: 36 }}>
+                                <div style={{ background: "var(--lyra-white)", borderRadius: 10, overflow: "hidden", border: "1px solid rgba(0,0,0,0.08)" }}>
+                                  {d.listPickerLabel && (
+                                    <div style={{ padding: "8px 14px", font: "500 11px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "1px solid rgba(0,0,0,0.06)", background: "#f5f7f9" }}>
+                                      {d.listPickerLabel}
+                                    </div>
+                                  )}
+                                  {["1 — Poor", "2 — Fair", "3 — Good", "4 — Very Good", "5 — Excellent"].map((r, i, arr) => (
+                                    <div key={r} style={{ padding: "10px 14px", font: "400 13px/18px var(--font-sans)", color: "var(--color-fg-default)", borderBottom: i < arr.length - 1 ? "1px solid rgba(0,0,0,0.06)" : "none", cursor: "pointer" }}>{r}</div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          <div style={{ marginTop: 16, font: "400 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textAlign: "center" }}>
+                            Click outside or press × to close
+                          </div>
                         </div>
-                      )}
-                    </div>
-
-                    {/* Scale + Comment questions */}
-                    <div className="field-cell" style={{ marginBottom: "var(--space-5)" }}>
-                      <label className="field-label">
-                        {d.aiQuestions ? "Default Fallback Questions" : "Survey Questions"}<span className="req">*</span>
-                      </label>
-                      {scaleErr && <div className="field-control" style={{ marginBottom: "var(--space-2)" }}><span className="error-msg">
-                        <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="8" cy="8" r="6"/><line x1="8" y1="5" x2="8" y2="8.5"/><circle cx="8" cy="11" r=".6" fill="currentColor"/></svg>
-                        Scale question is required
-                      </span></div>}
-                      <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", padding: "var(--space-4)", borderRadius: "var(--radius-md)", background: "var(--lyra-slate-50)", border: "1px solid var(--color-border-subtle)" }}>
-                        <div>
-                          <div style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--space-2)" }}>Rating Question</div>
-                          <input className={`fi-input${scaleErr ? " error" : ""}`} maxLength={120}
-                            style={{ background: "var(--lyra-white)" }}
-                            placeholder="On a scale of 1 to 5, how would you rate your experience today?"
-                            value={d.defaultScaleQuestion}
-                            onChange={e => set("defaultScaleQuestion", e.target.value)}/>
-                        </div>
-                        <div>
-                          <div style={{ font: "500 12px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "var(--space-2)" }}>Follow-up / Comment Question</div>
-                          <input className="fi-input" maxLength={120}
-                            style={{ background: "var(--lyra-white)" }}
-                            placeholder="What could we have done better?"
-                            value={d.defaultCommentQuestion}
-                            onChange={e => set("defaultCommentQuestion", e.target.value)}/>
-                        </div>
-                      </div>
-                      <div className="help">
-                        {d.aiQuestions
-                          ? "Sent when AI can't match the interaction to a topic. Keep these broad."
-                          : "Every customer will receive these questions in this order."}
-                      </div>
-                    </div>
-
-                    {/* Free Text */}
-                    <div className="field-cell">
-                      <label className="field-label">Free Text Comment Box</label>
-                      <Segmented options={["Always On", "Conditional", "Always Off"]}
-                        value={d.freeText} onChange={v => set("freeText", v)}/>
-                      <div className="help">
-                        {d.freeText === "Always On"   ? "Customers can always write their own feedback in addition to the rating." :
-                         d.freeText === "Conditional"  ? "Free text box only appears when the rating is ≤ 2 stars." : null}
-                      </div>
-                    </div>
-                  </div>
-
-                </div>{/* /setup-section-body */}
+                      </div>,
+                      document.body
+                    )}
+                </div>
               </div>
+
             </div>;
           })()}
 
-          {/* ── Step 2: Delivery ── */}
+          {/* ── Step 2: Linked Campaigns ── */}
           {activeStep === 2 && (
             <div className="wz-step-content">
               <div className="setup-section">
                 <div className="setup-section-head">
                   <div>
-                    <h2 className="setup-section-title">Delivery</h2>
-                    <p className="setup-section-sub">Set how long the survey stays open and who gets notified on a poor score.</p>
-                  </div>
-                </div>
-                <div className="setup-section-body">
-                  <div className="field-cell">
-                    <label className="field-label">Real-time Response Alerting</label>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-                      <label className="switch" style={{ flexShrink: 0 }}>
-                        <input type="checkbox" checked={d.realtimeAlerts} onChange={e => set("realtimeAlerts", e.target.checked)}/>
-                        <span className="slider" style={{ background: d.realtimeAlerts ? "var(--lyra-brand-600)" : undefined }}/>
-                      </label>
-                      <span style={{ font: "500 14px/20px var(--font-sans)", color: d.realtimeAlerts ? "var(--lyra-brand-600)" : "var(--color-fg-secondary)" }}>
-                        {d.realtimeAlerts
-                          ? "On — Alert supervisor immediately on low ratings (1–2 stars)"
-                          : "Off — Supervisors are not notified on low ratings"}
-                      </span>
-                    </div>
-                    <div className="help">Notify a supervisor straight away when a customer gives 1 or 2 stars.</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ── Step 3: Linked Campaigns ── */}
-          {activeStep === 3 && (
-            <div className="wz-step-content">
-              <div className="setup-section">
-                <div className="setup-section-head">
-                  <div>
                     <h2 className="setup-section-title">Linked Campaigns</h2>
-                    <p className="setup-section-sub">Choose which campaigns use this template. Any edits here will automatically apply to all linked campaigns.</p>
+                    {isEdit && <p className="setup-section-sub">Campaigns currently using this template. To link or unlink campaigns, edit the individual campaign.</p>}
                   </div>
                 </div>
                 <div className="setup-section-body">
-                  <LinkedCampaignsTable
-                    linkedIds={linkedIds}
-                    currentDesignId={initial?.id}
-                    onToggle={toggleLink}
-                  />
+                  {(!isEdit || d.isDefault) ? (
+                    <div style={{
+                      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                      padding: "var(--space-10) var(--space-8)", textAlign: "center",
+                      background: "var(--lyra-slate-50)", borderRadius: "var(--radius-md)",
+                      border: "1px dashed var(--color-border-soft)"
+                    }}>
+                      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--lyra-slate-400)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: 12 }}>
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                      </svg>
+                      <p style={{ font: "500 14px/20px var(--font-sans)", color: "var(--color-fg-default)", margin: "0 0 6px" }}>
+                        No campaigns linked yet
+                      </p>
+                      <p style={{ font: "400 13px/18px var(--font-sans)", color: "var(--color-fg-secondary)", margin: 0, maxWidth: 400 }}>
+                        Save this template first, then go to a Campaign and select this template to link it. Linked campaigns will appear here automatically.
+                      </p>
+                    </div>
+                  ) : (
+                    <LinkedCampaignsTable
+                      linkedIds={linkedIds}
+                      currentDesignId={initial?.id}
+                    />
+                  )}
                 </div>
               </div>
             </div>
           )}
 
-          {/* ── Step 4: Summary & Review ── */}
-          {activeStep === 4 && (() => {
+          {/* ── Step 3: Summary & Review ── */}
+          {activeStep === 3 && (() => {
             const missingRequired = !d.name;
-            const SRSection = ({ title, num, children }) => (
+            const SRSection = ({ title, num, children, noEdit }) => (
               <div className="sr-section">
                 <div className="sr-section-head">
                   <span className="sr-section-num">{num}</span>
                   <span className="sr-section-title">{title}</span>
-                  <button className="btn btn-ghost" style={{ marginLeft: "auto", font: "var(--text-body-sm)", color: "var(--color-fg-action)" }}
-                    onClick={() => setActiveStep(num - 1)}>
-                    <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M11 2.5a2 2 0 0 1 2.8 2.8L5 14l-3.5.8.8-3.5z"/></svg>
-                    Edit
-                  </button>
+                  {!noEdit && (
+                    <button className="btn btn-ghost" style={{ marginLeft: "auto", font: "var(--text-body-sm)", color: "var(--color-fg-action)" }}
+                      onClick={() => setActiveStep(num - 1)}>
+                      <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M11 2.5a2 2 0 0 1 2.8 2.8L5 14l-3.5.8.8-3.5z"/></svg>
+                      Edit
+                    </button>
+                  )}
                 </div>
                 <div className="sr-section-body">{children}</div>
               </div>
@@ -9488,26 +9734,17 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
                       <span style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{d.welcomeMessage}</span>
                     </SRRow>
                   )}
-                  <SRRow label="Survey Type">{d.surveyType || "CSAT (1–5 Star)"}</SRRow>
                   {(d.channel === "Digital" || d.channel === "Both") && (
                     <SRRow label="Display Style">{d.displayStyle || "Quick Reply"}</SRRow>
                   )}
-                  <SRRow label="AI Questions">{d.aiQuestions ? "Enabled" : "Disabled"}</SRRow>
-                  <SRRow label="Rating Question">{d.defaultScaleQuestion || <span style={{ color: "var(--color-status-error)" }}>Required</span>}</SRRow>
-                  {d.defaultCommentQuestion && <SRRow label="Follow-up Question">{d.defaultCommentQuestion}</SRRow>}
-                  <SRRow label="Free Text Box">{d.freeText || "Conditional"}</SRRow>
+                  {true && <>
+                    <SRRow label="Rating Question">{d.defaultScaleQuestion || <span style={{ color: "var(--color-status-error)" }}>Required</span>}</SRRow>
+                    {d.defaultCommentQuestion && <SRRow label="Follow-up Question">{d.defaultCommentQuestion}</SRRow>}
+                  </>}
                 </SRSection>
 
-                <SRSection title="Delivery" num={3}>
-                  <SRRow label="Real-time Alerting">{d.realtimeAlerts ? "Enabled — Alert supervisor on 1–2 star ratings" : "Disabled"}</SRRow>
-                </SRSection>
-
-                <SRSection title="Linked Campaigns" num={4}>
-                  <SRRow label="Campaigns linked">
-                    {linkedIds.length > 0
-                      ? `${linkedIds.length} campaign${linkedIds.length === 1 ? "" : "s"}`
-                      : <span style={{ color: "var(--color-fg-secondary)" }}>None linked</span>}
-                  </SRRow>
+                <SRSection title="Linked Campaigns" num={3} noEdit>
+                  <LinkedCampaignsTable linkedIds={linkedIds} currentDesignId={initial?.id} />
                 </SRSection>
               </div>
             );
@@ -9515,149 +9752,95 @@ function CreateSurveyDesign({ onCancel, onSave, initial }) {
 
           </div>
 
-          {/* Right-rail summary */}
-          <aside className="summary-pane">
-            <TemplateFloatingSummary/>
-          </aside>
         </div>
       </div>
 
       {/* ── Wizard Footer ── */}
       <div className="wz-footer">
-        <div style={{ flex: 1 }}/>
-        {activeStep > 0 && (
-          <button className="btn" onClick={goBack}>← Back</button>
-        )}
-        {activeStep < 4 ? (
-          <button className="btn primary" onClick={goNext}>
-            {activeStep === 3 ? "Review →" : "Next →"}
-          </button>
+        <button className="btn" onClick={onCancel}>Cancel</button>
+        <span style={{ flex: 1 }}/>
+        {activeStep < 3 ? (
+          <>
+            {activeStep > 0 && (
+              <button className="btn" onClick={goBack}>← Back</button>
+            )}
+            <button className="btn primary" onClick={goNext}>
+              {activeStep === 2 ? "Review →" : "Next →"}
+            </button>
+          </>
         ) : (
           <>
-            <button className="btn" disabled={!canSave} onClick={() => onSave({ ...d, status: "draft" })}>Save as draft</button>
-            <button className="btn primary" disabled={!canSave} onClick={() => onSave(d)}>
+            <button className="btn" onClick={goBack}>← Back</button>
+            <button className="btn primary" disabled={!canSave} onClick={handleSaveTemplate}>
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 13 10 19 20 5"/></svg>
               {isEdit ? "Save changes" : "Save template"}
             </button>
           </>
         )}
       </div>
+
+      {/* Save success overlay */}
+      {saving && ReactDOM.createPortal(
+        <div className="activate-overlay">
+          <div className="activate-card">
+            <div className="activate-ring">
+              <svg viewBox="0 0 24 24" width="40" height="40" fill="none"
+                stroke="var(--lyra-green-500)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="4 13 10 19 20 5" className="activate-check"/>
+              </svg>
+            </div>
+            <h2 className="activate-title">Template Saved!</h2>
+            <p className="activate-sub">"{d.name}" is ready to use in campaigns.</p>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
 
-function LinkedCampaignsTable({ linkedIds, currentDesignId, onToggle }) {
-  const [search, setSearch] = React.useState("");
-  const [hideOtherMapped, setHideOtherMapped] = React.useState(false);
+function LinkedCampaignsTable({ linkedIds, currentDesignId }) {
   const all = window.CAMPAIGNS || [];
-  const rows = all.filter(c => {
-    if (search && !c.name.toLowerCase().includes(search.toLowerCase())) return false;
-    if (hideOtherMapped && c.surveyDesignId && c.surveyDesignId !== currentDesignId && !linkedIds.includes(c.id)) return false;
-    return true;
-  });
-  const linkedCount = linkedIds.length;
+  const rows = all.filter(c => linkedIds.includes(c.id) && c.status !== "draft" && c.status !== "inactive");
 
   return (
     <div>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10, flexWrap: "wrap" }}>
-        <div className="search" style={{ flex: "0 0 260px" }}>
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input placeholder="Search campaigns"
-            value={search} onChange={e => setSearch(e.target.value)}/>
+      {rows.length === 0 ? (
+        <div style={{ padding: "var(--space-8)", textAlign: "center", color: "var(--color-fg-secondary)", font: "400 14px/20px var(--font-sans)", background: "var(--lyra-slate-50)", borderRadius: "var(--radius-md)", border: "1px solid var(--color-border-subtle)" }}>
+          No campaigns are linked to this template yet.
         </div>
-        <label style={{ display: "inline-flex", alignItems: "center", gap: 6, font: "400 14px/20px Inter", color: "var(--lyra-slate-600)", cursor: "pointer" }}>
-          <input type="checkbox" checked={hideOtherMapped} onChange={e => setHideOtherMapped(e.target.checked)}/>
-          Hide campaigns mapped to another template
-        </label>
-        <span style={{ flex: 1 }}/>
-        <span style={{
-          font: "500 12px/16px Inter",
-          color: linkedCount > 0 ? "var(--fi-accent-strong)" : "var(--lyra-slate-500)",
-          background: linkedCount > 0 ? "var(--fi-accent-bg)" : "rgba(0,0,0,0.04)",
-          padding: "var(--space-1) 10px", borderRadius: 999,
-        }}>
-          {linkedCount} {linkedCount === 1 ? "campaign" : "campaigns"} mapped
-        </span>
-      </div>
-
-      <div style={{ border: "1px solid rgba(0,0,0,0.08)", borderRadius: 8, overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", font: "400 14px/20px Inter" }}>
-          <thead>
-            <tr>
-              <th style={{ width: 40, padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.06)", background: "var(--lyra-white)" }}/>
-              <th style={{ textAlign: "left", padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.06)", font: "500 var(--space-3)/var(--space-4) Inter", color: "var(--lyra-slate-600)", background: "var(--lyra-white)" }}>Campaign</th>
-              <th style={{ textAlign: "left", padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.06)", font: "500 var(--space-3)/var(--space-4) Inter", color: "var(--lyra-slate-600)", background: "var(--lyra-white)" }}>Status</th>
-              <th style={{ textAlign: "left", padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.06)", font: "500 var(--space-3)/var(--space-4) Inter", color: "var(--lyra-slate-600)", background: "var(--lyra-white)" }}>Channels</th>
-              <th style={{ textAlign: "left", padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.06)", font: "500 var(--space-3)/var(--space-4) Inter", color: "var(--lyra-slate-600)", background: "var(--lyra-white)" }}>Owner</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(c => {
-              const isLinked = linkedIds.includes(c.id);
-              const isMappedElsewhere = c.surveyDesignId && c.surveyDesignId !== currentDesignId;
-              return (
-                <tr key={c.id} style={{ background: isLinked ? "rgba(13,138,138,0.04)" : "transparent" }}>
-                  <td style={{ padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
-                    <input type="checkbox" checked={isLinked}
-                      onChange={() => onToggle(c.id)}/>
-                  </td>
-                  <td style={{ padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
-                    <div style={{ font: "500 14px/20px Inter", color: "var(--lyra-slate-900)" }}>{c.name}</div>
-                    {c.status !== "expired" && (
-                      <div style={{ marginTop: 4 }}>
-                        <CampaignStateInline status={c.status} hasWorkingCopy={c.hasWorkingCopy}/>
-                      </div>
-                    )}
-                  </td>
-                  <td style={{ padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
-                    <StatusPill s={c.status}/>
-                  </td>
-                  <td style={{ padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.05)" }}>
-                    <div className="channel-stack">
-                      {c.channels.map(k => (
-                        <span key={k} className="channel-label-item">
-                          <ChannelChip kind={k}/>
-                          <span className="channel-label-text">{k === "voice" ? "Voice" : "Digital"}</span>
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td style={{ padding: "10px var(--space-3)", borderBottom: "1px solid rgba(0,0,0,0.05)", color: "var(--lyra-slate-600)" }}>{c.owner}</td>
-                </tr>
-              );
-            })}
-            {rows.length === 0 ? (
-              <tr>
-                <td colSpan={5} style={{ padding: "var(--space-6)", textAlign: "center", color: "var(--lyra-slate-400)", font: "400 14px/20px Inter" }}>
-                  No campaigns match the current filter.
-                </td>
-              </tr>
-            ) : null}
-          </tbody>
-        </table>
-      </div>
-
-      {linkedIds.some(id => {
-        const c = (window.CAMPAIGNS || []).find(x => x.id === id);
-        return c && c.surveyDesignId && c.surveyDesignId !== currentDesignId;
-      }) ? (
-        <div style={{
-          marginTop: 10, padding: "10px var(--space-3)", borderRadius: 6,
-          background: "var(--fi-amber-bg, rgba(166,79,0,0.08))",
-          border: "1px solid rgba(166,79,0,0.20)",
-          color: "var(--fi-amber)",
-          font: "400 12px/18px Inter",
-          display: "flex", alignItems: "flex-start", gap: 8,
-        }}>
-          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ marginTop: 2, flexShrink: 0 }}>
-            <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-            <line x1="12" y1="9" x2="12" y2="13"/><circle cx="12" cy="17" r=".8" fill="currentColor"/>
-          </svg>
-          <span>
-            One or more selected campaigns are currently mapped to a different template. Saving will remap them — future surveys will use this template instead.
-          </span>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", border: "1px solid var(--color-border-subtle)", borderRadius: "var(--radius-md)", overflow: "hidden" }}>
+          {/* Header */}
+          <div style={{
+            display: "grid", gridTemplateColumns: "1fr 140px",
+            padding: "var(--space-2) var(--space-4)",
+            background: "var(--lyra-slate-50)",
+            borderBottom: "1px solid var(--color-border-subtle)",
+          }}>
+            <span style={{ font: "500 11px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Campaign</span>
+            <span style={{ font: "500 11px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.06em" }}>Status</span>
+          </div>
+          {/* Rows */}
+          {rows.map((c, i) => (
+            <div key={c.id} style={{
+              display: "grid", gridTemplateColumns: "1fr 140px",
+              alignItems: "center",
+              padding: "var(--space-3) var(--space-4)",
+              borderBottom: i < rows.length - 1 ? "1px solid var(--color-border-subtle)" : "none",
+              background: "var(--lyra-white)",
+            }}>
+              <div>
+                <div style={{ font: "500 14px/20px var(--font-sans)", color: "var(--color-fg-default)" }}>{c.name}</div>
+                <div style={{ marginTop: 3 }}>
+                  <CampaignStateInline status={c.status} hasWorkingCopy={c.hasWorkingCopy}/>
+                </div>
+              </div>
+              <div><StatusPill s={c.status}/></div>
+            </div>
+          ))}
         </div>
-      ) : null}
+      )}
     </div>
   );
 }
@@ -9674,16 +9857,22 @@ Object.assign(window, { SEED_DESIGNS, designById, SurveyDesignsGrid, CreateSurve
    - Sentiment multipliers (how sentiment polarity scales the topic score)
 */
 
-const SEED_TOPICS = [
-  { id: 1, name: "Resolution",          category: "Outcome",     weight: 25, active: true },
-  { id: 2, name: "Agent empathy",       category: "Experience",  weight: 15, active: true },
-  { id: 3, name: "Effort / ease",       category: "Experience",  weight: 15, active: true },
-  { id: 4, name: "Wait time",           category: "Experience",  weight: 10, active: true },
-  { id: 5, name: "Billing accuracy",    category: "Outcome",     weight: 10, active: true },
-  { id: 6, name: "Product knowledge",   category: "Outcome",     weight: 10, active: true },
-  { id: 7, name: "Self-service handoff",category: "Channel",     weight: 8,  active: true },
-  { id: 8, name: "Communication clarity",category:"Experience",  weight: 7,  active: true },
-  { id: 9, name: "Brand trust",         category: "Loyalty",     weight: 0,  active: false },
+const TOPIC_MODELS = [
+  { id: "cx-quality",   name: "CX Quality Model" },
+  { id: "agent-perf",   name: "Agent Performance Model" },
+  { id: "resolution",   name: "Resolution Intelligence" },
+  { id: "effort-ease",  name: "Effort & Ease Model" },
+];
+
+const SEED_CATEGORIES = [
+  { id: 1, name: "Resolution",            weight: 5, active: true },
+  { id: 2, name: "Agent Empathy",         weight: 5, active: true },
+  { id: 3, name: "Customer Effort",       weight: 5, active: true },
+  { id: 4, name: "Wait Time",             weight: 5, active: true },
+  { id: 5, name: "Billing Accuracy",      weight: 5, active: true },
+  { id: 6, name: "Product Knowledge",     weight: 5, active: true },
+  { id: 7, name: "Channel Handoff",       weight: 5, active: true },
+  { id: 8, name: "Communication Clarity", weight: 5, active: true },
 ];
 
 const SEED_MODIFIERS = [
@@ -9705,292 +9894,132 @@ const SEED_SENTIMENT = [
 const CATEGORIES = ["Outcome", "Experience", "Channel", "Loyalty"];
 
 function VUScoreModel() {
-  const [topics, setTopics] = React.useState(SEED_TOPICS);
-  const [modifiers, setModifiers] = React.useState(SEED_MODIFIERS);
-  const [sentiments, setSentiments] = React.useState(SEED_SENTIMENT);
+  const [selectedModel, setSelectedModel] = React.useState(TOPIC_MODELS[0].id);
+  const [categories, setCategories] = React.useState(SEED_CATEGORIES);
   const [dirty, setDirty] = React.useState(false);
 
-  const activeTopics = topics.filter(t => t.active);
-  const totalWeight = activeTopics.reduce((s, t) => s + t.weight, 0);
-  const balanced = totalWeight === 100;
-
-  const setTopic = (id, patch) => {
-    setTopics(prev => prev.map(t => t.id === id ? { ...t, ...patch } : t));
+  const setCategory = (id, patch) => {
+    setCategories(prev => prev.map(c => c.id === id ? { ...c, ...patch } : c));
     setDirty(true);
   };
-  const setMod = (id, patch) => {
-    setModifiers(prev => prev.map(m => m.id === id ? { ...m, ...patch } : m));
+  const addCategory = () => {
+    const nextId = Math.max(...categories.map(c => c.id)) + 1;
+    setCategories(prev => [...prev, { id: nextId, name: "New category", weight: 5, active: true }]);
     setDirty(true);
   };
-  const setSent = (id, patch) => {
-    setSentiments(prev => prev.map(s => s.id === id ? { ...s, ...patch } : s));
+  const removeCategory = (id) => {
+    setCategories(prev => prev.filter(c => c.id !== id));
     setDirty(true);
   };
-
-  const addTopic = () => {
-    const nextId = Math.max(...topics.map(t => t.id)) + 1;
-    setTopics(prev => [...prev, { id: nextId, name: "New topic", category: "Experience", weight: 0, active: true }]);
-    setDirty(true);
-  };
-  const removeTopic = (id) => {
-    setTopics(prev => prev.filter(t => t.id !== id));
-    setDirty(true);
-  };
-  const normalize = () => {
-    if (totalWeight === 0) return;
-    const factor = 100 / totalWeight;
-    setTopics(prev => prev.map(t => t.active
-      ? { ...t, weight: Math.round(t.weight * factor) }
-      : t));
-    setDirty(true);
+  const handleCancel = () => {
+    setCategories(SEED_CATEGORIES);
+    setSelectedModel(TOPIC_MODELS[0].id);
+    setDirty(false);
   };
 
   return (
-    <div className="pane">
-      <div className="pane-head" style={{ alignItems: "flex-start" }}>
-        <div style={{ flex: 1 }}>
-          <h1 style={{ margin: 0 }}>VU Score Model</h1>
-          <div style={{ font: "400 14px/20px Inter", color: "var(--lyra-slate-500)", marginTop: 4, maxWidth: 720 }}>
-            Define the topics FI scores against, how each is weighted, the modifiers that adjust scoring on edge cases, and how sentiment polarity scales topic scores. This model drives the VU number on every survey response.
-          </div>
-          <div style={{ font: "400 12px/16px Inter", color: "var(--lyra-slate-500)", marginTop: 8 }}>
-            <span style={{ color: "var(--lyra-slate-900)", fontWeight: 500 }}>v4.2</span>
-            <span style={{ margin: "0 var(--space-2)" }}>·</span>
-            Last published May 04, 2026 by Maria Cohen
-            <span style={{ margin: "0 var(--space-2)" }}>·</span>
-            Applied to <strong style={{ color: "var(--lyra-slate-900)", fontWeight: 500 }}>5 active campaigns</strong>
-          </div>
-        </div>
-        <div className="head-actions" style={{ marginTop: 4 }}>
-          <button className="btn">
-            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
-            Version history
-          </button>
-          <button className="btn">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="9 12 12 9 15 12"/><line x1="12" y1="9" x2="12" y2="16"/></svg>
-            Test against sample
-          </button>
-          <button className="btn primary" disabled={!dirty}
-            style={{ opacity: dirty ? 1 : 0.55, cursor: dirty ? "pointer" : "default" }}>
-            <svg viewBox="0 0 24 24"><polyline points="4 13 10 19 20 5"/></svg>
-            Publish changes
-          </button>
-        </div>
+    <div className="pane" style={{ overflow: "hidden" }}>
+      {/* Page header */}
+      <div className="pane-head">
+        <h1 style={{ margin: 0 }}>Ontology</h1>
       </div>
 
-      <div style={{ flex: 1, overflow: "auto", padding: "var(--space-4) var(--space-6) var(--space-8)", background: "var(--lyra-slate-50)" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 16, maxWidth: 1400 }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* Scrollable body */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "36px 40px 24px" }}>
+        <div style={{ width: "80%" }}>
 
-            {/* Topics & Weights */}
-            <SectionCard num="1" title="Topics & Weights"
-              sub="Each active topic contributes to the composite VU score. Weights should total 100% across active topics.">
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
-                <div style={{ flex: 1 }}>
-                  <div style={{
-                    height: 6, background: "var(--lyra-slate-200)", borderRadius: 3, overflow: "hidden",
-                    display: "flex",
-                  }}>
-                    {activeTopics.map(t => (
-                      <div key={t.id} title={`${t.name} · ${t.weight}%`} style={{
-                        width: `${(t.weight / Math.max(totalWeight, 100)) * 100}%`,
-                        background: catColor(t.category),
-                        borderRight: "1px solid var(--lyra-white)",
-                      }}/>
-                    ))}
-                    {totalWeight < 100 ? (
+          {/* Topic AI Model selector — field layout */}
+          <div style={{ marginBottom: 40 }}>
+            <div style={{ font: "500 11px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>
+              Choose Topic AI Model
+            </div>
+            <select
+              className="ont-model-select"
+              value={selectedModel}
+              onChange={e => { setSelectedModel(e.target.value); setDirty(true); }}>
+              {TOPIC_MODELS.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+            </select>
+            <p style={{ margin: "8px 0 0", font: "400 13px/18px var(--font-sans)", color: "var(--color-fg-secondary)" }}>
+              Defines how each category is weighted when computing the composite VU score.
+            </p>
+          </div>
+
+          {/* Section label */}
+          <div style={{ font: "500 11px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 16 }}>
+            Define Category Weights
+          </div>
+
+          {/* Categories card grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+            {categories.map(c => (
+              <div key={c.id} className={`ont-cat-card${c.active ? "" : " ont-cat-card--inactive"}`}>
+
+                {/* Name + actions row */}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
+                  <input className="ont-input" value={c.name}
+                    onChange={e => setCategory(c.id, { name: e.target.value })}
+                    style={{ font: "500 15px/20px var(--font-sans)", color: "var(--color-fg-default)", padding: "2px 4px", flex: 1 }}/>
+                </div>
+
+                {/* Weight label + badge */}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                  <span style={{ font: "500 11px/16px var(--font-sans)", color: "var(--color-fg-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    Weight
+                  </span>
+                  <span style={{
+                    display: "inline-flex", alignItems: "center", justifyContent: "center",
+                    width: 34, height: 28,
+                    font: "700 15px/1 var(--font-sans)",
+                    color: "var(--color-fg-action)",
+                    background: "var(--color-bg-active-moderate)",
+                    borderRadius: "var(--radius-sm)",
+                  }}>{c.weight}</span>
+                </div>
+
+                {/* Slider */}
+                <input type="range" min="1" max="10" value={c.weight}
+                  disabled={!c.active}
+                  onChange={e => setCategory(c.id, { weight: parseInt(e.target.value) })}
+                  style={{ width: "100%", accentColor: "var(--color-border-active)", display: "block" }}/>
+
+                {/* Tick marks + labels combined — each position has its own column */}
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: 5, padding: "0 7px" }}>
+                  {[1,2,3,4,5,6,7,8,9,10].map(n => (
+                    <div key={n} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
                       <div style={{
-                        width: `${100 - totalWeight}%`,
-                        background: "repeating-linear-gradient(45deg, var(--lyra-slate-200), var(--lyra-slate-200) 4px, var(--lyra-slate-50) 4px, var(--lyra-slate-50) 8px)",
+                        width: 1.5,
+                        height: (n === 1 || n === 5 || n === 10) ? 8 : 5,
+                        background: n === c.weight ? "var(--color-border-active)" : "rgba(0,0,0,0.16)",
+                        borderRadius: 1,
                       }}/>
-                    ) : null}
-                  </div>
-                </div>
-                <div style={{
-                  font: "500 14px/20px Inter",
-                  color: balanced ? "var(--fi-green)" : totalWeight > 100 ? "var(--fi-red)" : "var(--fi-amber)",
-                  minWidth: 80, textAlign: "right",
-                }}>
-                  {totalWeight}% / 100%
-                </div>
-                {!balanced ? (
-                  <button className="btn" onClick={normalize} style={{ font: "500 12px/16px Inter", padding: "var(--space-1) 10px" }}>
-                    Normalize to 100%
-                  </button>
-                ) : null}
-              </div>
-
-              <table className="ont-table">
-                <thead>
-                  <tr>
-                    <th style={{ width: 28 }}/>
-                    <th>Topic</th>
-                    <th style={{ width: 140 }}>Category</th>
-                    <th style={{ width: 220 }}>Weight</th>
-                    <th style={{ width: 60, textAlign: "right" }}/>
-                  </tr>
-                </thead>
-                <tbody>
-                  {topics.map(t => (
-                    <tr key={t.id} style={{ opacity: t.active ? 1 : 0.5 }}>
-                      <td>
-                        <SmallToggle checked={t.active} onChange={v => setTopic(t.id, { active: v })}/>
-                      </td>
-                      <td>
-                        <input className="ont-input" value={t.name}
-                          onChange={e => setTopic(t.id, { name: e.target.value })}/>
-                      </td>
-                      <td>
-                        <span className="cat-chip" style={{
-                          background: `${catColor(t.category)}1a`,
-                          color: catColor(t.category),
-                          borderColor: `${catColor(t.category)}40`,
-                        }}>{t.category}</span>
-                      </td>
-                      <td>
-                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          <input type="range" min="0" max="50" value={t.weight}
-                            disabled={!t.active}
-                            onChange={e => setTopic(t.id, { weight: parseInt(e.target.value) })}
-                            style={{ flex: 1 }}/>
-                          <span style={{
-                            font: "500 14px/20px Inter", color: "var(--lyra-slate-900)",
-                            minWidth: 36, textAlign: "right",
-                          }}>{t.weight}%</span>
-                        </div>
-                      </td>
-                      <td style={{ textAlign: "right" }}>
-                        <button className="ont-iconbtn" title="Remove" onClick={() => removeTopic(t.id)}>
-                          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button className="ont-addbtn" onClick={addTopic}>
-                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Add topic
-              </button>
-            </SectionCard>
-
-            {/* Modifiers */}
-            <SectionCard num="2" title="Modifiers"
-              sub="Conditional rules that adjust the composite score for edge cases. Applied in order, after weighted topics are summed.">
-              <table className="ont-table">
-                <thead>
-                  <tr>
-                    <th style={{ width: 28 }}/>
-                    <th>Name</th>
-                    <th>Condition</th>
-                    <th style={{ width: 200 }}>Effect</th>
-                    <th style={{ width: 60 }}/>
-                  </tr>
-                </thead>
-                <tbody>
-                  {modifiers.map(m => (
-                    <tr key={m.id} style={{ opacity: m.active ? 1 : 0.5 }}>
-                      <td>
-                        <SmallToggle checked={m.active} onChange={v => setMod(m.id, { active: v })}/>
-                      </td>
-                      <td>
-                        <input className="ont-input" value={m.name}
-                          onChange={e => setMod(m.id, { name: e.target.value })}/>
-                      </td>
-                      <td style={{ color: "var(--lyra-slate-600)", font: "400 14px/20px Inter" }}>
-                        When {m.when.charAt(0).toLowerCase() + m.when.slice(1)}
-                      </td>
-                      <td>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                          <select className="ont-input" style={{ width: 100 }}
-                            value={m.effect} onChange={e => setMod(m.id, { effect: e.target.value })}>
-                            <option value="multiply">Multiply by</option>
-                            <option value="add">Add</option>
-                          </select>
-                          <input type="number" className="ont-input" style={{ width: 70 }}
-                            step={m.effect === "multiply" ? 0.05 : 1}
-                            value={m.value}
-                            onChange={e => setMod(m.id, { value: parseFloat(e.target.value) })}/>
-                          <span style={{ font: "400 12px/16px Inter", color: "var(--lyra-slate-400)" }}>
-                            {m.effect === "multiply" ? "×" : "pts"}
-                          </span>
-                        </div>
-                      </td>
-                      <td style={{ textAlign: "right" }}>
-                        <button className="ont-iconbtn" title="Remove" onClick={() => setModifiers(prev => prev.filter(x => x.id !== m.id))}>
-                          <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <button className="ont-addbtn" onClick={() => {
-                const id = Math.max(0, ...modifiers.map(m => m.id)) + 1;
-                setModifiers(prev => [...prev, { id, name: "New modifier", when: "Define the trigger condition", effect: "multiply", value: 1.0, active: true }]);
-                setDirty(true);
-              }}>
-                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Add modifier
-              </button>
-            </SectionCard>
-
-            {/* Sentiment Multipliers */}
-            <SectionCard num="3" title="Sentiment Multipliers"
-              sub="How sentiment polarity scales each topic's contribution. Applied per-topic, before weights are summed.">
-              <table className="ont-table sent-table">
-                <thead>
-                  <tr>
-                    <th>Sentiment band</th>
-                    <th style={{ width: 180 }}>Polarity range</th>
-                    <th style={{ width: 240 }}>Multiplier</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sentiments.map(s => (
-                    <tr key={s.id}>
-                      <td>
-                        <span style={{
-                          display: "inline-flex", alignItems: "center", gap: 8,
-                          font: "500 14px/20px Inter", color: "var(--lyra-slate-900)",
-                        }}>
-                          <span style={{ width: 8, height: 8, borderRadius: "50%", background: s.color }}/>
-                          {s.label}
+                      {(n === 1 || n === 5 || n === 10) && (
+                        <span style={{ font: "400 10px/12px var(--font-sans)", color: n === c.weight ? "var(--color-fg-action)" : "var(--color-fg-secondary)" }}>
+                          {n}
                         </span>
-                      </td>
-                      <td style={{ font: "400 14px/20px JetBrains Mono, Menlo, monospace", color: "var(--lyra-slate-600)" }}>
-                        {s.range}
-                      </td>
-                      <td>
-                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          <input type="range" min="0" max="1.5" step="0.05" value={s.multiplier}
-                            onChange={e => setSent(s.id, { multiplier: parseFloat(e.target.value) })}
-                            style={{ flex: 1 }}/>
-                          <span style={{
-                            font: "500 14px/20px Inter", color: "var(--lyra-slate-900)",
-                            minWidth: 48, textAlign: "right",
-                          }}>{s.multiplier.toFixed(2)}×</span>
-                        </div>
-                      </td>
-                    </tr>
+                      )}
+                    </div>
                   ))}
-                </tbody>
-              </table>
-              <div style={{
-                marginTop: 12, padding: "10px var(--space-3)", borderRadius: 6,
-                background: "var(--fi-purple-bg)", border: "1px solid rgba(120,86,186,0.18)",
-                font: "400 12px/18px Inter", color: "var(--lyra-slate-900)",
-              }}>
-                <strong>Tip.</strong> Asymmetric multipliers (e.g. very-negative at 0.55× but very-positive at 1.20×) make the VU score punish bad experiences harder than it rewards good ones — usually what you want for an "early-warning" signal.
+                </div>
+
               </div>
-            </SectionCard>
+            ))}
+
           </div>
 
-          {/* Right rail — score preview */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <ScorePreview topics={activeTopics} sentiments={sentiments}/>
-          </div>
         </div>
+      </div>{/* /scrollable body */}
+
+      {/* Footer — Cancel + Publish */}
+      <div className="wz-footer">
+        <button className="btn" onClick={handleCancel}>Cancel</button>
+        <button className="clear-link" onClick={() => setCategories(SEED_CATEGORIES)} style={{ marginLeft: 8 }}>Reset to default</button>
+        <span style={{ flex: 1 }}/>
+        <button className="btn primary" disabled={!dirty}
+          style={{ opacity: dirty ? 1 : 0.55, cursor: dirty ? "pointer" : "default" }}
+          onClick={() => setDirty(false)}>
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="4 13 10 19 20 5"/></svg>
+          Publish changes
+        </button>
       </div>
     </div>
   );
@@ -10024,8 +10053,8 @@ function SmallToggle({ checked, onChange }) {
     <label style={{
       display: "inline-flex", alignItems: "center",
       width: 30, height: 18, position: "relative", cursor: "pointer",
-      background: checked ? "var(--fi-accent-strong)" : "var(--lyra-slate-300)",
-      borderRadius: 9, transition: "background 0.15s",
+      background: checked ? "var(--color-bg-active-strong)" : "var(--color-bg-control)",
+      borderRadius: "var(--radius-round)", transition: "background 0.15s",
     }}>
       <input type="checkbox" checked={checked} onChange={e => onChange(e.target.checked)}
         style={{ position: "absolute", opacity: 0, pointerEvents: "none" }}/>
@@ -10140,14 +10169,598 @@ Object.assign(window, { VUScoreModel });
 
 </script>
 <script type="text/babel" data-presets="react">
+/* ===================================================
+ * Feedback Intelligence Dashboard
+ * Ported from SDINER/fm-lyra · nice_world branch
+ * =================================================== */
+
+const { useState: useStateD, useMemo: useMemoD, useEffect: useEffectD, useRef: useRefD } = React;
+
+/* ---- Lucide icon replacements (inline SVG) ---- */
+function Sparkles({ className = "", style = {}, fill = "none" }) {
+  return (
+    <svg className={className} style={style} viewBox="0 0 24 24" fill={fill}
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+      <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
+    </svg>
+  );
+}
+function Check({ className = "", style = {}, strokeWidth = 2 }) {
+  return (
+    <svg className={className} style={style} viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  );
+}
+function LucideX({ className = "", style = {}, strokeWidth = 2 }) {
+  return (
+    <svg className={className} style={style} viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+    </svg>
+  );
+}
+function Pencil({ className = "", style = {}, strokeWidth = 2 }) {
+  return (
+    <svg className={className} style={style} viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+      <path d="m15 5 4 4"/>
+    </svg>
+  );
+}
+function FiChevronDown({ className = "", style = {}, strokeWidth = 2 }) {
+  return (
+    <svg className={className} style={style} viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+      <path d="m6 9 6 6 6-6"/>
+    </svg>
+  );
+}
+
+/* ============================================================
+ * Feedback Intelligence Dashboard (Shay Diner · SDINER/fm-lyra)
+ * ============================================================ */
+function FeedbackIntelligenceDashboard() {
+  const enter = (delayMs) => ({
+    animation: 'fadeUp 0.5s ease both',
+    animationDelay: `${delayMs}ms`,
+  });
+  return (
+    <div className="space-y-4" style={{ fontFamily: 'var(--font-sans)' }}>
+      <div style={enter(0)}><FilterRow /></div>
+      <div style={enter(0)}><KpiCards /></div>
+      <div style={enter(300)}><ResponseRateOverTimeCard /></div>
+      <div style={enter(1600)}><BottomInsightsRow /></div>
+    </div>
+  );
+}
+
+function BottomInsightsRow() {
+  const [openIndex, setOpenIndex] = useStateD(null);
+  const toggle = (i) => () => setOpenIndex(openIndex === i ? null : i);
+  return (
+    <div className="grid grid-cols-3 gap-4 items-stretch">
+      <ByIntentPanel       expanded={openIndex === 0} onToggle={toggle(0)} />
+      <ByCustomerTypePanel expanded={openIndex === 1} onToggle={toggle(1)} />
+      <ByChannelPanel      expanded={openIndex === 2} onToggle={toggle(2)} />
+    </div>
+  );
+}
+
+const FI_TODAY = 'May 14';
+
+function KpiInsightBody({ insightBullets, expectedImpact, action }) {
+  const [status, setStatus] = useStateD('pending');
+  const [actionText, setActionText] = useStateD(action);
+  const [editing, setEditing] = useStateD(false);
+  const [draft, setDraft] = useStateD(actionText);
+  const inputRef = useRefD(null);
+  useEffectD(() => { if (editing) inputRef.current && inputRef.current.focus(); }, [editing]);
+
+  if (status === 'done') return (
+    <div className="group rounded-[6px] bg-[#e6f7e8] border border-[#a8d4ac] px-2 py-1.5 flex items-center gap-1.5">
+      <div className="h-3.5 w-3.5 flex-shrink-0 rounded-full bg-[#278a33] flex items-center justify-center">
+        <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />
+      </div>
+      <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#278a33] leading-none">Done · {FI_TODAY}</span>
+      <span className="text-[11px] text-[#1c5e25] leading-tight flex-1 min-w-0 truncate">· {actionText}</span>
+      <button onClick={() => setStatus('pending')} className="text-[10px] font-medium text-[#278a33] hover:underline opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">Undo</button>
+    </div>
+  );
+  if (status === 'dismissed') return (
+    <div className="group rounded-[6px] bg-[#fbfcfe] border border-black/10 px-2 py-1.5 flex items-center gap-1.5">
+      <div className="h-3.5 w-3.5 flex-shrink-0 rounded-full bg-[#a8b3bb] flex items-center justify-center">
+        <LucideX className="h-2.5 w-2.5 text-white" strokeWidth={3} />
+      </div>
+      <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#526b7a] leading-none flex-1">Dismissed · {FI_TODAY}</span>
+      <button onClick={() => setStatus('pending')} className="text-[10px] font-medium text-[#526b7a] hover:underline opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">Undo</button>
+    </div>
+  );
+
+  const startEdit = () => { setDraft(actionText); setEditing(true); };
+  const saveEdit  = () => { setActionText(draft.trim() || actionText); setEditing(false); };
+  const cancelEdit = () => setEditing(false);
+
+  return (
+    <div className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-1 list-none" style={{ paddingLeft: 0, margin: 0 }}>
+        {insightBullets.map((b, i) => (
+          <li key={i} className="flex items-start gap-1.5 text-[11px] text-[#164479] leading-[1.45]">
+            <span className="text-[#3d81e7] font-bold flex-shrink-0 mt-px">•</span>
+            <span className="flex-1 min-w-0">{b}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="pt-1.5 border-t border-[#cfe0f8] flex flex-col gap-1">
+        <span className="text-[9px] font-semibold uppercase tracking-[0.08em] text-[#526b7a] leading-none">Expected Impact</span>
+        <ul className="flex flex-col gap-1 list-none" style={{ paddingLeft: 0, margin: 0 }}>
+          {expectedImpact.map((b, i) => (
+            <li key={i} className="flex items-start gap-1.5 text-[11px] text-[#1d2630] leading-[1.45]">
+              <span className="text-[#278a33] font-bold flex-shrink-0 mt-px">•</span>
+              <span className="flex-1 min-w-0">{b}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="pt-1.5 border-t border-[#cfe0f8] flex flex-col gap-1.5">
+        <span className="text-[9px] font-semibold uppercase tracking-[0.08em] text-[#3d81e7] leading-none">Recommended action</span>
+        {editing ? (
+          <div className="flex items-center gap-1">
+            <input ref={inputRef} value={draft} onChange={e => setDraft(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') cancelEdit(); }}
+              className="flex-1 min-w-0 text-[11px] text-[#164479] bg-white border border-black/10 rounded-[4px] px-1.5 py-1 outline-none" />
+            <button onClick={saveEdit} className="h-5 w-5 flex-shrink-0 rounded-[4px] bg-[#3d81e7] flex items-center justify-center outline-none">
+              <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />
+            </button>
+            <button onClick={cancelEdit} className="h-5 w-5 flex-shrink-0 rounded-[4px] bg-white border border-black/10 flex items-center justify-center outline-none">
+              <LucideX className="h-2.5 w-2.5 text-[#526b7a]" strokeWidth={3} />
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-start gap-1.5">
+            <p className="text-[11px] text-[#164479] leading-snug flex-1" style={{ margin: 0 }}>{actionText}</p>
+            <button onClick={startEdit} className="text-[#3d81e7] outline-none flex-shrink-0 mt-px">
+              <Pencil className="h-2.5 w-2.5" />
+            </button>
+          </div>
+        )}
+        {!editing && (
+          <div className="flex items-center gap-1.5">
+            <button onClick={() => setStatus('done')} className="text-[10px] font-semibold text-white bg-[#3d81e7] rounded-[4px] px-2 py-1 outline-none">Approve</button>
+            <button onClick={() => setStatus('dismissed')} className="text-[10px] font-semibold text-[#526b7a] bg-white border border-black/10 rounded-[4px] px-2 py-1 outline-none">Dismiss</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- 1. Filter row ---------- */
+function FilterRow() {
+  const filters = ['Last 60 days', 'All Intents', 'All Customer Types', 'All Channels'];
+  return (
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        {filters.map(label => (
+          <select key={label} className="h-[32px] px-3 bg-white border border-black/10 rounded-[8px] text-[12px] text-[#1d2630] font-medium appearance-none pr-8"
+            style={{ backgroundImage: "url(\"data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L2 4h8z'/%3E%3C/svg%3E\")", backgroundRepeat: "no-repeat", backgroundPosition: "center right 10px" }}>
+            <option>{label}</option>
+          </select>
+        ))}
+      </div>
+      <div style={{ font:"400 12px/16px var(--font-sans)", color:"var(--color-fg-secondary)" }}>May 14, 2026 · 09:14</div>
+    </div>
+  );
+}
+
+/* ---------- 2. KPI cards ---------- */
+const DASHBOARD_KPIS = [
+  {
+    label: 'Overall Response Rate', value: '55.4%',
+    delta: { arrow: '↑', text: '+3.2pp', suffix: 'vs. prior period' },
+    headline: '44.6% of travelers not responding',
+    insightBullets: ['44.6% of travelers are not responding after their journey','Group A: survey immediately post-call · Group B: 24hrs later via SMS','Alert fires if daily response rate drops below 48%'],
+    expectedImpact: ['+6–10pp projected lift in response rate within 30 days','Early alert catches delivery failures before they affect weekly averages'],
+    action: 'Launch A/B test · Set response rate alert', kind: 'default',
+  },
+  {
+    label: 'Surveys Sent', value: '18,420',
+    delta: { arrow: '↑', text: '+1,240', suffix: 'vs. prior period' },
+    headline: '3 agents with 0% send rate detected',
+    insightBullets: ['3 agents had 0% survey send rate last period','Silently pulling the team average down week over week','Agent-level alert notifies you same day','0 surveys handed off to AI Agent — the AI Agent handoff is not firing'],
+    expectedImpact: ['Recover an estimated 300–400 missing surveys per month','Closes blind spots in agent performance coverage'],
+    action: 'Go to Admin → Campaign Setup → inspect AI Agent handoff step · Set agent send-rate alert', kind: 'default',
+  },
+  {
+    label: 'Outliers Detected', value: '3',
+    csat: { current: '87', target: '60' },
+    note: 'driven by 2 SLA breaches · billing queue routing failure',
+    headline: '2 SLA breaches · 1 campaign spike to replicate',
+    insightBullets: ['2 response rate drops linked to billing queue routing failure — SLA breached on both','Apr 22 spike tied to post-disruption campaign — pattern is repeatable','Each SLA breach correlates with a 5–8 point CSAT drop within 24 hours'],
+    expectedImpact: ['Resolving routing failure projected to recover CSAT from 60 → 80+ within 2 weeks','A/B test on campaign A4542 could replicate the Apr 22 87% response spike'],
+    action: 'Fix billing queue routing · A/B test Apr 22 campaign', kind: 'default',
+  },
+  {
+    label: 'Top Intent Response Rate', value: '81%', subtitle: 'Flight Disruption',
+    headline: 'Flight Disruption is your richest feedback',
+    insightBullets: ['Flight Disruption generates the highest response rate at 81%','Personalized survey sent within 2hrs of resolution','A/B test: SMS delivery vs. email to find the top channel'],
+    expectedImpact: ['Disruption campaign could add 400+ high-quality responses per month','Channel winner from A/B test applies across all future disruption surveys'],
+    action: 'Launch disruption campaign · A/B test SMS vs. email', kind: 'positive',
+  },
+];
+
+function KpiCards() {
+  const [openIndex, setOpenIndex] = useStateD(null);
+  return (
+    <div className="grid grid-cols-4 gap-4">
+      {DASHBOARD_KPIS.map((k, i) => (
+        <KpiCard key={k.label} kpi={k} expanded={openIndex === i} onToggle={() => setOpenIndex(openIndex === i ? null : i)} />
+      ))}
+    </div>
+  );
+}
+
+function KpiCard({ kpi, expanded, onToggle }) {
+  const valueColor = kpi.kind === 'negative' ? '#3d81e7' : kpi.kind === 'positive' ? '#3d81e7' : '#1d2630';
+  return (
+    <div className="fi-dash-card bg-white rounded-[12px]" style={{ padding: "20px 20px 16px" }}>
+      <div style={{ font:"500 10px/14px var(--font-sans)", color:"var(--color-fg-secondary)", textTransform:"uppercase", letterSpacing:"0.05em", marginBottom: 10 }}>{kpi.label}</div>
+      <div className="flex items-center gap-4" style={{ marginBottom: 10 }}>
+        <div className="text-[32px] font-bold leading-[1] tracking-[-0.02em]" style={{ color: valueColor }}>{kpi.value}</div>
+        {kpi.csat && (
+          <>
+            <div className="w-px h-7 bg-[#E2E8F0]" />
+            <div className="flex items-center gap-1.5">
+              <span className="text-[11px] text-[#526b7a]">CSAT</span>
+              <span className="text-[32px] font-bold leading-[1] text-[#3d81e7]">{kpi.csat.current}</span>
+              <span className="text-[#526b7a] text-base">→</span>
+              <span className="text-[32px] font-bold leading-[1] text-[#3d81e7]">{kpi.csat.target}</span>
+            </div>
+          </>
+        )}
+      </div>
+      {kpi.delta && (
+        <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#278a33] leading-none" style={{ marginBottom: 10 }}>
+          {kpi.delta.arrow && <span>{kpi.delta.arrow}</span>}
+          <span>{kpi.delta.text}</span>
+          {kpi.delta.suffix && <span className="font-normal text-[#526b7a]">{kpi.delta.suffix}</span>}
+        </div>
+      )}
+      {kpi.subtitle && <div className="text-[12px] font-semibold leading-none text-[#1d2630]" style={{ marginBottom: 10 }}>{kpi.subtitle}</div>}
+      {kpi.note && <div className="text-[11px] text-[#526b7a] leading-snug" style={{ marginBottom: 12 }}>{kpi.note}</div>}
+      <div className="fi-ai-section" style={{ marginTop: 12 }}>
+        <button onClick={onToggle} className="flex items-start gap-1.5 w-full px-2.5 py-2 text-left outline-none hover:bg-[#e9f1fc] transition-colors" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+          <Sparkles className="h-3 w-3 text-[#3d81e7] flex-shrink-0 mt-0.5" fill="#3d81e7" />
+          <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+            <p className="text-[11px] font-semibold text-[#164479] leading-snug" style={{ margin: 0 }}>{kpi.headline}</p>
+          </div>
+        </button>
+        <div style={{ maxHeight: expanded ? '600px' : '0px', opacity: expanded ? 1 : 0, overflow: 'hidden', transition: 'max-height 0.2s ease, opacity 0.2s ease' }}>
+          <div className="px-2.5 pb-2 pt-1 border-t border-[#cfe0f8]">
+            <KpiInsightBody insightBullets={kpi.insightBullets} expectedImpact={kpi.expectedImpact} action={kpi.action} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- 3. Response Rate Over Time ---------- */
+function ResponseRateOverTimeCard() {
+  return (
+    <div className="fi-dash-card bg-white rounded-[16px] overflow-hidden" style={{ boxShadow: '0 1px 2px rgba(15,23,42,0.04),0 8px 24px -12px rgba(15,23,42,0.08)' }}>
+      <div className="border-b border-black/10" style={{ padding: "20px 24px 16px" }}>
+        <div className="flex items-start justify-between" style={{ marginBottom: 12 }}>
+          <div>
+            <h3 className="text-[15px] font-semibold text-[#1d2630] leading-tight" style={{ margin: "0 0 5px" }}>Response Rate Over Time</h3>
+            <p style={{ margin:0, font:"400 12px/16px var(--font-sans)", color:"var(--color-fg-secondary)" }}>Mar 15 – May 14, 2026 · Weekends shaded · Outliers flagged</p>
+          </div>
+          <div className="flex items-center gap-3 px-2.5 py-1.5 rounded-full bg-[#fbfcfe] border border-black/10">
+            <span className="flex items-center gap-1.5"><span className="w-3 h-3 bg-[#f5f7f9] border border-black/10 rounded-[2px] inline-block"/><span style={{font:"400 11px/16px var(--font-sans)",color:"var(--color-fg-secondary)"}}>Weekend</span></span>
+            <span className="w-px h-3 bg-[#e2e8f0]"/>
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 bg-[#d83434] rounded-full inline-block"/><span style={{font:"400 11px/16px var(--font-sans)",color:"var(--color-fg-secondary)"}}>Low outlier</span></span>
+            <span className="w-px h-3 bg-[#e2e8f0]"/>
+            <span className="flex items-center gap-1.5"><span className="w-2 h-2 bg-[#3d81e7] rounded-full inline-block"/><span style={{font:"400 11px/16px var(--font-sans)",color:"var(--color-fg-secondary)"}}>Spike</span></span>
+          </div>
+        </div>
+      </div>
+      <OutlierAnnotationRail />
+      <div className="px-4 py-3"><ResponseRateChart /></div>
+    </div>
+  );
+}
+
+/* ---------- Shared panel insight accordion ---------- */
+function PanelInsightAccordion({ collapsed, insightBullets, expectedImpact, action, expanded, onToggle }) {
+  return (
+    <div className="fi-ai-section">
+      <button onClick={onToggle} className="flex items-start gap-1.5 w-full px-2.5 py-2 text-left outline-none hover:bg-[#e9f1fc] transition-colors" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+        <Sparkles className="h-3 w-3 text-[#3d81e7] flex-shrink-0 mt-0.5" fill="#3d81e7" />
+        <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+          <p className="text-[11px] text-[#164479] leading-[1.45]" style={{ margin: 0 }}>{collapsed}</p>
+        </div>
+      </button>
+      <div style={{ maxHeight: expanded ? '600px' : '0px', opacity: expanded ? 1 : 0, overflow: 'hidden', transition: 'max-height 0.2s ease, opacity 0.2s ease' }}>
+        <div className="px-2.5 pb-2 pt-1 border-t border-[#cfe0f8]">
+          <KpiInsightBody insightBullets={insightBullets} expectedImpact={expectedImpact} action={action} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Outlier annotations ---------- */
+const DASHBOARD_OUTLIERS_DATA = [
+  { id: 'apr-12', date: 'Apr 12 — 19%', summary: 'Storm-related mass cancellation (6 hrs). 2,100 surveys undelivered.',
+    insightBullets: ['Storm caused mass flight cancellations for 6 hours on Apr 12','2,100 surveys were queued but never delivered','No automated alert fired — ops team discovered it manually'],
+    expectedImpact: ['Real-time delivery alert would have caught this within 30 minutes','Estimated 800+ recoverable responses with a retry window'],
+    action: 'Set delivery failure alert · Define retry window for undelivered surveys' },
+  { id: 'apr-22', date: 'Apr 22 — 87%', summary: 'Post-disruption recovery campaign drove 3× engagement. Flight disruption cohort over-represented.',
+    insightBullets: ['Post-disruption recovery campaign drove 3× the normal engagement','Flight disruption cohort was over-represented — signal is strong but skewed','This campaign pattern has not been tested against standard outreach'],
+    expectedImpact: ['A/B test on campaign A4542 could make the 87% spike repeatable','Isolating the cohort removes the skew and gives a clean performance read'],
+    action: 'Launch A/B test in campaign A4542' },
+  { id: 'may-7', date: 'May 7 — 22%', summary: 'Survey link broken in Web Widget after app update. Resolved in 4 hrs. Ticket CXQM-55892.',
+    insightBullets: ['Survey link broken in Web Widget after an app update','Issue went undetected for 4 hours before manual escalation','Ticket CXQM-55892 resolved but no automated prevention in place'],
+    expectedImpact: ['Health alert catches Web Widget failures within 1 hour of deployment','Prevents future app updates from silently breaking survey delivery'],
+    action: 'Set Web Widget health alert — notify within 1 hour of delivery failure' },
+];
+
+function OutlierAnnotationRail() {
+  const [openIndex, setOpenIndex] = useStateD(null);
+  return (
+    <div className="px-4 py-3 border-b border-black/10">
+      <div className="grid grid-cols-3 gap-2 items-stretch">
+        {DASHBOARD_OUTLIERS_DATA.map((ann, i) => (
+          <div key={ann.id} className="fi-ai-section flex flex-col">
+            <button onClick={() => setOpenIndex(openIndex === i ? null : i)} className="flex items-start gap-1.5 w-full px-2.5 py-2 text-left outline-none hover:bg-[#e9f1fc] transition-colors flex-1" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+              <Sparkles className="h-3 w-3 text-[#3d81e7] flex-shrink-0 mt-0.5" fill="#3d81e7" />
+              <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+                <p className="text-[11px] text-[#164479] leading-[1.4]" style={{ margin: 0 }}><strong>{ann.date}</strong> · {ann.summary}</p>
+              </div>
+            </button>
+            <div style={{ maxHeight: openIndex === i ? '600px' : '0px', opacity: openIndex === i ? 1 : 0, overflow: 'hidden', transition: 'max-height 0.2s ease, opacity 0.2s ease' }}>
+              <div className="px-2.5 pb-2 pt-1 border-t border-[#cfe0f8]">
+                <KpiInsightBody insightBullets={ann.insightBullets} expectedImpact={ann.expectedImpact} action={ann.action} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Chart ---------- */
+const CHART_DATA_VALUES = [
+  32,58,60,63,67,58,30,33,58,62,68,70,62,30,28,
+  55,58,62,64,58,38,42,55,58,62,70,55,33,19,50,
+  58,62,65,60,38,40,55,60,87,70,62,40,38,55,58,
+  62,61,58,38,42,58,65,72,22,40,30,32,55,60,53,
+];
+const CHART_OUTLIER_MAP = { 28: 'low', 38: 'high', 53: 'low' };
+
+function ResponseRateChart() {
+  const [hovered, setHovered] = useStateD(null);
+  const data = useMemoD(() => {
+    const start = new Date('2026-03-15T00:00:00');
+    return CHART_DATA_VALUES.map((v, i) => {
+      const d = new Date(start); d.setDate(start.getDate() + i);
+      const day = d.getDay();
+      return { i, y: v, date: d.toLocaleDateString('en-US',{month:'short',day:'numeric'}), fullDate: d.toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric'}), isWeekend: day===0||day===6, outlier: CHART_OUTLIER_MAP[i] };
+    });
+  }, []);
+
+  const width=1200, height=240, pad={top:20,right:20,bottom:32,left:44};
+  const cw=width-pad.left-pad.right, ch=height-pad.top-pad.bottom;
+  const xs=(i)=>pad.left+(i/(CHART_DATA_VALUES.length-1))*cw;
+  const ys=(y)=>pad.top+ch-(y/100)*ch;
+  const bandWidth=cw/(data.length-1);
+
+  const linePath = useMemoD(()=>{
+    const pts=data.map(p=>({x:xs(p.i),y:ys(p.y)}));
+    let path=`M ${pts[0].x} ${pts[0].y}`;
+    for(let i=0;i<pts.length-1;i++){
+      const p0=pts[Math.max(0,i-1)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(pts.length-1,i+2)];
+      path+=` C ${p1.x+(p2.x-p0.x)/6} ${p1.y+(p2.y-p0.y)/6}, ${p2.x-(p3.x-p1.x)/6} ${p2.y-(p3.y-p1.y)/6}, ${p2.x} ${p2.y}`;
+    }
+    return path;
+  },[data]);
+
+  const areaPath = useMemoD(()=>`${linePath} L ${xs(data.length-1)} ${ys(0)} L ${xs(0)} ${ys(0)} Z`,[linePath]);
+  const yTicks=[0,25,50,75,100];
+
+  return (
+    <div className="relative w-full select-none">
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto overflow-visible" onMouseLeave={()=>setHovered(null)}>
+        <defs>
+          <linearGradient id="fi-area" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3d81e7" stopOpacity="0.28"/><stop offset="55%" stopColor="#3d81e7" stopOpacity="0.10"/><stop offset="100%" stopColor="#3d81e7" stopOpacity="0"/>
+          </linearGradient>
+          <linearGradient id="fi-line" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#166cca"/><stop offset="50%" stopColor="#3d81e7"/><stop offset="100%" stopColor="#006889"/>
+          </linearGradient>
+        </defs>
+        {data.map(d=>d.isWeekend&&<rect key={`wk-${d.i}`} x={xs(d.i)-bandWidth/2} y={pad.top} width={bandWidth} height={ch} fill="#f1f5f9" opacity={0.5}/>)}
+        {yTicks.map(t=>(
+          <g key={t}>
+            <line x1={pad.left} y1={ys(t)} x2={width-pad.right} y2={ys(t)} stroke="#eef0f2" strokeDasharray="3 5" strokeWidth="1" opacity={t===0?1:0.7}/>
+            <text x={pad.left-12} y={ys(t)+4} textAnchor="end" fill="rgba(0,0,0,0.45)" fontSize="10" fontWeight="500">{t}%</text>
+          </g>
+        ))}
+        <path d={areaPath} fill="url(#fi-area)"/>
+        <path d={linePath} pathLength={1} fill="none" stroke="url(#fi-line)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{strokeDasharray:1,animation:'drawLine 1.2s ease-out 0.4s both'}}/>
+        {data.map(d=>{
+          if(!d.outlier) return null;
+          const color=d.outlier==='low'?'#d83434':'#3d81e7';
+          return <g key={`out-${d.i}`}><circle cx={xs(d.i)} cy={ys(d.y)} r={12} fill={color} opacity={0.15}/><circle cx={xs(d.i)} cy={ys(d.y)} r={6} fill="white" stroke={color} strokeWidth={2.5}/><circle cx={xs(d.i)} cy={ys(d.y)} r={2.5} fill={color}/></g>;
+        })}
+        {data.map(d=><rect key={`h-${d.i}`} x={xs(d.i)-bandWidth/2} y={pad.top} width={bandWidth} height={ch} fill="transparent" onMouseEnter={()=>setHovered(d.i)} style={{cursor:'crosshair'}}/>)}
+        {hovered!==null&&(
+          <g>
+            <line x1={xs(hovered)} y1={pad.top} x2={xs(hovered)} y2={pad.top+ch} stroke="#3d81e7" strokeOpacity={0.35} strokeDasharray="3 4"/>
+            <circle cx={xs(hovered)} cy={ys(data[hovered].y)} r={9} fill="#3d81e7" opacity={0.18}/>
+            <circle cx={xs(hovered)} cy={ys(data[hovered].y)} r={5} fill="white" stroke="#3d81e7" strokeWidth={2.5}/>
+          </g>
+        )}
+        {data.filter((_,i)=>i%6===0).map(d=><text key={`xl-${d.i}`} x={xs(d.i)} y={height-14} textAnchor="middle" fill="rgba(0,0,0,0.55)" fontSize="11" fontWeight="500">{d.date}</text>)}
+      </svg>
+      {hovered!==null&&(
+        <div className="absolute pointer-events-none z-10" style={{left:`${(xs(hovered)/width)*100}%`,top:`${(ys(data[hovered].y)/height)*100}%`,transform:'translate(-50%,-140%)'}}>
+          <div className="rounded-xl px-3.5 py-2.5 whitespace-nowrap" style={{background:'linear-gradient(135deg,rgba(29,38,48,0.96),rgba(63,78,93,0.96))',backdropFilter:'blur(12px)',boxShadow:'0 12px 32px -8px rgba(29,38,48,0.45)'}}>
+            <div className="text-[10px] font-medium uppercase text-white/60 leading-none">{data[hovered].fullDate}</div>
+            <div className="flex items-baseline gap-2 mt-1.5">
+              <span className="text-[20px] font-semibold text-white leading-none">{data[hovered].y}%</span>
+              <span className="text-[10px] text-white/50 uppercase">response rate</span>
+            </div>
+            {data[hovered].outlier&&(
+              <div className="mt-2 pt-2 flex items-center gap-1.5" style={{borderTop:'1px solid rgba(255,255,255,0.1)'}}>
+                <span className="inline-block w-1.5 h-1.5 rounded-full" style={{backgroundColor:data[hovered].outlier==='low'?'#d83434':'#3d81e7'}}/>
+                <span className="text-[10px] font-semibold uppercase" style={{color:data[hovered].outlier==='low'?'#ff9b9b':'#72a6e8'}}>{data[hovered].outlier==='low'?'Low outlier':'Spike detected'}</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------- 4. By Intent ---------- */
+const INTENT_ROWS_DATA = [
+  {name:'Flight Disruption',pct:81,delta:'+26pp',tone:'up'},{name:'Billing Dispute',pct:74,delta:'+19pp',tone:'up'},
+  {name:'Baggage Claim',pct:68,delta:'+13pp',tone:'up'},{name:'Booking Change',pct:56,delta:'+1pp',tone:'flat'},
+  {name:'Seat Upgrade Request',pct:44,delta:'-11pp',tone:'down'},{name:'General Inquiry',pct:38,delta:'-17pp',tone:'down'},
+];
+function ByIntentPanel({ expanded, onToggle }) {
+  return (
+    <div className="fi-dash-card bg-white rounded-[12px] overflow-hidden h-full flex flex-col">
+      <div className="px-4 py-3 border-b border-black/10">
+        <h3 style={{margin:"0 0 4px",font:"500 14px/20px var(--font-sans)",color:"var(--color-fg-default)"}}>By Intent</h3>
+        <p style={{margin:0,font:"400 12px/16px var(--font-sans)",color:"var(--color-fg-secondary)"}}>Response rate per AI-detected topic</p>
+      </div>
+      <div className="px-4 py-3 border-b border-black/10">
+        <PanelInsightAccordion expanded={expanded} onToggle={onToggle} collapsed="High-stakes intents respond 2× more than routine calls"
+          insightBullets={['Flight Disruption and Baggage Claim drive the highest response — passengers are emotionally invested','Booking Change and Seat Upgrade requests show near-zero engagement delta','General Inquiry sits 17pp below baseline — lowest motivation to respond']}
+          expectedImpact={['Prioritizing survey campaigns on disruption intents could add 400+ responses/month','Reducing survey noise on low-intent calls frees up QM review capacity']}
+          action="Launch targeted post-disruption survey campaign · Suppress surveys on General Inquiry calls"/>
+      </div>
+      <div className="p-4 flex-1">
+        <div className="space-y-4">
+          {INTENT_ROWS_DATA.map(r=>{
+            const barColor=r.tone==='up'?'#3d81e7':r.tone==='flat'?'#72a6e8':'#ffdbdb';
+            return (
+              <div key={r.name} className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <span style={{font:"400 14px/20px var(--font-sans)",color:"var(--color-fg-default)"}}>{r.name}</span>
+                  <span style={{font:"600 14px/20px var(--font-sans)",color:"var(--color-fg-default)",flexShrink:0}}>{r.pct}%</span>
+                </div>
+                <div className="h-[6px] bg-[#f5f7f9] rounded-full overflow-hidden">
+                  <div className="h-full rounded-full" style={{width:`${r.pct}%`,backgroundColor:barColor,transition:'width 0.3s'}}/>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- 5. By Customer Type ---------- */
+const CUSTOMER_ROWS_DATA = [
+  {name:'Business Frequent Flyer',pct:73,vs:'+18pp',trend:'↑',tone:'up'},{name:'Leisure Repeat Traveler',pct:61,vs:'+6pp',trend:'→',tone:'flat'},
+  {name:'First-Time Traveler',pct:47,vs:'-8pp',trend:'↓',tone:'down'},{name:'Group Booking',pct:31,vs:'-24pp',trend:'→',tone:'down'},
+];
+function ByCustomerTypePanel({ expanded, onToggle }) {
+  return (
+    <div className="fi-dash-card bg-white rounded-[12px] overflow-hidden h-full flex flex-col">
+      <div className="px-4 py-3 border-b border-black/10 flex items-center justify-between gap-2">
+        <div>
+          <h3 style={{margin:"0 0 4px",font:"500 14px/20px var(--font-sans)",color:"var(--color-fg-default)"}}>By Customer Type</h3>
+          <p style={{margin:0,font:"400 12px/16px var(--font-sans)",color:"var(--color-fg-secondary)"}}>Segment response rate vs. 55.4% baseline</p>
+        </div>
+      </div>
+      <div className="px-4 py-3 border-b border-black/10">
+        <PanelInsightAccordion expanded={expanded} onToggle={onToggle} collapsed="Business Frequent Flyers lead — Group Bookings are a structural outlier"
+          insightBullets={['Business Frequent Flyers respond 18pp above baseline — consistent across all weeks and channels','Group Bookings are a structural outlier — survey reaches the organizer, not the individual traveler','First-Time Travelers at 47% — one bad experience determines their entire brand perception']}
+          expectedImpact={['Redirecting Group Booking surveys to individual travelers could recover 8pp response rate','Targeted re-engagement campaign for First-Time Travelers within 24hrs of journey could lift retention']}
+          action="Fix Group Booking survey routing · A/B test First-Time Traveler re-engagement campaign"/>
+      </div>
+      <div className="p-4 flex-1">
+        <div className="space-y-4">
+          {CUSTOMER_ROWS_DATA.map(r=>{
+            const dotColor=r.tone==='up'?'#3d81e7':r.tone==='flat'?'#72a6e8':r.name==='First-Time Traveler'?'#ff9b9b':'#ffdbdb';
+            return (
+              <div key={r.name} className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full flex-shrink-0" style={{backgroundColor:dotColor}}/>
+                <div style={{flex:1,font:"400 14px/20px var(--font-sans)",color:"var(--color-fg-default)"}}>{r.name}</div>
+                <div style={{font:"600 14px/20px var(--font-sans)",color:"var(--color-fg-default)"}}>{r.pct}%</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- 6. By Channel ---------- */
+const CHANNEL_ROWS_DATA = [
+  {name:'SMS',pct:71,delta:'+16pp',tone:'up'},{name:'WhatsApp',pct:68,delta:'+13pp',tone:'up'},
+  {name:'Email',pct:64,delta:'+9pp',tone:'up'},{name:'Voice IVR',pct:52,delta:'-3pp',tone:'flat'},
+  {name:'Web Widget',pct:45,delta:'-10pp',tone:'down'},
+];
+function ByChannelPanel({ expanded, onToggle }) {
+  return (
+    <div className="fi-dash-card bg-white rounded-[12px] overflow-hidden h-full flex flex-col">
+      <div className="px-4 py-3 border-b border-black/10">
+        <h3 style={{margin:"0 0 4px",font:"500 14px/20px var(--font-sans)",color:"var(--color-fg-default)"}}>By Channel</h3>
+        <p style={{margin:0,font:"400 12px/16px var(--font-sans)",color:"var(--color-fg-secondary)"}}>Response rate per survey delivery method</p>
+      </div>
+      <div className="px-4 py-3 border-b border-black/10">
+        <PanelInsightAccordion expanded={expanded} onToggle={onToggle} collapsed="SMS leads weekdays · WhatsApp wins on Sundays"
+          insightBullets={['SMS leads at 71% but drops to 28% on Sundays — leisure travel day','Web Widget is the lowest performer across every day of the week','WhatsApp at 68% shows strong potential and no weekend drop pattern']}
+          expectedImpact={['Shifting Sunday surveys from SMS to WhatsApp could recover 30–40pp on weekend response rate','Removing Web Widget as a primary survey channel reduces delivery failure risk']}
+          action="A/B test WhatsApp vs. SMS on Sundays · Deprioritize Web Widget survey delivery"/>
+      </div>
+      <div className="p-4">
+        <div className="space-y-4">
+          {CHANNEL_ROWS_DATA.map(r=>{
+            const barColor=r.tone==='up'?'#3d81e7':r.tone==='flat'?'#72a6e8':'#ffdbdb';
+            return (
+              <div key={r.name} className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <span style={{font:"400 14px/20px var(--font-sans)",color:"var(--color-fg-default)"}}>{r.name}</span>
+                  <span style={{font:"600 14px/20px var(--font-sans)",color:"var(--color-fg-default)",flexShrink:0}}>{r.pct}%</span>
+                </div>
+                <div className="h-[6px] bg-[#f5f7f9] rounded-full overflow-hidden">
+                  <div className="h-full rounded-full" style={{width:`${r.pct}%`,backgroundColor:barColor,transition:'width 0.3s'}}/>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, { FeedbackIntelligenceDashboard });
+
+</script>
+<script type="text/babel" data-presets="react">
 /* Feedback Intelligence — main app router and shell glue. */
 
 const FI_NAV = [
+  { type: "leaf", icon: "dashboard", label: "Dashboard", key: "dashboard" },
   { type: "group", icon: "campaigns", label: "Campaign Management", expanded: true, children: [
     { label: "Survey Campaigns", key: "campaigns" },
     { label: "Survey Templates", key: "designs" },
   ]},
-  { type: "leaf", icon: "topics", label: "VU Score Model", key: "ontology" },
+  { type: "leaf", icon: "topics", label: "Ontology", key: "ontology" },
 ];
 
 const WFM_NAV = [
@@ -10188,10 +10801,12 @@ function WFMPlaceholder({ onOpenSwitcher }) {
 
 function App() {
   // Route: { product: 'wfm' | 'fi', section: 'campaigns' | ..., view: 'list' | 'create' }
-  const [route, setRoute] = React.useState({ product: "fi", section: "campaigns", view: "list" });
+  const [route, setRoute] = React.useState({ product: "fi", section: "dashboard", view: "list" });
   const [switcherOpen, setSwitcherOpen] = React.useState(false);
   const [navMinimized, setNavMinimized] = React.useState(false);
   const [toast, setToast] = React.useState(null);
+  const [newCampaigns, setNewCampaigns] = React.useState([]);
+  const [newDesigns, setNewDesigns] = React.useState([]);
 
   React.useEffect(() => {
     if (!toast) return;
@@ -10215,13 +10830,27 @@ function App() {
       }
       return { ...n, active: n.key === route.section };
     });
-    if (route.section === "campaigns") {
+    if (route.section === "dashboard") {
+      content = (
+        <div className="pane" style={{ overflow: "hidden" }}>
+          <div className="pane-head">
+            <h1>Dashboard</h1>
+          </div>
+          <div style={{ flex: 1, overflowY: "auto", padding: "24px 32px 40px" }}>
+            <FeedbackIntelligenceDashboard />
+          </div>
+        </div>
+      );
+    } else if (route.section === "campaigns") {
       if (route.view === "create") {
         content = <CreateCampaign
           template={route.template || null}
           editCampaign={route.editCampaign || null}
           onCancel={() => setRoute({ ...route, view: "list", editCampaign: null })}
           onSave={(c) => {
+            const newId = Date.now();
+            const today = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+            setNewCampaigns(prev => [{ ...c, id: newId, created: today, updated: today, owner: "Maria Cohen", isNew: true }, ...prev]);
             setToast({ icon: "check", msg: c.status === "active" ? `Campaign "${c.name}" is now live.` : `Campaign "${c.name}" saved as draft.` });
             setRoute({ ...route, view: "list", editCampaign: null });
           }}/>;
@@ -10233,7 +10862,8 @@ function App() {
       } else {
         content = <SurveyCampaignsGrid
           onCreate={() => setRoute({ ...route, view: "create" })}
-          onOpen={(c) => setRoute({ ...route, view: "detail", campaign: c })}/>;
+          onOpen={(c) => setRoute({ ...route, view: "detail", campaign: c })}
+          newCampaigns={newCampaigns}/>;
       }
     } else if (route.section === "ontology") {
       content = <VUScoreModel/>;
@@ -10243,13 +10873,22 @@ function App() {
           initial={route.view === "edit" ? route.design : null}
           onCancel={() => setRoute({ ...route, view: "list", design: null })}
           onSave={(d) => {
+            const today = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+            setNewDesigns(prev => [{ ...d, id: `new-${Date.now()}`, updated: today, owner: "Maria Cohen", isNew: true }, ...prev]);
             setToast({ msg: `Survey template "${d.name}" saved.` });
             setRoute({ ...route, view: "list", design: null });
           }}/>;
+      } else if (route.view === "detail-design" && route.design) {
+        content = <SurveyTemplateDetail
+          design={route.design}
+          onBack={() => setRoute({ ...route, view: "list", design: null })}
+          onEdit={(d) => setRoute({ ...route, view: "edit", design: d })}/>;
       } else {
         content = <SurveyDesignsGrid
           onCreate={() => setRoute({ ...route, view: "create" })}
-          onOpen={(d) => setRoute({ ...route, view: "edit", design: d })}/>;
+          onOpen={(d) => setRoute({ ...route, view: "detail-design", design: d })}
+          onEdit={(d) => setRoute({ ...route, view: "edit", design: d })}
+          newDesigns={newDesigns}/>;
       }
     } else {
       content = (
